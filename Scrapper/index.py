@@ -12,7 +12,7 @@ city_set = ["Ontario", "Vancouver"]
 max_age = "15"
 
 
-def start_data_collection_process():
+def Indeed():
     df_more = pd.DataFrame(
         columns=["Title", "PostDate", "Location", "Company", "Salary", "Synopsis"]
     )
@@ -127,4 +127,4 @@ def printProgressBar(
 
 
 if __name__ == "__main__":
-    start_data_collection_process()
+    Indeed()
