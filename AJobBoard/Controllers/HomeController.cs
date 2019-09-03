@@ -20,11 +20,6 @@ namespace AJobBoard.Controllers
             return View();
         }
 
-        public IActionResult JobListings()
-        {
-            return View();
-        }
-
         public IActionResult JobSingle()
         {
             return View();
