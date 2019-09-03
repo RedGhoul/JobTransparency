@@ -16,5 +16,8 @@ namespace AJobBoard.Data
         public string PostDate { get; set; }
         public string Salary { get; set; }
         public string Posters { get; set; }
+        public string JobSource { get; set; }
+        public int NumberOfApplies { get; set; }
+        public int NumberOfViews { get; set; }
     }
 }
