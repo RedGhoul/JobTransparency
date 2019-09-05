@@ -7,6 +7,12 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Data\Ontariodevops80JobPostingIndeed04092019183835.csv" />
+    <None Remove="Ontarioreact+developer30JobPostingIndeed04092019183835.csv" />
+    <None Remove="Ontarioreactdeveloper30JobPostingIndeed04092019183835.csv" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.104.20" />

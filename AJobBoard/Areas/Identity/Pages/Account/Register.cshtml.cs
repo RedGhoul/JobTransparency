@@ -67,9 +67,10 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public void OnGet(string returnUrl = null)
+        public void OnGet(string regType, string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            ViewData["regType"] = regType;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -77,7 +78,14 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email , FirstName = Input.FirstName, LastName = Input.LastName};
+                if (ViewData["regType"].ToString().Equals("JobSeeker"))
+                {
+                    // do this 
+                } else
+                {
+                    // do that
+                }
+                    var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email , FirstName = Input.FirstName, LastName = Input.LastName};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

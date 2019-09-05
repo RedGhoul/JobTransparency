@@ -1,11 +1,11 @@
 ﻿@page
 @model RegisterModel
-
-    <section class="site-section" style="background-color: cadetblue;">
-        <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+<section class="site-section" style="background-color: cadetblue;">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            @if (ViewData["regType"].ToString().Equals("JobSeeker"))
+            {<form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                     <h4>Create a new account.</h4>
                     <hr />
                     <div asp-validation-summary="All" class="text-danger"></div>
@@ -36,10 +36,18 @@
                     </div>
                     <button type="submit" class="btn btn-primary">Register</button>
                 </form>
-            </div>
-            <div class="col-md-4"></div>
+
+            } else
+            {
+                // Render another type of form
+            }
+
         </div>
-    </section>
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+        <div class="col-md-4"></div>
+    </div>
+</section>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

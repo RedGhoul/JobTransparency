@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AJobBoard.Data;
+using AJobBoard.Models;
 
 namespace AJobBoard.Controllers
 {

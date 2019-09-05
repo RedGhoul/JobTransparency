@@ -20,6 +20,10 @@ namespace AJobBoard.Controllers
             return View();
         }
 
+        public IActionResult RegisterType()
+        {
+            return View();
+        }
         public IActionResult JobSingle()
         {
             return View();

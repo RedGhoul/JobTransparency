@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -35,7 +38,28 @@
 
                             <li><a asp-action="Index" asp-controller="JobPostings">Job Listings</a></li>
                             <li><a asp-action="About" asp-controller="home">About</a></li>
-                            <partial name="_LoginPartial" />
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
+                                </li>
+                                <li>
+                                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                        <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a asp-action="RegisterType" asp-controller="home">Register</a></li>
+                                @*<li>
+                <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>*@
+                                <li>
+                                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                </li>
+                            }
                         </ul>
 
                     </nav>
