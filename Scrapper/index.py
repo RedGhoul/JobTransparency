@@ -47,36 +47,36 @@ def dotheWork(city, pos, start, finalFileName):
     for div in soup.find_all(class_="result"):
         for each in soup.find_all(class_="result"):
             try:
-                title = each.find(class_="jobtitle").text.replace("\n", "")
+                title = each.find(class_="jobtitle").text.replace("\n", "").replace(",","")
             except:
-                title = None
+                title = "NULL"
             try:
-                job_URL = "https://" + host + each.find(class_="jobtitle")["href"]
+                job_URL = "https://" + host + each.find(class_="jobtitle")["href"].replace(",","")
             except:
-                job_URL = None
+                job_URL = "NULL"
 
             try:
                 location = each.find("span", {"class": "location"}).text.replace(
                     "\n", ""
-                )
+                ).replace(",","")
             except:
-                location = None
+                location = "NULL"
             try:
-                company = each.find(class_="company").text.replace("\n", "")
+                company = each.find(class_="company").text.replace("\n", "").replace(",","")
             except:
-                company = None
+                company ="NULL"
             try:
-                salary = each.find(class_="salary.no-wrap").text
+                salary = each.find(class_="salary.no-wrap").text.replace(",","")
             except:
-                salary = None
+                salary = "NULL"
             try:
-                synopsis = each.find(class_="summary").text.replace("\n", "")
+                synopsis = each.find(class_="summary").text.replace("\n", "").replace(",","")
             except:
-                synopsis = None
+                synopsis = "NULL"
             try:
-                PostDate = each.find(class_="date").text.replace("\n", "")
+                PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
             except:
-                PostDate = None
+                PostDate = "NULL"
             df_more = df_more.append(
                 {
                     "Title": title,
@@ -133,7 +133,9 @@ if __name__ == "__main__":
     df_more = pd.concat(rays)
     df_more.reset_index(drop=True)
     # export to csv
-    df_more.to_csv("combined_csv.csv", encoding="utf-8")
+    now = datetime.now()
+    dt_string = now.strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
+    df_more.to_csv("IndeedJobDump"+dt_string+".csv", encoding="utf-8")
 
     print("Doing Clean Up")
     for x in all_filenames:
