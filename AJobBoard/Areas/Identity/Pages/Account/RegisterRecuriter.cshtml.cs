@@ -14,17 +14,17 @@ using Microsoft.Extensions.Logging;
 namespace AJobBoard.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    public class RegisterModel : PageModel
+    public class RegisterRecuriterModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogger<RegisterRecuriterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-        public RegisterModel(
+        public RegisterRecuriterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
+            ILogger<RegisterRecuriterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -44,6 +44,11 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Display(Name = "Company Name")]
+            public string CompanyName { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -67,10 +72,9 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-        public void OnGet(string regType, string returnUrl = null)
+        public void OnGet(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ViewData["regType"] = regType;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -78,14 +82,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                if (ViewData["regType"].ToString().Equals("JobSeeker"))
-                {
-                    // do this 
-                } else
-                {
-                    // do that
-                }
-                    var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email , FirstName = Input.FirstName, LastName = Input.LastName};
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email , FirstName = Input.FirstName, LastName = Input.LastName};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
