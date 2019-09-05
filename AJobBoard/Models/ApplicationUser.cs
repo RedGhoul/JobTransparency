@@ -10,6 +10,8 @@ namespace AJobBoard.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
+        public bool IsJobSeeker { get; set; }
+        public bool IsRecruiter { get; set; }
+        public List<Document> Documents { get; set; }
     }
 }
