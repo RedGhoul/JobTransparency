@@ -50,6 +50,7 @@ def dotheWork(city, pos, start, finalFileName):
                 title = each.find(class_="jobtitle").text.replace("\n", "").replace(",","")
             except:
                 title = "NULL"
+            #print(title)
             try:
                 job_URL = "https://" + host + each.find(class_="jobtitle")["href"].replace(",","")
             except:
@@ -89,7 +90,7 @@ def dotheWork(city, pos, start, finalFileName):
                 },
                 ignore_index=True,
             )
-    df_more.to_csv(finalFileName + ".csv", encoding="utf-8")
+    df_more.to_csv(finalFileName + ".csv", encoding="utf-8",index=False)
 
 
 def Indeed():
@@ -127,15 +128,16 @@ if __name__ == "__main__":
     # combine all files in the list
     rays = []
     for x in all_filenames:
-        newdata = pd.read_csv(x, index_col=[0])
+        newdata = pd.read_csv(x)
         rays.append(newdata)
-    print(len(rays))
+
+    print("Number of part files: " + str(len(rays)))
+
     df_more = pd.concat(rays)
     df_more.reset_index(drop=True)
-    # export to csv
-    now = datetime.now()
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
-    df_more.to_csv("IndeedJobDump"+dt_string+".csv", encoding="utf-8")
+    dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
+    finalFileName = ("IndeedJobDump" + dt_string).replace("/", "")
+    df_more.to_csv(finalFileName+".csv", encoding="utf-8",index=False)
 
     print("Doing Clean Up")
     for x in all_filenames:
