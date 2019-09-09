@@ -22,7 +22,7 @@ namespace AJobBoard.Controllers
         // GET: JobPostings
         public async Task<IActionResult> Index()
         {
-            return View(await _context.JobPostings.ToListAsync());
+            return View(await _context.JobPostings.Take(100).ToListAsync());
         }
 
         // GET: JobPostings/Details/5
