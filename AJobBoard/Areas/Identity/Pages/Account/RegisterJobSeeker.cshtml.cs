@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AJobBoard.Models;
@@ -21,18 +22,20 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterJobSeekerModel> _logger;
+        private readonly AWSService _AWSService;
         private readonly IEmailSender _emailSender;
 
         public RegisterJobSeekerModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterJobSeekerModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, AWSService AWSService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _AWSService = AWSService;
         }
 
         [BindProperty]
@@ -81,9 +84,9 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
+            _AWSService.validateFile(Input.Resume, ModelState);
             if (ModelState.IsValid)
             {
-                string resumeURL = await S3Uploader.UploadFromRegister(Input.Resume, ModelState);
 
                 var user = new ApplicationUser
                 {
@@ -92,7 +95,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     IsJobSeeker = true,
-                    Documents = new List<Document> { new Document { URL = resumeURL, IsResume = true, IsOtherDoc = false } }
+                    Documents = new List <Document> { }
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -100,16 +103,19 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    string resumeKEY = "";
+                    if (ModelState.IsValid)
+                    {
+                        resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
+                            "Resumes/" + user.Id + Input.Resume.FileName, 
+                            Input.Resume.ContentType, Input.Resume.OpenReadStream());
+                    } else
+                    {
+                        return Page();
+                    }
+                    user.Documents.Add(new Document { URL = resumeKEY, IsResume = true, IsOtherDoc = false });
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { userId = user.Id, code = code },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _userManager.UpdateAsync(user);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
