@@ -38,8 +38,8 @@ namespace AJobBoard
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(
+                    Configuration.GetConnectionString("MYSQLPROD")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
@@ -111,7 +111,7 @@ namespace AJobBoard
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
+                routes.MapRoute(   
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
@@ -124,7 +124,18 @@ namespace AJobBoard
             {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+                //var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+                //for (int i = 0; i < 10000; i++)
+                //{
+                //    content.JobPostings.Add(new JobPosting
+                //    {
+                //        Company = "ssss" + i,
+                //        PostDate = DateTime.Now.ToString(),
+                //        Title = "sdsdsd"+1
+                //    });
+                //}
+                //await content.SaveChangesAsync();
                 IdentityResult roleResult;
                 //Adding Admin Role
                 var roleCheck = await RoleManager.RoleExistsAsync("Admin");
@@ -137,12 +148,15 @@ namespace AJobBoard
                 //login id for Admin management
 
                 ApplicationUser user = await UserManager.FindByEmailAsync("avaneesab5@gmail.com");
-                var currentUserRoles = await UserManager.GetRolesAsync(user);
-                if (!currentUserRoles.Contains("Admin"))
+                if(user != null)
                 {
-                    await UserManager.AddToRoleAsync(user, "Admin");
+                    var currentUserRoles = await UserManager.GetRolesAsync(user);
+                    if (!currentUserRoles.Contains("Admin"))
+                    {
+                        await UserManager.AddToRoleAsync(user, "Admin");
+                    }
+
                 }
-                
             }
         }
     }

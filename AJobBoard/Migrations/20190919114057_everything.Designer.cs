@@ -3,56 +3,21 @@ using System;
 using AJobBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace AJobBoard.Data.Migrations
+namespace AJobBoard.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190903134446_updated JobPostingModel with telemetry")]
-    partial class updatedJobPostingModelwithtelemetry
+    [Migration("20190919114057_everything")]
+    partial class everything
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AJobBoard.Data.JobPosting", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Company");
-
-                    b.Property<string>("JobSource");
-
-                    b.Property<string>("Location");
-
-                    b.Property<int>("NumberOfApplies");
-
-                    b.Property<int>("NumberOfViews");
-
-                    b.Property<string>("PostDate");
-
-                    b.Property<string>("Posters");
-
-                    b.Property<string>("Salary");
-
-                    b.Property<string>("Summary");
-
-                    b.Property<string>("Title");
-
-                    b.Property<string>("URL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobPostings");
-                });
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AJobBoard.Models.ApplicationUser", b =>
                 {
@@ -70,6 +35,10 @@ namespace AJobBoard.Data.Migrations
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<string>("FirstName");
+
+                    b.Property<bool>("IsJobSeeker");
+
+                    b.Property<bool>("IsRecruiter");
 
                     b.Property<string>("LastName");
 
@@ -103,10 +72,63 @@ namespace AJobBoard.Data.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("AJobBoard.Models.Document", b =>
+                {
+                    b.Property<int>("DocumentId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<bool>("IsOtherDoc");
+
+                    b.Property<bool>("IsResume");
+
+                    b.Property<string>("URL");
+
+                    b.HasKey("DocumentId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Document");
+                });
+
+            modelBuilder.Entity("AJobBoard.Models.JobPosting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Company");
+
+                    b.Property<string>("JobSource");
+
+                    b.Property<string>("Location");
+
+                    b.Property<int>("NumberOfApplies");
+
+                    b.Property<int>("NumberOfViews");
+
+                    b.Property<string>("PostDate");
+
+                    b.Property<string>("Posters");
+
+                    b.Property<string>("Salary");
+
+                    b.Property<string>("Summary");
+
+                    b.Property<string>("Title");
+
+                    b.Property<string>("URL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobPostings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -127,8 +149,7 @@ namespace AJobBoard.Data.Migrations
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
                 });
@@ -136,8 +157,7 @@ namespace AJobBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 
@@ -156,8 +176,7 @@ namespace AJobBoard.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClaimType");
 
@@ -175,11 +194,9 @@ namespace AJobBoard.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128);
+                    b.Property<string>("ProviderKey");
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -210,17 +227,22 @@ namespace AJobBoard.Data.Migrations
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.Property<string>("Value");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("AJobBoard.Models.Document", b =>
+                {
+                    b.HasOne("AJobBoard.Models.ApplicationUser")
+                        .WithMany("Documents")
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
