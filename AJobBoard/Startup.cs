@@ -2,53 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AJobBoard.Data;
+using AJobBoard.Models;
+using AJobBoard.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AJobBoard.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AJobBoard.Models;
-using AJobBoard.Services;
 
-namespace AJobBoard
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace AJobBoard {
+    public class Startup {
+        public Startup (IConfiguration configuration) {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
+        public void ConfigureServices (IServiceCollection services) {
+            services.Configure<CookiePolicyOptions> (options => {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(
-                    Configuration.GetConnectionString("MYSQLPROD")));
+            services.AddDbContext<ApplicationDbContext> (options =>
+                options.UseMySql (
+                    Configuration.GetConnectionString ("MYSQLPROD")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole> ()
+                .AddDefaultUI (UIFramework.Bootstrap4)
+                .AddEntityFrameworkStores<ApplicationDbContext> ()
+                .AddDefaultTokenProviders ();
 
             //Password Strength Setting
-            services.Configure<IdentityOptions>(options =>
-            {
+            services.Configure<IdentityOptions> (options => {
                 // Password settings
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
@@ -58,7 +52,7 @@ namespace AJobBoard
                 options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes (30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
 
@@ -67,63 +61,55 @@ namespace AJobBoard
             });
 
             //Setting the Account Login page
-            services.ConfigureApplicationCookie(options =>
-            {
+            services.ConfigureApplicationCookie (options => {
                 // Cookie settings
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes (30);
                 options.LoginPath = "/Account/Login"; // If the LoginPath is not set here,
-                                                      // ASP.NET Core will default to /Account/Login
+                // ASP.NET Core will default to /Account/Login
                 options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here,
-                                                        // ASP.NET Core will default to /Account/Logout
+                // ASP.NET Core will default to /Account/Logout
                 options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is
-                                                                    // not set here, ASP.NET Core 
-                                                                    // will default to 
-                                                                    // /Account/AccessDenied
+                // not set here, ASP.NET Core 
+                // will default to 
+                // /Account/AccessDenied
                 options.SlidingExpiration = true;
             });
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<IConfiguration>(Configuration);
-            services.AddSingleton<AWSService>();
+            services.AddSingleton<IConfiguration> (Configuration);
+            services.AddSingleton<AWSService> ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
+        public async void Configure (IApplicationBuilder app, IHostingEnvironment env) {
+            if (env.IsDevelopment ()) {
+                app.UseDeveloperExceptionPage ();
+                app.UseDatabaseErrorPage ();
+            } else {
+                app.UseExceptionHandler ("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseHsts ();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
+            app.UseHttpsRedirection ();
+            app.UseStaticFiles ();
+            app.UseCookiePolicy ();
 
-            app.UseAuthentication();
+            app.UseAuthentication ();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(   
+            app.UseMvc (routes => {
+                routes.MapRoute (
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            await CreateUserRoles(app);
+            await CreateUserRoles (app);
         }
 
-        private async Task CreateUserRoles(IApplicationBuilder app)
-        {
-            using (IServiceScope scope = app.ApplicationServices.CreateScope())
-            {
-                var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        private async Task CreateUserRoles (IApplicationBuilder app) {
+            using (IServiceScope scope = app.ApplicationServices.CreateScope ()) {
+                var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>> ();
+                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>> ();
                 //var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 //for (int i = 0; i < 10000; i++)
@@ -138,22 +124,19 @@ namespace AJobBoard
                 //await content.SaveChangesAsync();
                 IdentityResult roleResult;
                 //Adding Admin Role
-                var roleCheck = await RoleManager.RoleExistsAsync("Admin");
-                if (!roleCheck)
-                {
+                var roleCheck = await RoleManager.RoleExistsAsync ("Admin");
+                if (!roleCheck) {
                     //create the roles and seed them to the database
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin"));
+                    roleResult = await RoleManager.CreateAsync (new IdentityRole ("Admin"));
                 }
                 //Assign Admin role to the main User here we have given our newly registered 
                 //login id for Admin management
 
-                ApplicationUser user = await UserManager.FindByEmailAsync("avaneesab5@gmail.com");
-                if(user != null)
-                {
-                    var currentUserRoles = await UserManager.GetRolesAsync(user);
-                    if (!currentUserRoles.Contains("Admin"))
-                    {
-                        await UserManager.AddToRoleAsync(user, "Admin");
+                ApplicationUser user = await UserManager.FindByEmailAsync ("avaneesab5@gmail.com");
+                if (user != null) {
+                    var currentUserRoles = await UserManager.GetRolesAsync (user);
+                    if (!currentUserRoles.Contains ("Admin")) {
+                        await UserManager.AddToRoleAsync (user, "Admin");
                     }
 
                 }
