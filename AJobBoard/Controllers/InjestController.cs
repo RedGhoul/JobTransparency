@@ -26,45 +26,56 @@ namespace AJobBoard.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetInjests()
         {
-            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump08092019195015.csv"))
+            using (StreamReader sr = new StreamReader(@"C:\Users\Avaneesa.Basappa\source\repos\JobTransparency\AJobBoard\IndeedJobDump19092019101545.csv"))
             {
                 String line;
                 while ((line = sr.ReadLine()) != null)
                 {
 
-
-                    if (line.Contains("Synopsis"))
+                    try
                     {
-                        continue;
+                        if (line.Contains("Synopsis"))
+                        {
+                            continue;
+                        }
+                        string[] list = line.Split(",");
+                        string Title = list[0].Trim();
+                        string JobURL = list[1].Trim();
+                        string PostingDate = list[2].Trim();
+                        string Location = list[3].Trim();
+                        string Company = list[4].Trim();
+                        string Salary = list[5].Trim();
+                        string Synopsis = list[6].Trim();
+
+                        var JobPosting = new JobPosting()
+                        {
+                            Title = Title,
+                            URL = JobURL,
+                            PostDate = PostingDate,
+                            Location = Location,
+                            Company = Company,
+                            Salary = Salary,
+                            Summary = Synopsis,
+                            JobSource = "Indeed"
+                        };
+                        _context.JobPostings.Add(JobPosting);
+
+                        await _context.SaveChangesAsync();
                     }
-                    string[] list = line.Split(",");
-                    string Title = list[0];
-                    string JobURL = list[1];
-                    string PostingDate = list[2];
-                    string Location = list[3];
-                    string Company = list[4];
-                    string Salary = list[5];
-                    string Synopsis = list[6];
-
-                    var JobPosting = new JobPosting()
+                    catch (Exception ex)
                     {
-                        Title = Title,
-                        URL = JobURL,
-                        PostDate = PostingDate,
-                        Location = Location,
-                        Company = Company,
-                        Salary = Salary,
-                        Summary = Synopsis,
-                        JobSource = "Indeed"
-                    };
-                    _context.JobPostings.Add(JobPosting);
-                    
+                        Console.WriteLine("ERROR");
+                    }
+                   
+                   
+
                 }
             }
 
-            await _context.SaveChangesAsync();
+            
+            
 
-            return await _context.JobPostings.ToListAsync();
+            return Ok("Ingested Properly");
         }
 
     }
