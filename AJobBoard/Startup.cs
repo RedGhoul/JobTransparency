@@ -38,8 +38,7 @@ namespace AJobBoard
             });
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySQL(Configuration.GetConnectionString("MYSQLPROD")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
@@ -137,11 +136,15 @@ namespace AJobBoard
                 //login id for Admin management
 
                 ApplicationUser user = await UserManager.FindByEmailAsync("avaneesab5@gmail.com");
-                var currentUserRoles = await UserManager.GetRolesAsync(user);
-                if (!currentUserRoles.Contains("Admin"))
+                if(user != null)
                 {
-                    await UserManager.AddToRoleAsync(user, "Admin");
+                    var currentUserRoles = await UserManager.GetRolesAsync(user);
+                    if (!currentUserRoles.Contains("Admin"))
+                    {
+                        await UserManager.AddToRoleAsync(user, "Admin");
+                    }
                 }
+               
                 
             }
         }
