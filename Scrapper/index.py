@@ -80,7 +80,7 @@ def dotheWork(city, pos, start, finalFileName):
         try:
             salary = each.find(class_="salary.no-wrap").text.replace(",","")
         except:
-            continue
+            salary ='N/A'
 
         try:
             PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
