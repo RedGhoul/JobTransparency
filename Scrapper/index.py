@@ -8,11 +8,11 @@ from threading import Thread
 import os
 import glob
 
-max_results_per_city = 500
+max_results_per_city = 300
 postionFind = ["software+developer", "react+developer", "devops", "software+engineer"]
 job_Type = "fulltime"
 city_set = ["Ontario", "Vancouver"]
-max_age = "20"
+max_age = "30"
 host = "ca.indeed.com"
 
 def dotheWork(city, pos, start, finalFileName):
@@ -42,53 +42,65 @@ def dotheWork(city, pos, start, finalFileName):
         + str(start)
     )
     time.sleep(1)  # ensuring at least 1 second between page grabs
-    soup = BeautifulSoup(page.text, "html.parser", from_encoding="utf-8")
-    for div in soup.find_all(class_="result"):
-        for each in soup.find_all(class_="result"):
-            try:
-                title = each.find(class_="jobtitle").text.replace("\n", "").replace(",","")
-            except:
-                title = "NULL"
-            #print(title)
-            try:
-                job_URL = "https://" + host + each.find(class_="jobtitle")["href"].replace(",","")
-            except:
-                job_URL = "NULL"
+    soup = BeautifulSoup(page.text, "html.parser")
+    for each in soup.find_all(class_="result"):
+        try:
+            title = each.find(class_="jobtitle").text.replace("\n", "").replace(",","")
+        except:
+            title = "NULL"
+        #print(title)
+        job_URL = "NULL"
+        try:
+            job_URL = "https://" + host + each.find(class_="jobtitle")["href"].replace(",","")
+            
+        except:
+            job_URL = "NULL"
+        try:
+            if(job_URL is not 'NULL'):
+                mainPage = requests.get(job_URL)
+                time.sleep(1)
+                DescriptionSoup = BeautifulSoup(mainPage.text, "html.parser")
+                synopsis = str(DescriptionSoup.findAll("div", {"id": "jobDescriptionText"})[0].prettify().replace("\n", "").replace(",",""))
+                print(synopsis)
+                if(synopsis is None):
+                    continue
+        except:
+            synopsis ='NULL'
 
-            try:
-                location = each.find("span", {"class": "location"}).text.replace(
-                    "\n", ""
-                ).replace(",","")
-            except:
-                location = "NULL"
-            try:
-                company = each.find(class_="company").text.replace("\n", "").replace(",","")
-            except:
-                company ="NULL"
-            try:
-                salary = each.find(class_="salary.no-wrap").text.replace(",","")
-            except:
-                salary = "NULL"
-            try:
-                synopsis = each.find(class_="summary").text.replace("\n", "").replace(",","")
-            except:
-                synopsis = "NULL"
-            try:
-                PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
-            except:
-                PostDate = "NULL"
-            df_more = df_more.append(
-                {
-                    "Title": title,
-                    "JobURL": job_URL,
-                    "PostDate": PostDate,
-                    "Location": location,
-                    "Company": company,
-                    "Salary": salary,
-                    "Synopsis": synopsis,
-                },
-                ignore_index=True,
-            )
+        try:
+            location = each.find("span", {"class": "location"}).text.replace(
+                "\n", ""
+            ).replace(",","")
+        except:
+            location = "N/A"
+        try:
+            company = each.find(class_="company").text.replace("\n", "").replace(",","")
+        except:
+            company ="NULL"
+        try:
+            salary = each.find(class_="salary.no-wrap").text.replace(",","")
+        except:
+            continue
+
+        try:
+            PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
+        except:
+            PostDate = "N/A"
+        
+        body = {
+                "Title": title,
+                "JobURL": job_URL,
+                "PostDate": PostDate,
+                "Location": location,
+                "Company": company,
+                "Salary": salary,
+                "Synopsis": synopsis,
+            }
+        #print(body)
+        df_more = df_more.append(
+            body,
+            ignore_index=True,
+        )
     df_more.to_csv(finalFileName + ".csv", encoding="utf-8",index=False)
 
 
