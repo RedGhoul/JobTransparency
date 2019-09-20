@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using AJobBoard.Data;
 using AJobBoard.Models;
 using System.IO;
+using System.Web;
+using System.Text;
 
 namespace AJobBoard.Controllers
 {
@@ -26,7 +28,8 @@ namespace AJobBoard.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetInjests()
         {
-            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump19092019200410.csv"))
+            string Synopsis = "";
+            using (StreamReader sr = new StreamReader(@"C:\Users\Avaneesa.Basappa\source\repos\JobTransparency\AJobBoard\IndeedJobDump20092019114811.csv"))
             {
                 int count = 0;
                 String line;
@@ -39,14 +42,37 @@ namespace AJobBoard.Controllers
                         {
                             continue;
                         }
+
                         string[] list = line.Split(",");
-                        string Title = list[0].Trim();
-                        string JobURL = list[1].Trim();
-                        string PostingDate = list[2].Trim();
-                        string Location = list[3].Trim();
-                        string Company = list[4].Trim();
-                        string Salary = list[5].Trim();
-                        string Synopsis = list[6].Trim();
+
+                        byte[] byte16 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[0].Trim()));
+                        string myTitle = Encoding.UTF8.GetString(byte16);
+                        string Title = myTitle;
+
+                        byte[] byte17 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[1].Trim()));
+                        string myJobURL = Encoding.UTF8.GetString(byte17);
+                        string JobURL = myJobURL;
+
+                        byte[] byte18 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[2].Trim()));
+                        string myPostingDate = Encoding.UTF8.GetString(byte18);
+                        string PostingDate = myPostingDate;
+
+                        byte[] byte19 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[3].Trim()));
+                        string myLocation = Encoding.UTF8.GetString(byte19);
+                        string Location = myLocation;
+
+                        byte[] byte20 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[4].Trim()));
+                        string myCompany = Encoding.UTF8.GetString(byte20);
+                        string Company = myCompany;
+
+                        byte[] bytes21 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[5].Trim()));
+                        string mySalary = Encoding.UTF8.GetString(bytes21);
+                        string Salary = mySalary;
+
+
+                        byte[] bytes22 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[6].Trim()));
+                        string mySynopsis = Encoding.UTF8.GetString(bytes22);
+                        Synopsis = mySynopsis;
 
                         var JobPosting = new JobPosting()
                         {
@@ -61,13 +87,12 @@ namespace AJobBoard.Controllers
                         };
                         _context.JobPostings.Add(JobPosting);
                         count++;
-                        if (count % 20 == 0)
-                        {
-                            await _context.SaveChangesAsync();
-                        }
+ 
+                       await _context.SaveChangesAsync();
                     }
                     catch (Exception ex)
                     {
+                        Console.WriteLine(Synopsis);
                         Console.WriteLine("ERROR");
                     }
                    
