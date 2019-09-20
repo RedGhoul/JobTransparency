@@ -75,7 +75,7 @@
                         Description
                     </h3>
                     <p>
-                        @Html.DisplayFor(model => model.Summary)
+                        @Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Summary).Replace(@"\",""))
                     </p>
                 </div>
 
