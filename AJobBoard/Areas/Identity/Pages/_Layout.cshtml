@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AJobBoard</title>
+    <title>Tech Transparency</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/css/custom-bs.css">
@@ -35,8 +35,7 @@
 
                     <nav class="mx-auto site-navigation">
                         <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0">
-                            <li><a asp-action="JobListings" asp-controller="home">Job Listings</a></li>
-                            <li><a asp-action="About" asp-controller="home">About</a></li>
+                            <li><a asp-action="Index" asp-controller="JobPostings">Job Listings</a></li>
                             @if (SignInManager.IsSignedIn(User))
                             {
                                 <li>

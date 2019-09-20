@@ -1,78 +1,208 @@
 ﻿@model IEnumerable<AJobBoard.Models.JobPosting>
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Identity/Pages/_Layout.cshtml";
-}
 
-<h1>Index</h1>
+<section class="home-section section-hero inner-page overlay bg-image" style="background-image: url('/images/hero_1.jpg');"
+         id="home-section">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Summary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.URL)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Company)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PostDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Salary)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Posters)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-12">
+                <div class="mb-5 text-center">
+                    <h1 class="text-white font-weight-bold">Job Listings</h1>
+                    <p>Find your dream jobs in our powerful career website template.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<section class="site-section">
+    <div class="container">
+
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+                <h2 class="section-title mb-2"> @ViewBag.TotalJobs Job Listed</h2>
+            </div>
+        </div>
+
+
+        <div class="mb-5">
+            @foreach (var item in Model)
+            {
+                <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+                    <div class="col-md-2">
+                        <a asp-action="JobSingle" asp-controller="home" class="btn btn-warning">Add To Applies</a>
+                    </div>
+                    <div class="col-md-4">
+                        @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
+                        }
+                        <h2><a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                        <p class="meta">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
+                    </div>
+                    <div class="col-md-3 text-left">
+                        <h3>@Html.DisplayNameFor(model => model.Location):</h3>
+                        @if (string.IsNullOrEmpty(item.Location))
+                        {
+                            <h3>Non - Found</h3>
+
+                        }
+                        else
+                        {
+                            <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
+
+                        }
+                    </div>
+                    <div class="col-md-3 text-md-right">
+                        <h5>@Html.DisplayNameFor(model => model.Company):</h5>
+                        <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
+
+                    </div>
+                </div>
+
+            }
+
+
+        </div>
+
+        <div class="row pagination-wrap">
+
+
+            <div class="col-md-6 text-center text-md-left">
+                <div class="custom-pagination ml-auto">
+                    <a href="#" class="prev">Previous</a>
+                    <div class="d-inline-block">
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                    </div>
+                    <a href="#" class="next">Next</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="site-section py-4 mb-5 border-top">
+    <div class="container">
+
+        <div class="row align-items-center">
+            <div class="col-12 text-center mt-4 mb-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-7">
+                        <h2 class="section-title mb-2">Our Candidates Work In Company</h2>
+                        <p class="lead">
+                            Porro error reiciendis commodi beatae omnis similique voluptate rerum ipsam fugit
+                            mollitia ipsum facilis expedita tempora suscipit iste
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+                <img src="/images/logo_mailchimp.svg" alt="Image" class="img-fluid logo-1">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+                <img src="/images/logo_paypal.svg" alt="Image" class="img-fluid logo-2">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+                <img src="/images/logo_stripe.svg" alt="Image" class="img-fluid logo-3">
+            </div>
+            <div class="col-6 col-lg-3 col-md-6 text-center">
+                <img src="/images/logo_visa.svg" alt="Image" class="img-fluid logo-4">
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('/images/hero_1.jpg');">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="text-white">Looking For A Job?</h2>
+                <p class="mb-0 text-white lead">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci
+                    impedit.
+                </p>
+            </div>
+            <div class="col-md-3 ml-auto">
+                <a href="#" class="btn btn-warning btn-block btn-lg">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</section>
+@*<table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Summary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.URL)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Location)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PostDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Salary)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Posters)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Summary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.URL)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Company)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PostDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Salary)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Posters)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Summary)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.URL)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Company)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PostDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Salary)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Posters)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@

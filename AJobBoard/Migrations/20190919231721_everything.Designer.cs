@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace AJobBoard.Data.Migrations
+namespace AJobBoard.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190919022237_sssss")]
-    partial class sssss
+    [Migration("20190919231721_everything")]
+    partial class everything
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

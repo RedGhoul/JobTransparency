@@ -18,11 +18,24 @@ namespace AJobBoard.Controllers
         {
             _context = context;
         }
+//        SELECT Title, COUNT(Title) FROM `JobPostings`
+//GROUP BY Title
+//HAVING COUNT(Title) > 1;
 
         // GET: JobPostings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? count)
         {
-            return View(await _context.JobPostings.Take(100).ToListAsync());
+            ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            List<JobPosting> Jobs = null;
+            if (count != null)
+            {
+                Jobs = await _context.JobPostings.Take((int)count).ToListAsync();
+            } else
+            {
+                Jobs = await _context.JobPostings.OrderByDescending(j => j.Title).Skip(20).Take(50).Distinct().ToListAsync();
+            }
+
+            return View(Jobs);
         }
 
         // GET: JobPostings/Details/5

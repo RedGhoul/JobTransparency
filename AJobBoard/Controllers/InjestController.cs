@@ -26,8 +26,9 @@ namespace AJobBoard.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetInjests()
         {
-            using (StreamReader sr = new StreamReader(@"C:\Users\Avaneesa.Basappa\source\repos\JobTransparency\AJobBoard\IndeedJobDump19092019101545.csv"))
+            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump19092019200410.csv"))
             {
+                int count = 0;
                 String line;
                 while ((line = sr.ReadLine()) != null)
                 {
@@ -59,8 +60,11 @@ namespace AJobBoard.Controllers
                             JobSource = "Indeed"
                         };
                         _context.JobPostings.Add(JobPosting);
-
-                        await _context.SaveChangesAsync();
+                        count++;
+                        if (count % 20 == 0)
+                        {
+                            await _context.SaveChangesAsync();
+                        }
                     }
                     catch (Exception ex)
                     {

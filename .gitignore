@@ -40,5 +40,4 @@ msbuild.wrn
 AJobBoard/ScaffoldingReadme.txt
 Scrapper/node_modules
 AJobBoard/appsettings.json
-Scrapper/combined_csv.csv
-AJobBoard/IndeedJobDump08092019195015.csv
+*.csv

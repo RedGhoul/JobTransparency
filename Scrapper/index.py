@@ -8,13 +8,12 @@ from threading import Thread
 import os
 import glob
 
-max_results_per_city = 2000
+max_results_per_city = 500
 postionFind = ["software+developer", "react+developer", "devops", "software+engineer"]
 job_Type = "fulltime"
 city_set = ["Ontario", "Vancouver"]
-max_age = "15"
+max_age = "20"
 host = "ca.indeed.com"
-
 
 def dotheWork(city, pos, start, finalFileName):
     df_more = pd.DataFrame(
@@ -134,6 +133,8 @@ if __name__ == "__main__":
     print("Number of part files: " + str(len(rays)))
 
     df_more = pd.concat(rays)
+    df_more.drop_duplicates(subset= 'Synopsis',inplace = True) 
+
     df_more.reset_index(drop=True)
     dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
     finalFileName = ("IndeedJobDump" + dt_string).replace("/", "")

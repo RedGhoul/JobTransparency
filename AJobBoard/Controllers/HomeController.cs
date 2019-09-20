@@ -5,14 +5,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AJobBoard.Models;
+using AJobBoard.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AJobBoard.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
         {
-            return View();
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            return View(await _context.JobPostings.Take(10).ToListAsync());
         }
 
         public IActionResult About()
