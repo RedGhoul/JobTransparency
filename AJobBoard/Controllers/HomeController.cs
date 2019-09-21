@@ -22,8 +22,18 @@ namespace AJobBoard.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
-            return View(await _context.JobPostings.Take(10).ToListAsync());
+
+            HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
+            homeIndexViewModel.FindModel = new FindModel
+            {
+
+            };
+            homeIndexViewModel.jobPostings = await _context.JobPostings.Take(10).ToListAsync();
+
+            return View(homeIndexViewModel);
         }
+
+
 
         public IActionResult About()
         {

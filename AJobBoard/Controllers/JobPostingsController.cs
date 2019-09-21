@@ -18,24 +18,63 @@ namespace AJobBoard.Controllers
         {
             _context = context;
         }
-//        SELECT Title, COUNT(Title) FROM `JobPostings`
-//GROUP BY Title
-//HAVING COUNT(Title) > 1;
 
-        // GET: JobPostings
-        public async Task<IActionResult> Index(int? count)
+        public async Task<IActionResult> Index(string Location, string KeyWords, int? MaxResults)
         {
             ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
             List<JobPosting> Jobs = null;
-            if (count != null)
+            if (MaxResults == 0 || Location == null)
             {
-                Jobs = await _context.JobPostings.Take((int)count).ToListAsync();
-            } else
-            {
-                Jobs = await _context.JobPostings.OrderByDescending(j => j.Title).Skip(20).Take(50).Distinct().ToListAsync();
+                Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
+                    .Where(x => x.Location.Contains(Location ?? "") &&
+                           x.Summary.Contains(KeyWords ?? "") &&
+                           x.Title.Contains(KeyWords ?? ""))
+                    .Take(50)
+                    .Distinct()
+                    .ToListAsync();
+                start = DateTime.Now;
             }
+            else
+            {
+                if (Location != null && Location.ToLower().Equals("anywhere"))
+                {
+                    Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
+                        .Where(x => x.Summary.Contains(KeyWords ?? "") ||
+                               x.Title.Contains(KeyWords ?? ""))
+                        .Take((int)MaxResults)
+                        .Distinct()
+                        .ToListAsync();
+                    start = DateTime.Now;
+                }
+                else
+                {
+                    Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
+                        .Where(x => x.Location.Contains(Location ?? "") ||
+                               x.Summary.Contains(KeyWords ?? "") ||
+                               x.Title.Contains(KeyWords ?? ""))
+                        .Take((int)MaxResults)
+                        .Distinct()
+                        .ToListAsync();
+                    start = DateTime.Now;
+                }
 
+            }
+            TimeSpan duration = end - start;
+            ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-","");
             return View(Jobs);
+        }
+
+        [HttpPost]
+        public IActionResult Find(HomeIndexViewModel homeIndexVM)
+        {
+            return RedirectToAction("Index", new
+            {
+                Location = homeIndexVM.FindModel.Location,
+                KeyWords = homeIndexVM.FindModel.KeyWords,
+                MaxResults = homeIndexVM.FindModel.MaxResults
+            });
         }
 
         // GET: JobPostings/Details/5
