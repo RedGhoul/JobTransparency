@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
@@ -8,13 +6,16 @@ using AJobBoard.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Hangfire;
+using Hangfire.MySql.Core;
+using System.Data;
+using Hangfire.Dashboard;
 
 namespace AJobBoard {
     public class Startup {
@@ -34,7 +35,7 @@ namespace AJobBoard {
 
             services.AddDbContext<ApplicationDbContext> (options =>
                 options.UseMySql (
-                    Configuration.GetConnectionString ("MYSQLPROD")));
+                    Configuration.GetConnectionString ("JobTransparncyPROD")));
 
             services.AddIdentity<ApplicationUser, IdentityRole> ()
                 .AddDefaultUI (UIFramework.Bootstrap4)
@@ -75,14 +76,39 @@ namespace AJobBoard {
                 // /Account/AccessDenied
                 options.SlidingExpiration = true;
             });
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseStorage(new MySqlStorage(
+                Configuration.GetConnectionString("JobTransparncyPROD"),
+                new MySqlStorageOptions
+                {
+                    TransactionIsolationLevel = IsolationLevel.ReadCommitted,
+                    QueuePollInterval = TimeSpan.FromSeconds(15),
+                    JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                    CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                    PrepareSchemaIfNecessary = true,
+                    DashboardJobListLimit = 50000,
+                    TransactionTimeout = TimeSpan.FromMinutes(1),
+                    TablePrefix = "Hangfire"
+                })));
+
+            services.AddHangfireServer();
+
+
             services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_2);
 
             services.AddSingleton<IConfiguration> (Configuration);
             services.AddSingleton<AWSService> ();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure (IApplicationBuilder app, IHostingEnvironment env) {
+            
+
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
                 app.UseDatabaseErrorPage ();
@@ -95,14 +121,19 @@ namespace AJobBoard {
             app.UseHttpsRedirection ();
             app.UseStaticFiles ();
             app.UseCookiePolicy ();
-
             app.UseAuthentication ();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new MyAuthorizationFilter() }
+            });
 
             app.UseMvc (routes => {
                 routes.MapRoute (
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
             await CreateUserRoles (app);
         }
 
@@ -110,18 +141,9 @@ namespace AJobBoard {
             using (IServiceScope scope = app.ApplicationServices.CreateScope ()) {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>> ();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>> ();
+
                 //var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                //for (int i = 0; i < 10000; i++)
-                //{
-                //    content.JobPostings.Add(new JobPosting
-                //    {
-                //        Company = "ssss" + i,
-                //        PostDate = DateTime.Now.ToString(),
-                //        Title = "sdsdsd"+1
-                //    });
-                //}
-                //await content.SaveChangesAsync();
                 IdentityResult roleResult;
                 //Adding Admin Role
                 var roleCheck = await RoleManager.RoleExistsAsync ("Admin");
@@ -129,17 +151,32 @@ namespace AJobBoard {
                     //create the roles and seed them to the database
                     roleResult = await RoleManager.CreateAsync (new IdentityRole ("Admin"));
                 }
+
                 //Assign Admin role to the main User here we have given our newly registered 
                 //login id for Admin management
 
                 ApplicationUser user = await UserManager.FindByEmailAsync ("avaneesab5@gmail.com");
                 if (user != null) {
+
+
                     var currentUserRoles = await UserManager.GetRolesAsync (user);
                     if (!currentUserRoles.Contains ("Admin")) {
                         await UserManager.AddToRoleAsync (user, "Admin");
                     }
-
+                    //var addClaimResult = await UserManager.AddClaimAsync(user,
+                    //    new Claim("SuperHangFire","HangFire"));
                 }
+            }
+        }
+
+        public class MyAuthorizationFilter : IDashboardAuthorizationFilter
+        {
+            public bool Authorize(DashboardContext context)
+            {
+                var httpContext = context.GetHttpContext();
+
+                // Allow all authenticated users to see the Dashboard (potentially dangerous).
+                return httpContext.User.IsInRole("Admin");
             }
         }
     }
