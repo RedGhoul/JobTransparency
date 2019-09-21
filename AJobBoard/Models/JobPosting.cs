@@ -19,5 +19,7 @@ namespace AJobBoard.Models
         public string JobSource { get; set; }
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
+        public ApplicationUser Poster { get; set; }
+        //need a created by
     }
 }
