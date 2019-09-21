@@ -17,6 +17,7 @@ namespace AJobBoard.Data
         }
 
         public DbSet<JobPosting> JobPostings { get; set; }
+        public DbSet<Apply> Applies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
