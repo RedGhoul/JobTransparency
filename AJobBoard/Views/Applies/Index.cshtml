@@ -3,20 +3,46 @@
 @{
     ViewData["Title"] = "Index";
 }
+<style>
+    table.center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .dataTables_wrapper.dt-bootstrap4.no-footer {
+        background-color: bisque;
+        padding: 50px;
+        border-radius: 25px;
+    }
+    #myTable{
+        margin-top: 25px !important;
+        margin-bottom: 25px !important;
+    }
+    .dataTables_info{
+        font-size:smaller;
+    }
+    .pagination{
+        font-size: smaller;
+    }
+</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.css" />
 <section class="site-section" style="background-color: currentColor;padding-top:200px;">
     <div class="container">
-        <div class="row mb-5 justify-content-center"></div>
-        <div class="row mb-5 justify-content-center">
-            <table id="myTable" style="background-color: black;padding-top:200px;">
+        <div class="row">
+            <table id="myTable" class="center">
                 <thead>
                     <tr>
                         <th>Title</th>
                         <th>Comapny</th>
+                        <th>Location</th>
+                        <th>JobSource</th>
+                        <th>NumberOfApplies</th>
+                        <th>NumberOfViews</th>
                     </tr>
                 </thead>
             </table>
-            @*<table class="table">
+        </div>
+        @*<table class="table">
                 <thead>
                     <tr>
                         <th>
@@ -41,14 +67,13 @@
                     }
                 </tbody>
             </table>*@
-        </div>
-        <div class="row mb-5 justify-content-center"></div>
+
     </div>
 
 </section>
 
 @section Scripts {
-    
+
     <script>
         $(document).ready(function () {
 
@@ -65,11 +90,19 @@
                 contentType: "application/json",
                 headers: { },
                 data: function (data) {
-                    
+                    console.log(data);
                     return JSON.stringify(data);
                 }
-            }
-        });
+                },
+                columns: [
+                    { title: 'Title', data: "title"  },
+                    { title: 'Company', data: "company"  },
+                    { title: 'Location', data: "location"  },
+                    { title: 'JobSource', data: "jobSource"  },
+                    { title: 'NumberOfApplies', data: "numberOfApplies"  },
+                    { title: 'NumberOfViews', data: "numberOfViews"  }
+                ]
+            });
 
     });
 
