@@ -2,35 +2,77 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Areas/Identity/Pages/_Layout.cshtml";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.css" />
+<section class="site-section" style="background-color: currentColor;padding-top:200px;">
+    <div class="container">
+        <div class="row mb-5 justify-content-center"></div>
+        <div class="row mb-5 justify-content-center">
+            <table id="myTable" style="background-color: black;padding-top:200px;">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Comapny</th>
+                    </tr>
+                </thead>
+            </table>
+            @*<table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DateAddedToApplies)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DateAddedToApplies)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>*@
+        </div>
+        <div class="row mb-5 justify-content-center"></div>
+    </div>
 
-<h1>Index</h1>
+</section>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateAddedToApplies)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateAddedToApplies)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@section Scripts {
+    
+    <script>
+        $(document).ready(function () {
+
+            var table = $("#myTable").DataTable({
+            responsive: true,
+            serverSide: true,
+            processing: true,
+            orderCellsTop: true,
+            deferRender: true,
+            pagingType: "full_numbers",
+            ajax: {
+                url: '@Url.Action("UserAppliesListAsync")',
+                type: "GET",
+                contentType: "application/json",
+                headers: { },
+                data: function (data) {
+                    
+                    return JSON.stringify(data);
+                }
+            }
+        });
+
+    });
+
+    </script>
+
 }
-    </tbody>
-</table>

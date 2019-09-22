@@ -7,22 +7,39 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AJobBoard.Data;
 using AJobBoard.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace AJobBoard.Controllers
 {
     public class AppliesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AppliesController(ApplicationDbContext context)
+        public AppliesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Applies
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Applies.ToListAsync());
+            return View();
+        }
+
+        public async Task<IActionResult> UserAppliesListAsync()
+        {
+            var User = await _userManager.GetUserAsync(HttpContext.User);
+
+            var applications = await _context.Applies.Include(x => x.JobPosting)
+                .Where(x => x.Applier.Id == User.Id).Select(x => x.JobPosting).ToListAsync();
+
+            if(applications != null)
+            {
+                return Json(new { data = applications });
+            }
+            return Json(new { data = "" });
         }
 
         // GET: Applies/Details/5
@@ -43,26 +60,39 @@ namespace AJobBoard.Controllers
             return View(apply);
         }
 
-        // GET: Applies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Applies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DateAddedToApplies")] Apply apply)
+        public async Task<IActionResult> Create(int JobId)
         {
-            if (ModelState.IsValid)
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            var job = _context.JobPostings.Where(x => x.Id == JobId).FirstOrDefault();
+            if(job != null)
             {
-                _context.Add(apply);
+                if(currentUser.Applies != null)
+                {
+                    currentUser.Applies.Add(new Apply
+                    {
+                        DateAddedToApplies = DateTime.Now,
+                        JobPosting = job
+                    });
+                } else
+                {
+                    currentUser.Applies = new List<Apply>();
+                    currentUser.Applies.Add(new Apply
+                    {
+                        DateAddedToApplies = DateTime.Now,
+                        JobPosting = job
+                    });
+                }
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(apply);
+
+            return Ok();
         }
 
         // GET: Applies/Edit/5

@@ -113,11 +113,12 @@ namespace AJobBoard
 
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<AWSService>();
+            services.AddScoped<UserManager<ApplicationUser>>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -147,7 +148,8 @@ namespace AJobBoard
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            await CreateUserRoles(app);
+            //RecurringJob.AddOrUpdate("some-id", () => DataIngesterAsync(content), Cron.Minutely);
+            //await CreateUserRoles(app);
         }
 
         private async Task CreateUserRoles(IApplicationBuilder app)
@@ -179,7 +181,6 @@ namespace AJobBoard
                         await UserManager.AddToRoleAsync(user, "Admin");
                     }
                 }
-                RecurringJob.AddOrUpdate("some-id", () => DataIngesterAsync(content), Cron.Minutely);
             }
             
         }
