@@ -60,65 +60,80 @@
         </div>
 
         <div class="mb-5">
-            @foreach (var item in Model)
+            @if (Model.Count() > 0)
             {
-                <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
-                    <div class="col-md-2">
-                        <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
-                    </div>
-                    <div class="col-md-4">
-                        @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
-                        {
-                            <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
-                        }
-                        else
-                        {
-                            <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
-                        }
-                        <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
-                        <p style="color:black" class="meta">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
-                    </div>
-                    <div class="col-md-3 text-left">
-                        <h3>@Html.DisplayNameFor(model => model.Location):</h3>
-                        @if (string.IsNullOrEmpty(item.Location))
-                        {
-                            <h3>Non - Found</h3>
+                @foreach (var item in Model)
+                {
+                    <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+                        <div class="col-md-2">
+                            <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
+                        </div>
+                        <div class="col-md-4">
+                            @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
+                            {
+                                <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
+                            }
+                            <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                            <p style="color:black" class="meta">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
+                        </div>
+                        <div class="col-md-3 text-left">
+                            <h3>@Html.DisplayNameFor(model => model.Location):</h3>
+                            @if (string.IsNullOrEmpty(item.Location))
+                            {
+                                <h3>Non - Found</h3>
 
-                        }
-                        else
-                        {
-                            <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
+                            }
+                            else
+                            {
+                                <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
 
-                        }
+                            }
+                        </div>
+                        <div class="col-md-3 text-md-right">
+                            <h5 class="text-black">Company:</h5>
+                            <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
+
+                        </div>
                     </div>
-                    <div class="col-md-3 text-md-right">
-                        <h5 class="text-black">Company:</h5>
-                        <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
 
+
+                }
+                <div class="row pagination-wrap">
+
+
+                    <div class="col-md-6 text-center text-md-left">
+                        <div class="custom-pagination ml-auto">
+                            <a href="#" class="prev">Previous</a>
+                            <div class="d-inline-block">
+                                <a href="#" class="active">1</a>
+                                <a href="#">2</a>
+                                <a href="#">3</a>
+                                <a href="#">4</a>
+                            </div>
+                            <a href="#" class="next">Next</a>
+                        </div>
                     </div>
                 </div>
+            }
+            else
+            {
+                <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8"><h4 style="text-align:center;">Sorry nothing was found matching that criteria</h4></div>
+                    <div class="col-md-2"></div>
 
+                </div>
             }
 
 
+
         </div>
 
-        <div class="row pagination-wrap">
 
-
-            <div class="col-md-6 text-center text-md-left">
-                <div class="custom-pagination ml-auto">
-                    <a href="#" class="prev">Previous</a>
-                    <div class="d-inline-block">
-                        <a href="#" class="active">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                    </div>
-                    <a href="#" class="next">Next</a>
-                </div>
-            </div>
-        </div>
 
     </div>
 </section>
@@ -157,7 +172,7 @@
                 success: function (data) {
                     alertify.success("Added to Applies");
                 },
-                error: function (xhr) { // if error occured
+                error: function (data) {
                     alertify.error("Could Not Add this Job to your Applies");
                 }
             })

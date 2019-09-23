@@ -41,7 +41,7 @@ namespace AJobBoard.Controllers
                 if (Location != null && Location.ToLower().Equals("anywhere"))
                 {
                     Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Summary.Contains(KeyWords ?? "") ||
+                        .Where(x => x.Summary.Contains(KeyWords ?? "") &&
                                x.Title.Contains(KeyWords ?? ""))
                         .Take((int)MaxResults)
                         .Distinct()
@@ -51,8 +51,8 @@ namespace AJobBoard.Controllers
                 else
                 {
                     Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Location.Contains(Location ?? "") ||
-                               x.Summary.Contains(KeyWords ?? "") ||
+                        .Where(x => x.Location.Contains(Location ?? "") &&
+                               x.Summary.Contains(KeyWords ?? "") &&
                                x.Title.Contains(KeyWords ?? ""))
                         .Take((int)MaxResults)
                         .Distinct()

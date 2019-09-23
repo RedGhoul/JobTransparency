@@ -4,91 +4,114 @@
     ViewData["Title"] = "Details";
 }
 
-    <section class="section-hero overlay inner-page bg-image" style="background-image: url('/images/hero_1.jpg');"
-             id="home-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 class="text-white font-weight-bold">@Html.DisplayFor(model => model.Title)</h1>
-                </div>
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('/images/hero_1.jpg');"
+         id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="text-white font-weight-bold">@Html.DisplayFor(model => model.Title)</h1>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+@using (Html.BeginForm("Find", "JobPostings", FormMethod.Post)) { }
 
-
-    <section class="site-section">
-        <div class="container">
-            <div class="row align-items-center mb-5">
-                <div class="col-lg-8 mb-4 mb-lg-0">
-                    <div class="d-flex align-items-center">
-                        <div class="border p-2 d-inline-block mr-3 rounded">
-                            <img src="/images/featured-listing-1.jpg" alt="">
-                        </div>
+<section class="site-section">
+    <div class="container">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="d-flex align-items-center">
+                    <div class="border p-2 d-inline-block mr-3 rounded">
+                        <img src="/images/featured-listing-1.jpg" alt="">
+                    </div>
+                    <div>
+                        <h2>@Html.DisplayFor(model => model.Title)</h2>
                         <div>
-                            <h2>@Html.DisplayFor(model => model.Title)</h2>
-                            <div>
-                                @if (!string.IsNullOrEmpty(Model.Company))
-                                {
-                                    <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>@Html.DisplayFor(model => model.Company)</span>
-                                }
-                                else
-                                {
-                                    <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>N/A</span>
-                                }
-                                @if (!string.IsNullOrEmpty(Model.Location))
-                                {
-                                    <span class="m-2"><span class="icon-room mr-2"></span>@Html.DisplayFor(model => model.Location)</span>
-                                }
-                                else
-                                {
-                                    <span class="m-2"><span class="icon-room mr-2"></span>N/A</span>
-                                }
+                            @if (!string.IsNullOrEmpty(Model.Company))
+                            {
+                                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>@Html.DisplayFor(model => model.Company)</span>
+                            }
+                            else
+                            {
+                                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>N/A</span>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Location))
+                            {
+                                <span class="m-2"><span class="icon-room mr-2"></span>@Html.DisplayFor(model => model.Location)</span>
+                            }
+                            else
+                            {
+                                <span class="m-2"><span class="icon-room mr-2"></span>N/A</span>
+                            }
 
-                                <span class="m-2">
-                                    <span class="icon-clock-o mr-2"></span><span class="text-primary">
-                                        Full
-                                        Time
-                                    </span>
+                            <span class="m-2">
+                                <span class="icon-clock-o mr-2"></span><span class="text-primary">
+                                    Full
+                                    Time
                                 </span>
-                            </div>
+                            </span>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="row">
-                        <div class="col-6">
-                            <a href="#" class="btn btn-block btn-light btn-md">
-                                <span class="icon-heart-o mr-2 text-danger"></span>Add To Applies
-                            </a>
-                        </div>
-                        <div class="col-6">
-                            <a href="@Model.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a>
-                        </div>
-                        <div style="margin-top:20px;" class="col-6">
-                            <a href="/JobPostings/" class="btn btn-block btn-warning btn-md">Back</a>
-                        </div>
-                    </div>
-                    
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="mb-5">
-                        <h3 class="h5 d-flex align-items-center mb-4 text-primary">
-                            <span class="icon-align-left mr-3"></span>Job
-                            Description
-                        </h3>
-                        <p>
-                            @Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Summary).Replace(@"\", ""))
-                        </p>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-6">
+                        <a href="#" data-id="@Model.Id" class="btn btn-block btn-light btn-md AddToApplies">
+                            <span class="icon-heart-o mr-2 text-danger"></span>Add To Applies
+                        </a>
                     </div>
-
+                    <div class="col-6">
+                        <a href="@Model.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a>
+                    </div>
+                    <div style="margin-top:20px;" class="col-6">
+                        <a href="/JobPostings/" class="btn btn-block btn-warning btn-md">Back</a>
+                    </div>
                 </div>
+
             </div>
         </div>
-    </section>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <h3 class="h5 d-flex align-items-center mb-4 text-primary">
+                        <span class="icon-align-left mr-3"></span>Job
+                        Description
+                    </h3>
+                    <p>
+                        @Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Summary).Replace(@"\", ""))
+                    </p>
+                </div>
 
+            </div>
+        </div>
+    </div>
+</section>
 
+@section Scripts{
+    <script>
+        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+
+        $('.AddToApplies').click(function () {
+            var d = $(this).data('id');
+            $.ajax({
+                method: "POST",
+                contentType: 'application/json',
+                headers: { "RequestVerificationToken": antiForgeryToken },
+                url: "/api/AppliesAPI",
+                data: JSON.stringify({ Id: parseInt(d) }),
+                success: function (data) {
+                    alertify.success("Added to Applies");
+                },
+                error: function (data) {
+                    alertify.error("Could Not Add this Job to your Applies");
+                }
+            })
+
+        });
+    </script>
+
+}
 @*<h1>Details</h1>
 
     <div>

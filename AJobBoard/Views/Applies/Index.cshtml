@@ -14,30 +14,43 @@
         padding: 50px;
         border-radius: 25px;
     }
-    #myTable{
+
+    #myTable {
         margin-top: 25px !important;
         margin-bottom: 25px !important;
     }
-    .dataTables_info{
-        font-size:smaller;
-    }
-    .pagination{
+
+    .dataTables_info {
         font-size: smaller;
     }
+
+    .pagination {
+        font-size: smaller;
+    }
+
+    #myTable > tbody{
+        font-size: 18px;
+    }
 </style>
+@using (Html.BeginForm("Create", "Applies", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.css" />
 <section class="site-section" style="background-color: currentColor;padding-top:200px;">
     <div class="container">
         <div class="row">
-            <table id="myTable" class="center">
+            <table id="myTable" class="center" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Title</th>
+                        @*<th>Title</th>
                         <th>Comapny</th>
                         <th>Location</th>
                         <th>JobSource</th>
                         <th>NumberOfApplies</th>
                         <th>NumberOfViews</th>
+                        <th>Delete</th>
+                        <th>Indeed Link</th>*@
                     </tr>
                 </thead>
             </table>
@@ -75,40 +88,93 @@
 @section Scripts {
 
     <script>
-        $(document).ready(function () {
-
-            var table = $("#myTable").DataTable({
-            responsive: true,
-            serverSide: true,
-            processing: true,
-            orderCellsTop: true,
-            deferRender: true,
-            pagingType: "full_numbers",
-            ajax: {
-                url: '@Url.Action("UserAppliesListAsync")',
-                type: "GET",
-                contentType: "application/json",
-                headers: { },
-                data: function (data) {
-                    console.log(data);
-                    return JSON.stringify(data);
+        var table = "";
+        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+        function DeleteApp(ID) {
+            $.ajax({
+                method: "DELETE",
+                contentType: 'application/json',
+                headers: { "RequestVerificationToken": antiForgeryToken },
+                url: "/api/AppliesAPI/"+ID,
+                success: function (data) {
+                    alertify.success("Removed");
+                    table.ajax.reload();
                 },
-                error: function () {
-                    alertify.error("Could Not Display Table");
-                    $(location).attr('href', '/Home/Index')
+                error: function (xhr) { // if error occured
+                    alertify.error("Could Not remove this Job from your Applies");
                 }
+            })
+        }
+        $('.delete').click(function () {
+            
+
+        });
+        $(document).ready(function () {
+            
+             table = $("#myTable").DataTable({
+                responsive: true,
+                orderCellsTop: true,
+                 deferRender: true,
+                pagingType: "full_numbers",
+                ajax: {
+                    url: '/api/AppliesAPI',
+                    type: "GET",
+                    contentType: "application/json",
+                    headers: {},
+                    data: function (data) {
+                        console.log(data);
+                        return JSON.stringify(data);
+                    },
+                    error: function () {
+                        alertify.error("Could Not Display Table");
+                        $(location).attr('href', '/Home/Index')
+                    }
                 },
                 columns: [
-                    { title: 'Title', data: "title"  },
-                    { title: 'Company', data: "company"  },
-                    { title: 'Location', data: "location"  },
-                    { title: 'JobSource', data: "jobSource"  },
-                    { title: 'NumberOfApplies', data: "numberOfApplies"  },
-                    { title: 'NumberOfViews', data: "numberOfViews"  }
+                    {
+                        title: 'Title', data: "title",
+                    },
+                    { title: 'Company', data: "company" },
+                    { title: 'Location', data: "location" },
+                    { title: 'JobSource', data: "jobSource" },
+                    { title: 'Applicates', data: "applicates" },
+                    { title: 'Views', data: "views" },
+                    { title: 'PostDate', data: "postDate" },
+                    {
+                        title: '',
+                        data: 'id',
+                        render: function (data) {
+                            return '<a onclick="DeleteApp('+data+')" style="color:white" class="btn btn-danger btn-sm delete">Remove</a>';
+                        },
+                        orderable: false
+                    },
+                    {
+                        title: '',
+                        data: 'jobId',
+                        render: function (data) {
+                            return '<a style="color:white" href="/JobPostings/Details/'+data+'" class="btn btn-primary btn-sm delete">Details</a>';
+                        },
+                        orderable: false
+                    },
+                    {
+                        title: '',
+                        data: 'url',
+                        render: function (data) {
+                            return '<a href="' + data + '" class="btn btn-primary btn-sm">Original Posting</a>';
+                        },
+                        orderable: false
+                    }
                 ]
             });
+            //$('#myTable tbody').on('click', 'tr', function () {
+            //    var data = table.row(this).data();
+            //    console.log(data)
+            //    alert('You clicked on ' + data[0] + '\'s row');
+            //});
 
-    });
+            
+
+        });
 
     </script>
 

@@ -28,7 +28,29 @@ namespace AJobBoard.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Apply>>> GetApplies()
         {
-            return await _context.Applies.ToListAsync();
+            var User = await _userManager.GetUserAsync(HttpContext.User);
+
+            var applications = await _context.Applies.Include(x => x.JobPosting)
+                .Where(x => x.Applier.Id == User.Id).ToListAsync();
+
+            var apps = applications.Select(x => new
+            {
+                Id = x.Id,
+                JobId = x.JobPosting.Id,
+                Title = x.JobPosting.Title,
+                Company = x.JobPosting.Company,
+                Location = x.JobPosting.Location,
+                JobSource = x.JobPosting.JobSource,
+                Applicates = x.JobPosting.NumberOfApplies,
+                Views = x.JobPosting.NumberOfViews,
+                URL = x.JobPosting.URL,
+                PostDate = x.JobPosting.PostDate
+            });
+            if (apps != null)
+            {
+                return Ok(new { data = apps });
+            }
+            return Ok(new { data = "" });
         }
 
         // GET: api/AppliesAPI/5
@@ -84,7 +106,7 @@ namespace AJobBoard.Controllers
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if(currentUser == null)
             {
-                return BadRequest();
+                return BadRequest("Please Sign in to Add to Applies");
             }
             var job = _context.JobPostings.Where(x => x.Id == apply.Id).FirstOrDefault();
             if (job != null)
