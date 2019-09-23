@@ -65,11 +65,11 @@ namespace AJobBoard.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int JobId)
+        public async Task<IActionResult> Create([Bind("Id")] Apply apply)
         {
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            var job = _context.JobPostings.Where(x => x.Id == JobId).FirstOrDefault();
+            var job = _context.JobPostings.Where(x => x.Id == apply.Id).FirstOrDefault();
             if(job != null)
             {
                 if(currentUser.Applies != null)

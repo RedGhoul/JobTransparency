@@ -1,0 +1,139 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using AJobBoard.Data;
+using AJobBoard.Models;
+using Microsoft.AspNetCore.Identity;
+
+namespace AJobBoard.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AppliesAPIController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public AppliesAPIController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        // GET: api/AppliesAPI
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Apply>>> GetApplies()
+        {
+            return await _context.Applies.ToListAsync();
+        }
+
+        // GET: api/AppliesAPI/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Apply>> GetApply(int id)
+        {
+            var apply = await _context.Applies.FindAsync(id);
+
+            if (apply == null)
+            {
+                return NotFound();
+            }
+
+            return apply;
+        }
+
+        // PUT: api/AppliesAPI/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutApply(int id, Apply apply)
+        {
+            if (id != apply.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(apply).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ApplyExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/AppliesAPI
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult<Apply>> PostApply(Apply apply)
+        {
+
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            if(currentUser == null)
+            {
+                return BadRequest();
+            }
+            var job = _context.JobPostings.Where(x => x.Id == apply.Id).FirstOrDefault();
+            if (job != null)
+            {
+                if (currentUser.Applies != null)
+                {
+                    currentUser.Applies.Add(new Apply
+                    {
+                        DateAddedToApplies = DateTime.Now,
+                        JobPosting = job
+                    });
+                }
+                else
+                {
+                    currentUser.Applies = new List<Apply>();
+                    currentUser.Applies.Add(new Apply
+                    {
+                        DateAddedToApplies = DateTime.Now,
+                        JobPosting = job
+                    });
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok();
+
+            //return CreatedAtAction("GetApply", new { id = apply.Id }, apply);
+        }
+
+        // DELETE: api/AppliesAPI/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Apply>> DeleteApply(int id)
+        {
+            var apply = await _context.Applies.FindAsync(id);
+            if (apply == null)
+            {
+                return NotFound();
+            }
+
+            _context.Applies.Remove(apply);
+            await _context.SaveChangesAsync();
+
+            return apply;
+        }
+
+        private bool ApplyExists(int id)
+        {
+            return _context.Applies.Any(e => e.Id == id);
+        }
+    }
+}
