@@ -1,176 +1,224 @@
 ﻿@model HomeIndexViewModel
 
-    <cache enabled="true">
-        <section class="home-section section-hero overlay bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
+<section class="home-section section-hero overlay bg-image" style="background-image: url('images/hero_1.jpg');" id="home-section">
 
-            <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-md-12">
-                        <div class="mb-5 text-center">
-                            <h1 class="text-white font-weight-bold">A Powerful Career Website</h1>
-                            <p>Find your dream jobs in our powerful career website.</p>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-12">
+                <div class="mb-5 text-center">
+                    <h1 class="text-white font-weight-bold">A Powerful Career Website</h1>
+                    <p>Find your dream jobs in our powerful career website.</p>
+                </div>
+
+                @using (Html.BeginForm("Find", "JobPostings", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row mb-5">
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Key Words</h6>
+                            <input style="height:47px;" type="text" name="FindModel.KeyWords" class="form-control form-control-lg" placeholder="Job title, keywords...">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Location</h6>
+                            <select class="form-control" name="FindModel.Location">
+                                <option>Anywhere</option>
+                                <option>Ontario</option>
+                                <option>Toronto</option>
+                                <option>Vancouver</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Post Age</h6>
+                            <select class="form-control" name="FindModel.Type">
+                                <option>Newest Posts</option>
+                                <option>Last 20 Days</option>
+                                <option>Last 30 Days</option>
+                            </select>
                         </div>
 
-                        @using (Html.BeginForm("Find", "JobPostings", FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
-                            <div class="row mb-5">
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                    <h6 style="color:white">Key Words</h6>
-                                    <input style="height:47px;" type="text" name="FindModel.KeyWords" class="form-control form-control-lg" placeholder="Job title, keywords...">
-                                </div>
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                    <h6 style="color:white">Location</h6>
-                                    <select class="form-control" name="FindModel.Location">
-                                        <option>Anywhere</option>
-                                        <option>Ontario</option>
-                                        <option>Toronto</option>
-                                        <option>Vancouver</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                    <h6 style="color:white">Post Age</h6>
-                                    <select class="form-control" name="FindModel.Type">
-                                        <option>Newest Posts</option>
-                                        <option>Last 20 Days</option>
-                                        <option>Last 30 Days</option>
-                                    </select>
-                                </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <button style="margin-top:25px;" type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 
-                                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                    <button style="margin-top:25px;" type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
-                                </div>
-                            </div>
+
+</section>
+
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('images/hero_1.jpg');">
+    <div class="container">
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+                <h2 class="section-title mb-2 text-white">Careers Statistics</h2>
+            </div>
+        </div>
+        <div class="row pb-0 block__19738 section-counter">
+
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <strong class="number" data-number="1930">0</strong>
+                </div>
+                <span class="caption">Candidates</span>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <strong class="number" data-number="54">0</strong>
+                </div>
+                <span class="caption">Jobs Posted</span>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <strong class="number" data-number="120">0</strong>
+                </div>
+                <span class="caption">Jobs Filled</span>
+            </div>
+
+            <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
+                <div class="d-flex align-items-center justify-content-center mb-2">
+                    <strong class="number" data-number="550">0</strong>
+                </div>
+                <span class="caption">Companies</span>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+
+
+<section class="site-section">
+    <div class="container">
+
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-7 text-center">
+                <h2 class="section-title mb-2">@(ViewBag.TotalJobs ?? 0) Job Listed</h2>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("Create", "Applies", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+        }
+        <div class="mb-5">
+            @foreach (var item in Model.jobPostings)
+            {
+                <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+
+                    <div class="col-md-2">
+                        <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
+                    </div>
+
+                    <div class="col-md-4">
+                        @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
+                        }
+                        <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                        <p class="meta">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
+                    </div>
+                    <div class="col-md-3 text-left">
+                        <h3>Location :</h3>
+                        @if (string.IsNullOrEmpty(item.Location))
+                        {
+                            <h3>Non - Found</h3>
+
+                        }
+                        else
+                        {
+                            <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
+
                         }
                     </div>
+                    <div class="col-md-3 text-md-right">
+                        <h5>Company :</h5>
+                        <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
+
+                    </div>
+                </div>
+
+            }
+
+
+        </div>
+
+        <div class="row pagination-wrap">
+
+            <div class="col-md-6 text-center text-md-left">
+                <div class="custom-pagination ml-auto">
+                    <a href="#" class="prev">Previous</a>
+                    <div class="d-inline-block">
+                        <a href="#" class="active">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                    </div>
+                    <a href="#" class="next">Next</a>
                 </div>
             </div>
+        </div>
 
-
-        </section>
-
-        <section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('images/hero_1.jpg');">
-            <div class="container">
-                <div class="row mb-5 justify-content-center">
-                    <div class="col-md-7 text-center">
-                        <h2 class="section-title mb-2 text-white">Careers Statistics</h2>
-                    </div>
-                </div>
-                <div class="row pb-0 block__19738 section-counter">
-
-                    <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <strong class="number" data-number="1930">0</strong>
-                        </div>
-                        <span class="caption">Candidates</span>
-                    </div>
-
-                    <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <strong class="number" data-number="54">0</strong>
-                        </div>
-                        <span class="caption">Jobs Posted</span>
-                    </div>
-
-                    <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <strong class="number" data-number="120">0</strong>
-                        </div>
-                        <span class="caption">Jobs Filled</span>
-                    </div>
-
-                    <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
-                        <div class="d-flex align-items-center justify-content-center mb-2">
-                            <strong class="number" data-number="550">0</strong>
-                        </div>
-                        <span class="caption">Companies</span>
-                    </div>
-
-
-                </div>
+    </div>
+</section>
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('images/hero_1.jpg');">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="text-white">Looking For A Job?</h2>
+                <p class="mb-0 text-white lead">
+                    Sign Up Now
+                </p>
             </div>
-        </section>
-
-
-
-        <section class="site-section">
-            <div class="container">
-
-                <div class="row mb-5 justify-content-center">
-                    <div class="col-md-7 text-center">
-                        <h2 class="section-title mb-2">@(ViewBag.TotalJobs ?? 0) Job Listed</h2>
-                    </div>
-                </div>
-
-
-                <div class="mb-5">
-                    @foreach (var item in Model.jobPostings)
-                    {
-                        <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
-                            <div class="col-md-2">
-                                @using (Html.BeginForm("Create", "Applies", FormMethod.Post))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" id="JobId" name="JobId" value="@item.Id">
-                                    <button type="submit" class="btn btn-warning">Add To Applies</button>
-                                }
-                            </div>
-                            <div class="col-md-4">
-                                @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
-                                {
-                                    <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
-                                }
-                                <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
-                                <p class="meta">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
-                            </div>
-                            <div class="col-md-3 text-left">
-                                <h3>Location :</h3>
-                                @if (string.IsNullOrEmpty(item.Location))
-                                {
-                                    <h3>Non - Found</h3>
-
-                                }
-                                else
-                                {
-                                    <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
-
-                                }
-                            </div>
-                            <div class="col-md-3 text-md-right">
-                                <h5>Company :</h5>
-                                <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
-
-                            </div>
-                        </div>
-
-                    }
-
-
-                </div>
-
-                <div class="row pagination-wrap">
-
-                    <div class="col-md-6 text-center text-md-left">
-                        <div class="custom-pagination ml-auto">
-                            <a href="#" class="prev">Previous</a>
-                            <div class="d-inline-block">
-                                <a href="#" class="active">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <a href="#">4</a>
-                            </div>
-                            <a href="#" class="next">Next</a>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="col-md-3 ml-auto">
+                <a asp-area="Identity" asp-page="/Account/RegisterJobSeeker" class="btn btn-warning btn-block btn-lg">Sign Up</a>
             </div>
-        </section>
-    </cache>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script>
+
+        //for (var i = 0; i < $('#AddToApplies').Size(); i++) {
+        //    $('#AddToApplies')[i].click(function () {
+        //      var d = $(this).data('id');
+        //      alert(d);
+        //    });
+        //}
+        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+
+        $('.AddToApplies').click(function () {
+            var d = $(this).data('id');
+            $.ajax({
+                method: "POST",
+                contentType: 'application/json',
+                headers: { "RequestVerificationToken": antiForgeryToken },
+                url: "/api/AppliesAPI",
+                data: JSON.stringify({ Id: parseInt(d) }),
+                success: function (data) {
+                    alertify.success("Added to Applies");
+                },
+                error: function (xhr) { // if error occured
+                    alertify.error("Could Not Add this Job to your Applies");
+                }
+            })
+
+        });
+        
+    </script>
+
+}
+
 @*<section class="site-section py-4 mb-5 border-top">
         <div class="container">
 
@@ -234,18 +282,3 @@
 
     </section>*@
 
-<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('images/hero_1.jpg');">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-8">
-                <h2 class="text-white">Looking For A Job?</h2>
-                <p class="mb-0 text-white lead">
-                    Sign Up Now
-                </p>
-            </div>
-            <div class="col-md-3 ml-auto">
-                <a asp-area="Identity" asp-page="/Account/RegisterJobSeeker" class="btn btn-warning btn-block btn-lg">Sign Up</a>
-            </div>
-        </div>
-    </div>
-</section>
