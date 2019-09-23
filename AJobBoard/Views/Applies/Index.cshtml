@@ -92,6 +92,10 @@
                 data: function (data) {
                     console.log(data);
                     return JSON.stringify(data);
+                },
+                error: function () {
+                    alertify.error("Could Not Display Table");
+                    $(location).attr('href', '/Home/Index')
                 }
                 },
                 columns: [
