@@ -8,11 +8,15 @@ from threading import Thread
 import os
 import glob
 
-max_results_per_city = 300
-postionFind = ["software+developer", "react+developer", "devops", "software+engineer"]
+max_results_per_city = 400
+postionFind = [ "software+developer", "react+developer", 
+                "devops", "software+engineer",
+                "Machine+Learning+Engineer",
+                "Data+Scientist"]
+
 job_Type = "fulltime"
-city_set = ["Ontario", "Vancouver"]
-max_age = "30"
+city_set = ["Ontario", "British+Columbia"]
+max_age = "15"
 host = "ca.indeed.com"
 
 def dotheWork(city, pos, start, finalFileName):
@@ -61,7 +65,7 @@ def dotheWork(city, pos, start, finalFileName):
                 time.sleep(1)
                 DescriptionSoup = BeautifulSoup(mainPage.text, "html.parser")
                 synopsis = str(DescriptionSoup.findAll("div", {"id": "jobDescriptionText"})[0].prettify().replace("\n", "").replace(",",""))
-                print(synopsis)
+                #print(synopsis)
                 if(synopsis is None):
                     continue
         except:
@@ -102,7 +106,7 @@ def dotheWork(city, pos, start, finalFileName):
             ignore_index=True,
         )
     df_more.to_csv(finalFileName + ".csv", encoding="utf-8",index=False)
-
+    print(finalFileName + " is done")
 
 def Indeed():
     workers = []
@@ -130,11 +134,14 @@ def Indeed():
 if __name__ == "__main__":
     start = time.time()
 
-    print("Starting Download")
-    Indeed()
-    print("Completed Download")
-
-    extension = "csv"
+    # print("Starting Download")
+    # Indeed()
+    # print("Completed Download")
+    extension = 'csv'
+    dirr = os.getcwd()+"\Scrapper"
+    print(dirr)
+    os.chdir(dirr)
+    result = glob.glob('*.{}'.format(extension))
     all_filenames = [i for i in glob.glob("*.{}".format(extension))]
     # combine all files in the list
     rays = []
@@ -156,5 +163,5 @@ if __name__ == "__main__":
     for x in all_filenames:
         os.remove(x)
 
-    end = time.time()
-    print(end - start)
+    # end = time.time()
+    # print(end - start)
