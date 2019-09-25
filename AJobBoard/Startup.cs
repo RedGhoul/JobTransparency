@@ -162,6 +162,7 @@ namespace AJobBoard
                 var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 IdentityResult roleResult;
+
                 //Adding Admin Role
                 var roleCheck = await RoleManager.RoleExistsAsync("Admin");
                 if (!roleCheck)

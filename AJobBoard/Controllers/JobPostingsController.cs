@@ -22,18 +22,31 @@ namespace AJobBoard.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string Location, string KeyWords, int? MaxResults)
+        public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVM)
         {
             ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            if(homeIndexVM.FindModel == null)
+            {
+                homeIndexVM.FindModel = new FindModel();
+                homeIndexVM.FindModel.Location = "";
+                homeIndexVM.FindModel.KeyWords = "";
+                homeIndexVM.FindModel.MaxResults = 0;
+                homeIndexVM.FindModel.Page = 0;
+            }
+            ViewBag.Location = homeIndexVM.FindModel.Location;
+            ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
+            ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
+
+
             DateTime start = DateTime.Now;
             DateTime end = DateTime.Now;
             List<JobPosting> Jobs = null;
-            if (MaxResults == 0 || Location == null)
+            if (homeIndexVM.FindModel.MaxResults == 0 || homeIndexVM.FindModel.Location == null)
             {
                 Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                    .Where(x => x.Location.Contains(Location ?? "") &&
-                           x.Summary.Contains(KeyWords ?? "") &&
-                           x.Title.Contains(KeyWords ?? ""))
+                    .Where(x => x.Location.Contains(homeIndexVM.FindModel.Location ?? "") &&
+                           x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
+                           x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
                     .Take(50)
                     .Distinct()
                     .ToListAsync();
@@ -41,12 +54,12 @@ namespace AJobBoard.Controllers
             }
             else
             {
-                if (Location != null && Location.ToLower().Equals("anywhere"))
+                if (homeIndexVM.FindModel.Location != null && homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
                 {
                     Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Summary.Contains(KeyWords ?? "") &&
-                               x.Title.Contains(KeyWords ?? ""))
-                        .Take((int)MaxResults)
+                        .Where(x => x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
+                               x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
+                        .Take((int)homeIndexVM.FindModel.MaxResults)
                         .Distinct()
                         .ToListAsync();
                     start = DateTime.Now;
@@ -54,10 +67,10 @@ namespace AJobBoard.Controllers
                 else
                 {
                     Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Location.Contains(Location ?? "") &&
-                               x.Summary.Contains(KeyWords ?? "") &&
-                               x.Title.Contains(KeyWords ?? ""))
-                        .Take((int)MaxResults)
+                        .Where(x => x.Location.Contains(homeIndexVM.FindModel.Location ?? "") &&
+                               x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
+                               x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
+                        .Take((int)homeIndexVM.FindModel.MaxResults)
                         .Distinct()
                         .ToListAsync();
                     start = DateTime.Now;
@@ -65,20 +78,29 @@ namespace AJobBoard.Controllers
 
             }
             TimeSpan duration = end - start;
+
             ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-","");
+            
+            // Doing the paging here
+            int PageSize = homeIndexVM.FindModel.MaxResults;
+
+            var count = Jobs.Count();
+
+            Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
+            if(PageSize == 0)
+            {
+                ViewBag.MaxPage = 10;
+            }
+            else
+            {
+                ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+            }
+
+            ViewBag.Page = homeIndexVM.FindModel.Page;
+
             return View(Jobs);
         }
 
-        [HttpPost]
-        public IActionResult Find(HomeIndexViewModel homeIndexVM)
-        {
-            return RedirectToAction("Index", new
-            {
-                Location = homeIndexVM.FindModel.Location,
-                KeyWords = homeIndexVM.FindModel.KeyWords,
-                MaxResults = homeIndexVM.FindModel.MaxResults
-            });
-        }
 
         // GET: JobPostings/Details/5
         public async Task<IActionResult> Details(int? id)
