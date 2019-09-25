@@ -24,19 +24,19 @@ namespace AJobBoard.Controllers
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVM)
         {
-            ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            
             if(homeIndexVM.FindModel == null)
             {
                 homeIndexVM.FindModel = new FindModel();
                 homeIndexVM.FindModel.Location = "";
                 homeIndexVM.FindModel.KeyWords = "";
-                homeIndexVM.FindModel.MaxResults = 0;
+                homeIndexVM.FindModel.MaxResults = 100;
                 homeIndexVM.FindModel.Page = 0;
             }
             ViewBag.Location = homeIndexVM.FindModel.Location;
             ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
             ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
-
+            ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults;
 
             DateTime start = DateTime.Now;
             DateTime end = DateTime.Now;
@@ -82,7 +82,7 @@ namespace AJobBoard.Controllers
             ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-","");
             
             // Doing the paging here
-            int PageSize = homeIndexVM.FindModel.MaxResults;
+            int PageSize = 12;
 
             var count = Jobs.Count();
 

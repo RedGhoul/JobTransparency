@@ -10,52 +10,52 @@
                 @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
-                <div class="row mb-5">
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                        <h6 style="color:white">Key Words</h6>
-                        <input style="height:47px;" type="text" name="FindModel.KeyWords"
-                               class="form-control form-control-lg" placeholder="Job title, keywords..."
-                               value="@(ViewBag.KeyWords ?? "")">
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                        <h6 style="color:white">Location</h6>
-                        <select class="form-control" name="FindModel.Location" value="@(ViewBag.KeyWords ?? "")">
-                            <option>Anywhere</option>
-                            <option>Ontario</option>
-                            <option>Toronto</option>
-                            <option>Vancouver</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                        <h6 style="color:white">Post Age</h6>
-                        <select class="form-control" name="FindModel.Type">
-                            <option>Newest Posts</option>
-                            <option>Last 20 Days</option>
-                            <option>Last 30 Days</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                        <h6 style="color:white">Max Results</h6>
-                        <select class="form-control" name="FindModel.MaxResults" value="@ViewBag.MaxResults">
-                            @for (int i = 1; i < 13; i++)
-                            {
+                    <div class="row mb-5">
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Key Words</h6>
+                            <input style="height:47px;" type="text" name="FindModel.KeyWords"
+                                   class="form-control form-control-lg" placeholder="Job title, keywords..."
+                                   value="@(ViewBag.KeyWords ?? "")">
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Location</h6>
+                            <select class="form-control" name="FindModel.Location" value="@(ViewBag.KeyWords ?? "")">
+                                <option>Anywhere</option>
+                                <option>Ontario</option>
+                                <option>Toronto</option>
+                                <option>Vancouver</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Post Age</h6>
+                            <select class="form-control" name="FindModel.Type">
+                                <option>Newest Posts</option>
+                                <option>Last 20 Days</option>
+                                <option>Last 30 Days</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <h6 style="color:white">Max Results</h6>
+                            <select class="form-control" name="FindModel.MaxResults" value="@ViewBag.MaxResults">
+                                @for (int i = 1; i < 11; i++)
+                                {
 
-                                    <option>@((i * 10).ToString())</option>
+                                    <option>@((i * 20).ToString())</option>
 
 
-                            }
-                        </select>
+                                }
+                            </select>
+                        </div>
+                        @if (ViewBag.Page == null)
+                        {
+                            <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page)" />
+                        }
+                        else
+                        {
+                            <input type="hidden" name="FindModel.Page" value="0" />
+                        }
+
                     </div>
-                    @if (ViewBag.Page == null)
-                    {
-                        <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page)" />
-                    }
-                    else
-                    {
-                        <input type="hidden" name="FindModel.Page" value="0" />
-                    }
-
-                </div>
                     <div class="row mb-5">
                         <div class="col-4"></div>
                         <div class="col-4">
@@ -118,35 +118,40 @@
 
                     <div class="col-md-6 text-center text-md-left">
                         <div class="custom-pagination ml-auto">
-                            @if (ViewBag.Page > 0)
-                            {
-                                @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
-                                {
-                                    <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
-                                    <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
-                                    <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
-                                    <input type="hidden" name="FindModel.page" value="@(ViewBag.Page - 1)" />
-                                    <button type="submit" class="next">&laquo; Prev</button>
-                                }
-                            }
-                            @*<div class="d-inline-block">
-                                    <a href="#" class="active">1</a>
-                                    <a href="#">2</a>
-                                    <a href="#">3</a>
-                                    <a href="#">4</a>
-                                </div>*@
-                            @if (ViewBag.Page < ViewBag.MaxPage)
-                            {
-                                @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
-                                {
-                                    <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
-                                    <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
-                                    <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
-                                    <input type="hidden" name="FindModel.page" value="@(ViewBag.Page + 1)" />
-                                    <button type="submit" class="next">Next &raquo;</button>
-                                }
+                            <div class="row">
+                                <div class="col-4">
+                                    @if (ViewBag.Page > 0)
+                                    {
+                                        @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
+                                            <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
+                                            <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
+                                            <input type="hidden" name="FindModel.page" value="@(ViewBag.Page - 1)" />
+                                            <button type="submit" class="btn btn-primary btn-lg next">&laquo; Prev</button>
+                                        }
+                                    }
+                                </div>
+                                <div class="col-4">
+                                    @if (ViewBag.Page < ViewBag.MaxPage)
+                                    {
+                                        @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
+                                            <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
+                                            <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
+                                            <input type="hidden" name="FindModel.page" value="@(ViewBag.Page + 1)" />
+                                            <button type="submit" class="btn btn-primary btn-lg next">Next &raquo;</button>
+                                        }
 
-                            }
+                                    }
+                                </div>
+                                <div class="col-4">
+
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
                 </div>
