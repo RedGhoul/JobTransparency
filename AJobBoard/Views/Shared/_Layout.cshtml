@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 <!DOCTYPE html>
@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/alertify.min.css" integrity="sha256-HyknUQX006D7lC1CzL2BQqMMjX7cQV7unnkuNrYUDgM=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/themes/bootstrap.min.css" integrity="sha256-tWRKenfvuraOz4u9wNIkJVrUFbRN712r9WtYhGUPirg=" crossorigin="anonymous" />
 
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/17.3.9-beta/bootstrap4.css" />
+    <script src="https://cdn.syncfusion.com/ej2/17.3.9-beta/dist/ej2.min.js"></script>
 </head>
 <body id="top">
     <div class="site-wrap">
@@ -153,5 +155,6 @@
     <script src="/js/site.js"></script>
     @RenderSection("Scripts", required: false)
 
+<ejs-scripts></ejs-scripts>
 </body>
 </html>

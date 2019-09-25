@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Syncfusion.Licensing;
 using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
@@ -27,6 +28,8 @@ namespace AJobBoard
     {
         public Startup(IConfiguration configuration)
         {
+            string key = configuration.GetSection("AppSettings")["SYNC"];
+            SyncfusionLicenseProvider.RegisterLicense(key);
             Configuration = configuration;
         }
 
