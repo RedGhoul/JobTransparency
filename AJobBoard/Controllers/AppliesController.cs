@@ -28,7 +28,6 @@ namespace AJobBoard.Controllers
             return View();
         }
 
-        // GET: Applies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,7 +41,6 @@ namespace AJobBoard.Controllers
             {
                 return NotFound();
             }
-
             return View(apply);
         }
 
