@@ -45,7 +45,7 @@ namespace AJobBoard.Controllers
                 Views = x.JobPosting.NumberOfViews,
                 URL = x.JobPosting.URL,
                 PostDate = x.JobPosting.PostDate
-            });
+            }).ToList();
             if (apps != null)
             {
                 return Ok(new { data = apps });
@@ -108,7 +108,20 @@ namespace AJobBoard.Controllers
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
+            // Have to seprate this stuff out in the future
             var job = _context.JobPostings.Where(x => x.Id == apply.Id).FirstOrDefault();
+            job.NumberOfApplies++;
+
+            try
+            {
+                _context.Update(job);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return NotFound(ex);
+            }
+
             if (job != null)
             {
                 if (currentUser.Applies != null)

@@ -116,6 +116,25 @@ namespace AJobBoard.Controllers
             {
                 return NotFound();
             }
+            // Updating Number of Views
+            jobPosting.NumberOfViews++;
+
+            try
+            {
+                _context.Update(jobPosting);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!JobPostingExists(jobPosting.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return View(jobPosting);
         }
