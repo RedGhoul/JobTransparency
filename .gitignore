@@ -43,3 +43,4 @@ AJobBoard/appsettings.json
 *.csv
 AJobBoard/appsettings.Development.json
 AJobBoard/appsettings.Development.json
+AJobBoard/Properties/PublishProfiles/TechTransparency93 - Web Deploy.pubxml
