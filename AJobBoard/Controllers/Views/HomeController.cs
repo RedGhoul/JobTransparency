@@ -29,6 +29,7 @@ namespace AJobBoard.Controllers
 
             homeIndexViewModel.jobPostings = Jobs;
 
+
             return View(homeIndexViewModel);
         }
 
