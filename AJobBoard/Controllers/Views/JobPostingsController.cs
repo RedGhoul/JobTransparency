@@ -180,7 +180,7 @@ namespace AJobBoard.Controllers
             IQueryable<JobPosting> jobsQuery = null;
             List<JobPosting> Jobs = null;
             DateTime start = DateTime.Now;
-            DateTime end = DateTime.Now;
+           
             // find By Location
             if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
             {
@@ -203,9 +203,8 @@ namespace AJobBoard.Controllers
             // add Max Results
 
             Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).ToListAsync();
-
             // Calculate time
-            TimeSpan duration = end - start;
+            TimeSpan duration = DateTime.Now - start;
 
             ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-", "");
 
