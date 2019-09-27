@@ -23,6 +23,8 @@ namespace AJobBoard.Data
         {
             base.OnModelCreating(builder);
         }
+
+        public DbSet<AJobBoard.Models.Document> Document { get; set; }
     }
 
     

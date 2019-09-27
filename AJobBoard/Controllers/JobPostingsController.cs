@@ -36,7 +36,14 @@ namespace AJobBoard.Controllers
             ViewBag.Location = homeIndexVM.FindModel.Location;
             ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
             ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
-            ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults;
+            if(homeIndexVM.FindModel.MaxResults != 0)
+            {
+                ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults;
+            } else
+            {
+                ViewBag.TotalJobs = 100;
+            }
+            
 
             DateTime start = DateTime.Now;
             DateTime end = DateTime.Now;
@@ -255,7 +262,7 @@ namespace AJobBoard.Controllers
         public async Task DataIngesterAsync(ApplicationDbContext context)
         {
             string Synopsis = "";
-            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump23092019212602NEW.csv"))
+            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump26092019193304.csv"))
             {
                 int count = 0;
                 String line;

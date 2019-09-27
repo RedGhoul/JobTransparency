@@ -138,7 +138,7 @@ if __name__ == "__main__":
     # Indeed()
     # print("Completed Download")
     extension = 'csv'
-    dirr = os.getcwd()+"\Scrapper"
+    dirr = os.getcwd()
     print(dirr)
     os.chdir(dirr)
     result = glob.glob('*.{}'.format(extension))

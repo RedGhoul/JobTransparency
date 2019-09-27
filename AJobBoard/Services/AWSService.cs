@@ -87,5 +87,36 @@ namespace AJobBoard.Services
                 Path.GetFileName(formFile.FileName));
             return fileName;
         }
+
+        public async Task<byte[]> GetFileInBytes(string fileName, string bucket)
+        {
+            Console.WriteLine("Downloading file from AWS: {0}/{1}", bucket, fileName);
+            // Create a GetObject request
+            GetObjectRequest request = new GetObjectRequest
+            {
+                BucketName = bucket,
+                Key = fileName
+            };
+
+            GetObjectResponse response = await S3Client.GetObjectAsync(request);
+            Stream responseStream = response.ResponseStream;
+            byte[] bytes = ReadStreamToBytes(responseStream); // helper method below
+            return bytes;
+        }
+
+        public static byte[] ReadStreamToBytes(Stream responseStream)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = responseStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+
     }
 }
