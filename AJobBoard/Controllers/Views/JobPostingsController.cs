@@ -24,87 +24,10 @@ namespace AJobBoard.Controllers
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVM)
         {
-            
-            if(homeIndexVM.FindModel == null)
-            {
-                homeIndexVM.FindModel = new FindModel();
-                homeIndexVM.FindModel.Location = "";
-                homeIndexVM.FindModel.KeyWords = "";
-                homeIndexVM.FindModel.MaxResults = 100;
-                homeIndexVM.FindModel.Page = 0;
-            }
-            ViewBag.Location = homeIndexVM.FindModel.Location;
-            ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
-            ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
-            if(homeIndexVM.FindModel.MaxResults != 0)
-            {
-                ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults;
-            } else
-            {
-                ViewBag.TotalJobs = 100;
-            }
-            
-
-            DateTime start = DateTime.Now;
-            DateTime end = DateTime.Now;
-            List<JobPosting> Jobs = null;
-            if (homeIndexVM.FindModel.MaxResults == 0 || homeIndexVM.FindModel.Location == null)
-            {
-                Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                    .Where(x => x.Location.Contains(homeIndexVM.FindModel.Location ?? "") &&
-                           x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
-                           x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
-                    .Take(50)
-                    .Distinct()
-                    .ToListAsync();
-                start = DateTime.Now;
-            }
-            else
-            {
-                if (homeIndexVM.FindModel.Location != null && homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
-                {
-                    Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
-                               x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
-                        .Take((int)homeIndexVM.FindModel.MaxResults)
-                        .Distinct()
-                        .ToListAsync();
-                    start = DateTime.Now;
-                }
-                else
-                {
-                    Jobs = await _context.JobPostings.OrderByDescending(j => j.Title)
-                        .Where(x => x.Location.Contains(homeIndexVM.FindModel.Location ?? "") &&
-                               x.Summary.Contains(homeIndexVM.FindModel.KeyWords ?? "") &&
-                               x.Title.Contains(homeIndexVM.FindModel.KeyWords ?? ""))
-                        .Take((int)homeIndexVM.FindModel.MaxResults)
-                        .Distinct()
-                        .ToListAsync();
-                    start = DateTime.Now;
-                }
-
-            }
-            TimeSpan duration = end - start;
-
-            ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-","");
-            
-            // Doing the paging here
-            int PageSize = 12;
-
-            var count = Jobs.Count();
-
-            Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
-            if(PageSize == 0)
-            {
-                ViewBag.MaxPage = 10;
-            }
-            else
-            {
-                ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
-            }
-
-            ViewBag.Page = homeIndexVM.FindModel.Page;
-
+            SetDefaultFindModel(homeIndexVM);
+            SetupViewBag(homeIndexVM);
+            List<JobPosting> Jobs = await ConfigureSearchAsync(homeIndexVM);
+            Jobs = ConfigurePaging(homeIndexVM, Jobs);
             return View(Jobs);
         }
 
@@ -123,25 +46,7 @@ namespace AJobBoard.Controllers
             {
                 return NotFound();
             }
-            // Updating Number of Views
-            jobPosting.NumberOfViews++;
-
-            try
-            {
-                _context.Update(jobPosting);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!JobPostingExists(jobPosting.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            jobPosting = await TickNumberOfViewAsync(jobPosting);
 
             return View(jobPosting);
         }
@@ -153,8 +58,6 @@ namespace AJobBoard.Controllers
         }
 
         // POST: JobPostings/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Summary,URL,Company,Location,PostDate,Salary,Posters")] JobPosting jobPosting)
@@ -185,8 +88,6 @@ namespace AJobBoard.Controllers
         }
 
         // POST: JobPostings/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Summary,URL,Company,Location,PostDate,Salary,Posters")] JobPosting jobPosting)
@@ -252,86 +153,109 @@ namespace AJobBoard.Controllers
         {
             return _context.JobPostings.Any(e => e.Id == id);
         }
-
-        public async Task<IActionResult> INTODB()
+        public async Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting)
         {
-            await DataIngesterAsync(_context);
-            return RedirectToAction(nameof(Index));
+            jobPosting.NumberOfViews++;
+
+            try
+            {
+                _context.Update(jobPosting);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!JobPostingExists(jobPosting.Id))
+                {
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return jobPosting;
         }
 
-        public async Task DataIngesterAsync(ApplicationDbContext context)
+        private async Task<List<JobPosting>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVM)
         {
-            string Synopsis = "";
-            using (StreamReader sr = new StreamReader(@"C:\Users\Avane\source\repos\AJobBoard\AJobBoard\IndeedJobDump26092019193304.csv"))
+            IQueryable<JobPosting> jobsQuery = null;
+            List<JobPosting> Jobs = null;
+            DateTime start = DateTime.Now;
+            DateTime end = DateTime.Now;
+            // find By Location
+            if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
             {
-                int count = 0;
-                String line;
-                while ((line = sr.ReadLine()) != null)
-                {
+                jobsQuery = _context.JobPostings;
+            }
+            else if (homeIndexVM.FindModel.Location.ToLower().Equals("ontario"))
+            {
+                jobsQuery = _context.JobPostings.Where(x => x.Location.Contains("vancouver") == false);
+            }
+            else
+            {
+                jobsQuery = _context.JobPostings.Where(x => x.Location.Contains(homeIndexVM.FindModel.Location) == true);
+            }
 
-                    try
-                    {
-                        if (line.Contains("Synopsis"))
-                        {
-                            continue;
-                        }
+            // find By Key Words
 
-                        string[] list = line.Split(",");
+            jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVM.FindModel.KeyWords) ||
+                                        x.Summary.Contains(homeIndexVM.FindModel.KeyWords));
 
-                        byte[] byte16 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[0].Trim()));
-                        string myTitle = Encoding.UTF8.GetString(byte16);
-                        string Title = myTitle;
+            // add Max Results
 
-                        byte[] byte17 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[1].Trim()));
-                        string myJobURL = Encoding.UTF8.GetString(byte17);
-                        string JobURL = myJobURL;
+            Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).ToListAsync();
 
-                        byte[] byte18 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[2].Trim()));
-                        string myPostingDate = Encoding.UTF8.GetString(byte18);
-                        string PostingDate = myPostingDate;
+            // Calculate time
+            TimeSpan duration = end - start;
 
-                        byte[] byte19 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[3].Trim()));
-                        string myLocation = Encoding.UTF8.GetString(byte19);
-                        string Location = myLocation;
+            ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-", "");
 
-                        byte[] byte20 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[4].Trim()));
-                        string myCompany = Encoding.UTF8.GetString(byte20);
-                        string Company = myCompany;
+            return Jobs;
+        }
 
-                        byte[] bytes21 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[5].Trim()));
-                        string mySalary = Encoding.UTF8.GetString(bytes21);
-                        string Salary = mySalary;
+        private List<JobPosting> ConfigurePaging(HomeIndexViewModel homeIndexVM, List<JobPosting> Jobs)
+        {
+            int PageSize = 12;
 
+            var count = Jobs.Count();
 
-                        byte[] bytes22 = Encoding.Default.GetBytes(HttpUtility.HtmlAttributeEncode(list[6].Trim()));
-                        string mySynopsis = Encoding.UTF8.GetString(bytes22);
-                        Synopsis = mySynopsis;
+            Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
+            if (PageSize == 0)
+            {
+                ViewBag.MaxPage = 10;
+            }
+            else
+            {
+                ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+            }
 
-                        var JobPosting = new JobPosting()
-                        {
-                            Title = Title,
-                            URL = JobURL,
-                            PostDate = PostingDate,
-                            Location = Location,
-                            Company = Company,
-                            Salary = Salary,
-                            Summary = Synopsis,
-                            JobSource = "Indeed"
-                        };
-                        context.JobPostings.Add(JobPosting);
-                        count++;
+            ViewBag.Page = homeIndexVM.FindModel.Page;
+            return Jobs;
+        }
 
-                        await context.SaveChangesAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(Synopsis);
-                        Console.WriteLine("ERROR");
-                    }
+        private void SetupViewBag(HomeIndexViewModel homeIndexVM)
+        {
+            ViewBag.Location = homeIndexVM.FindModel.Location;
+            ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
+            ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
+            if (homeIndexVM.FindModel.MaxResults != 0)
+            {
+                ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults;
+            }
+            else
+            {
+                ViewBag.TotalJobs = 100;
+            }
+        }
 
-
-
-                }
+        private static void SetDefaultFindModel(HomeIndexViewModel homeIndexVM)
+        {
+            if (homeIndexVM.FindModel == null)
+            {
+                homeIndexVM.FindModel = new FindModel();
+                homeIndexVM.FindModel.Location = "anywhere";
+                homeIndexVM.FindModel.KeyWords = "";
+                homeIndexVM.FindModel.MaxResults = 100;
+                homeIndexVM.FindModel.Page = 0;
             }
         }
     }

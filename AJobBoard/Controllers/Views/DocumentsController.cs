@@ -29,9 +29,7 @@ namespace AJobBoard.Controllers
         // GET: Documents
         public async Task<IActionResult> Index()
         {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
-            var Documents = _context.Users.Include(x => x.Documents)
-                .Where(x => x.Id.Equals(User.Id)).Select(x => x.Documents).FirstOrDefault();
+            List<Document> Documents = await GetDocumentsOfCurrentUser();
 
             return View(Documents);
         }
@@ -61,8 +59,6 @@ namespace AJobBoard.Controllers
         }
 
         // POST: Documents/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DocumentId,URL,IsResume,IsOtherDoc,DateCreated")] Document document)
@@ -93,8 +89,6 @@ namespace AJobBoard.Controllers
         }
 
         // POST: Documents/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("DocumentId,URL,IsResume,IsOtherDoc,DateCreated")] Document document)
@@ -126,6 +120,7 @@ namespace AJobBoard.Controllers
             }
             return View(document);
         }
+
 
         // GET: Documents/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -159,6 +154,14 @@ namespace AJobBoard.Controllers
         private bool DocumentExists(int id)
         {
             return _context.Document.Any(e => e.DocumentId == id);
+        }
+
+        private async Task<List<Document>> GetDocumentsOfCurrentUser()
+        {
+            var User = await _userManager.GetUserAsync(HttpContext.User);
+            var Documents = _context.Users.Include(x => x.Documents)
+                .Where(x => x.Id.Equals(User.Id)).Select(x => x.Documents).FirstOrDefault();
+            return Documents;
         }
     }
 }

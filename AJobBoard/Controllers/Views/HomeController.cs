@@ -25,18 +25,12 @@ namespace AJobBoard.Controllers
 
             HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
             homeIndexViewModel.FindModel = new FindModel();
-            Random random = new Random();
-            int NumberOfResults = random.Next(10, 20);
-            var Jobs = await _context.JobPostings.Take(NumberOfResults*2).ToListAsync();
-            int SkipNumberOfResults = random.Next(10, 20);
-            Jobs = Jobs.Skip(SkipNumberOfResults).Reverse().ToList();
+            List<JobPosting> Jobs = await GetRandomSetOfJobPostings();
 
             homeIndexViewModel.jobPostings = Jobs;
 
             return View(homeIndexViewModel);
         }
-
-
 
         public IActionResult About()
         {
@@ -56,6 +50,16 @@ namespace AJobBoard.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<List<JobPosting>> GetRandomSetOfJobPostings()
+        {
+            Random random = new Random();
+            int NumberOfResults = random.Next(10, 20);
+            var Jobs = await _context.JobPostings.Take(NumberOfResults * 2).ToListAsync();
+            int SkipNumberOfResults = random.Next(10, 20);
+            Jobs = Jobs.Skip(SkipNumberOfResults).Reverse().ToList();
+            return Jobs;
         }
     }
 }
