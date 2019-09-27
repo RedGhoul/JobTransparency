@@ -24,11 +24,14 @@ namespace AJobBoard.Controllers
             ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
 
             HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
-            homeIndexViewModel.FindModel = new FindModel
-            {
+            homeIndexViewModel.FindModel = new FindModel();
+            Random random = new Random();
+            int NumberOfResults = random.Next(10, 20);
+            var Jobs = await _context.JobPostings.Take(NumberOfResults*2).ToListAsync();
+            int SkipNumberOfResults = random.Next(10, 20);
+            Jobs = Jobs.Skip(SkipNumberOfResults).Reverse().ToList();
 
-            };
-            homeIndexViewModel.jobPostings = await _context.JobPostings.Take(10).ToListAsync();
+            homeIndexViewModel.jobPostings = Jobs;
 
             return View(homeIndexViewModel);
         }
