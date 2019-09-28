@@ -13,15 +13,29 @@ max_results_per_city = 400
 postionFind = [ "software+developer", "react+developer", 
                 "devops", "software+engineer",
                 "Machine+Learning+Engineer",
-                "Data+Scientist"]
+                "Data+Scientist",
+                "junior+software+developer",
+                "senior+software+developer"]
 
 job_Type = "fulltime"
 city_set = ["Ontario", "British+Columbia"]
 max_age = "15"
 host = "ca.indeed.com"
+
 techTrans = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/"
+
+techTransCheck = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/Check"
+
 header = {"Content-type": "application/json",
           "Accept": "text/plain"} 
+
+def checkifdup(urlIn):
+    r = json.dumps({"url": urlIn})
+    response = requests.post(url =techTransCheck, data = r,headers=header)
+    time.sleep(1)
+    result = json.loads(response.content)
+    return result
+
 def dotheWork(city, pos, start, finalFileName):
     df_more = pd.DataFrame(
         columns=[
@@ -93,24 +107,27 @@ def dotheWork(city, pos, start, finalFileName):
             PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
         except:
             PostDate = "N/A"
-        
-        body = {
-                "title": title,
-                "url": job_URL,
-                "postDate": PostDate,
-                "location": location,
-                "company": company,
-                "salary": salary,
-                "summary": synopsis,
-                "numberOfApplies": 0,
-                "numberOfViews": 0,
-                "poster": None,
-                "posters":"ddd",
-                "jobSource":"Indeed"
-            }
-        r = json.dumps(body)
-        print(r)
-        mainPage = requests.post(url =techTrans, data = r,headers=header)
+        if job_URL != 'NULL':
+            if checkifdup(job_URL) == True:
+                print("Found new URL")
+                body = {
+                        "title": title,
+                        "url": job_URL,
+                        "postDate": PostDate,
+                        "location": location,
+                        "company": company,
+                        "salary": salary,
+                        "summary": synopsis,
+                        "numberOfApplies": 0,
+                        "numberOfViews": 0,
+                        "poster": None,
+                        "posters":"ddd",
+                        "jobSource":"Indeed"
+                    }
+                r = json.dumps(body)
+                mainPage = requests.post(url =techTrans, data = r,headers=header)
+            else:
+                print("Already found this URL")
 
     
 
@@ -146,3 +163,5 @@ if __name__ == "__main__":
    
     end = time.time()
     print(end - start)
+
+    checkifdup("sdsdsd")

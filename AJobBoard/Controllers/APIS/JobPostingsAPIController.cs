@@ -39,6 +39,28 @@ namespace AJobBoard.Controllers
 
             return jobPosting;
         }
+        // GET: api/JobPostingsAPI/5
+        [HttpPost("Check")]
+        public ActionResult<JobPosting> CheckJobPosting(TestCheckDTO tcDTO)
+        {
+            if(tcDTO.url != null)
+            {
+                var jobPostingCount = _context.JobPostings.Where(x => x.URL.Equals(tcDTO.url)).FirstOrDefaultAsync();
+                if (jobPostingCount == null)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
+
+            }else
+            {
+                return BadRequest(false);
+            }
+
+        }
 
         // PUT: api/JobPostingsAPI/5
         [HttpPut("{id}")]
@@ -100,5 +122,10 @@ namespace AJobBoard.Controllers
         {
             return _context.JobPostings.Any(e => e.Id == id);
         }
+    }
+
+    public class TestCheckDTO
+    {
+        public string url { get; set; }
     }
 }
