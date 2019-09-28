@@ -7,6 +7,7 @@ from datetime import datetime
 from threading import Thread
 import os
 import glob
+import json
 
 max_results_per_city = 400
 postionFind = [ "software+developer", "react+developer", 
@@ -18,7 +19,9 @@ job_Type = "fulltime"
 city_set = ["Ontario", "British+Columbia"]
 max_age = "15"
 host = "ca.indeed.com"
-
+techTrans = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/"
+header = {"Content-type": "application/json",
+          "Accept": "text/plain"} 
 def dotheWork(city, pos, start, finalFileName):
     df_more = pd.DataFrame(
         columns=[
@@ -92,21 +95,24 @@ def dotheWork(city, pos, start, finalFileName):
             PostDate = "N/A"
         
         body = {
-                "Title": title,
-                "JobURL": job_URL,
-                "PostDate": PostDate,
-                "Location": location,
-                "Company": company,
-                "Salary": salary,
-                "Synopsis": synopsis,
+                "title": title,
+                "url": job_URL,
+                "postDate": PostDate,
+                "location": location,
+                "company": company,
+                "salary": salary,
+                "summary": synopsis,
+                "numberOfApplies": 0,
+                "numberOfViews": 0,
+                "poster": None,
+                "posters":"ddd",
+                "jobSource":"Indeed"
             }
-        #print(body)
-        df_more = df_more.append(
-            body,
-            ignore_index=True,
-        )
-    df_more.to_csv(finalFileName + ".csv", encoding="utf-8",index=False)
-    print(finalFileName + " is done")
+        r = json.dumps(body)
+        print(r)
+        mainPage = requests.post(url =techTrans, data = r,headers=header)
+
+    
 
 def Indeed():
     workers = []
@@ -134,34 +140,9 @@ def Indeed():
 if __name__ == "__main__":
     start = time.time()
 
-    # print("Starting Download")
-    # Indeed()
-    # print("Completed Download")
-    extension = 'csv'
-    dirr = os.getcwd()
-    print(dirr)
-    os.chdir(dirr)
-    result = glob.glob('*.{}'.format(extension))
-    all_filenames = [i for i in glob.glob("*.{}".format(extension))]
-    # combine all files in the list
-    rays = []
-    for x in all_filenames:
-        newdata = pd.read_csv(x)
-        rays.append(newdata)
-
-    print("Number of part files: " + str(len(rays)))
-
-    df_more = pd.concat(rays)
-    df_more.drop_duplicates(subset= 'Synopsis',inplace = True) 
-
-    df_more.reset_index(drop=True)
-    dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
-    finalFileName = ("IndeedJobDump" + dt_string).replace("/", "")
-    df_more.to_csv(finalFileName+".csv", encoding="utf-8",index=False)
-
-    print("Doing Clean Up")
-    for x in all_filenames:
-        os.remove(x)
-
-    # end = time.time()
-    # print(end - start)
+    print("Starting Download")
+    Indeed()
+    print("Completed Download")
+   
+    end = time.time()
+    print(end - start)
