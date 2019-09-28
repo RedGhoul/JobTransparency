@@ -1,15 +1,11 @@
-﻿using System;
+﻿using AJobBoard.Data;
+using AJobBoard.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AJobBoard.Data;
-using AJobBoard.Models;
-using System.IO;
-using System.Text;
-using System.Web;
 
 namespace AJobBoard.Controllers
 {
@@ -180,7 +176,7 @@ namespace AJobBoard.Controllers
             IQueryable<JobPosting> jobsQuery = null;
             List<JobPosting> Jobs = null;
             DateTime start = DateTime.Now;
-           
+
             // find By Location
             if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
             {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using AJobBoard.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using AJobBoard.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,5 +22,5 @@ namespace AJobBoard.Data
         public DbSet<AJobBoard.Models.Document> Document { get; set; }
     }
 
-    
+
 }

@@ -1,6 +1,3 @@
-using System;
-using Syncfusion.Licensing;
-using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Services;
@@ -13,14 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Hangfire;
-using Hangfire.MySql.Core;
-using System.Data;
-using Hangfire.Dashboard;
-using Hangfire.Common;
-using System.IO;
-using System.Text;
-using System.Web;
+using Syncfusion.Licensing;
+using System;
+using System.Threading.Tasks;
 
 namespace AJobBoard
 {
@@ -91,26 +83,6 @@ namespace AJobBoard
                 options.SlidingExpiration = true;
             });
 
-            services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseStorage(new MySqlStorage(
-                Configuration.GetConnectionString("JobTransparncyPROD"),
-                new MySqlStorageOptions
-                {
-                    TransactionIsolationLevel = IsolationLevel.ReadCommitted,
-                    QueuePollInterval = TimeSpan.FromSeconds(15),
-                    JobExpirationCheckInterval = TimeSpan.FromHours(1),
-                    CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                    PrepareSchemaIfNecessary = true,
-                    DashboardJobListLimit = 50000,
-                    TransactionTimeout = TimeSpan.FromMinutes(1),
-                    TablePrefix = "Hangfire"
-                })));
-
-            services.AddHangfireServer();
-
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -139,11 +111,6 @@ namespace AJobBoard
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new MyAuthorizationFilter() }
-            });
 
             app.UseMvc(routes =>
             {
@@ -186,17 +153,7 @@ namespace AJobBoard
                     }
                 }
             }
-            
-        }
 
-        public class MyAuthorizationFilter : IDashboardAuthorizationFilter
-        {
-            public bool Authorize(DashboardContext context)
-            {
-                return context.GetHttpContext().User.IsInRole("Admin");
-            }
         }
-
-        
     }
 }

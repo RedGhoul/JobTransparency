@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using AJobBoard.Models;
+﻿using AJobBoard.Models;
 using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +7,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Areas.Identity.Pages.Account
 {
@@ -95,7 +92,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     IsJobSeeker = true,
-                    Documents = new List <Document> { }
+                    Documents = new List<Document> { }
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -107,9 +104,10 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     if (ModelState.IsValid)
                     {
                         resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
-                            "Resumes/" + user.Id + Input.Resume.FileName, 
+                            "Resumes/" + user.Id + Input.Resume.FileName,
                             Input.Resume.ContentType, Input.Resume.OpenReadStream());
-                    } else
+                    }
+                    else
                     {
                         return Page();
                     }

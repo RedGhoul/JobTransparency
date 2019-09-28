@@ -1,18 +1,15 @@
 ﻿using AJobBoard.Areas.Identity.Pages.Account;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Services
 {
@@ -34,7 +31,7 @@ namespace AJobBoard.Services
             PutObjectRequest PutRequest = new PutObjectRequest
             {
                 InputStream = stream,
-                BucketName = bucket ,
+                BucketName = bucket,
                 Key = key,
                 ContentType = contentType,
             };

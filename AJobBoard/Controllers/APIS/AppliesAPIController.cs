@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AJobBoard.Data;
+using AJobBoard.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AJobBoard.Data;
-using AJobBoard.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace AJobBoard.Controllers
 {
@@ -104,7 +104,7 @@ namespace AJobBoard.Controllers
         {
 
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            if(currentUser == null)
+            if (currentUser == null)
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
