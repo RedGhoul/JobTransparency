@@ -1,30 +1,36 @@
 ﻿using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers
 {
+    [Authorize(Policy = "AuthKey")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public JobPostingsAPIController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+
         // GET: api/JobPostingsAPI
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetJobPostings()
         {
-            return await _context.JobPostings.ToListAsync();
+           return await _context.JobPostings.ToListAsync();
         }
+
 
         // GET: api/JobPostingsAPI/5
         [HttpGet("{id}")]

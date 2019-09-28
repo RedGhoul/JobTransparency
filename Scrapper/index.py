@@ -1,13 +1,11 @@
 import requests
 import bs4
 from bs4 import BeautifulSoup
-import pandas as pd
 import time
 from datetime import datetime
 from threading import Thread
-import os
-import glob
 import json
+import secret
 
 max_results_per_city = 400
 postionFind = [ "software+developer", "react+developer", 
@@ -26,13 +24,16 @@ techTrans = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/"
 
 techTransCheck = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/Check"
 
+
+
 header = {"Content-type": "application/json",
-          "Accept": "text/plain"} 
+          "Accept": "text/plain", "auth":secret.getAuthKey()} 
 
 def checkifdup(urlIn):
     r = json.dumps({"url": urlIn})
     response = requests.post(url =techTransCheck, data = r,headers=header)
     time.sleep(1)
+    print(response.content)
     result = json.loads(response.content)
     return result
 
@@ -155,13 +156,13 @@ def Indeed():
 
 
 if __name__ == "__main__":
-    start = time.time()
+    # start = time.time()
 
-    print("Starting Download")
-    Indeed()
-    print("Completed Download")
+    # print("Starting Download")
+    # Indeed()
+    # print("Completed Download")
    
-    end = time.time()
-    print(end - start)
+    # end = time.time()
+    # print(end - start)
 
     checkifdup("sdsdsd")

@@ -1,6 +1,8 @@
 using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Services;
+using AJobBoard.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -84,9 +86,16 @@ namespace AJobBoard
             });
 
 
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AuthKey", policy =>
+                    policy.Requirements.Add(new HasAuthKey(Configuration)));
+            });
 
             services.AddSingleton<IConfiguration>(Configuration);
+
             services.AddSingleton<AWSService>();
             services.AddScoped<UserManager<ApplicationUser>>();
 
