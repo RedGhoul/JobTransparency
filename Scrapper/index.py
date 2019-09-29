@@ -7,7 +7,7 @@ from threading import Thread
 import json
 import secret
 
-max_results_per_city = 400
+max_results_per_city = 100
 postionFind = [ "software+developer", "react+developer", 
                 "devops", "software+engineer",
                 "Machine+Learning+Engineer",
@@ -17,7 +17,7 @@ postionFind = [ "software+developer", "react+developer",
 
 job_Type = "fulltime"
 city_set = ["Ontario", "British+Columbia"]
-max_age = "15"
+max_age = "10"
 host = "ca.indeed.com"
 
 techTrans = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/"
@@ -38,17 +38,6 @@ def checkifdup(urlIn):
     return result
 
 def dotheWork(city, pos, start, finalFileName):
-    df_more = pd.DataFrame(
-        columns=[
-            "Title",
-            "JobURL",
-            "PostDate",
-            "Location",
-            "Company",
-            "Salary",
-            "Synopsis",
-        ]
-    )
     page = requests.get(
         "http://"
         + host
@@ -156,13 +145,12 @@ def Indeed():
 
 
 if __name__ == "__main__":
-    # start = time.time()
+    start = time.time()
 
-    # print("Starting Download")
-    # Indeed()
-    # print("Completed Download")
+    print("Starting Download")
+    Indeed()
+    print("Completed Download")
    
-    # end = time.time()
-    # print(end - start)
+    end = time.time()
+    print(end - start)
 
-    checkifdup("sdsdsd")
