@@ -14,10 +14,6 @@ Click==7.0
 cycler==0.10.0
 cymem==2.0.2
 decorator==4.4.0
-Django==2.2.5
-django-background-tasks==1.2.0
-django-compat==1.0.15
-django-mysql-ssl==0.0.1
 fastai==1.0.57
 fastprogress==0.1.21
 idna==2.8
@@ -25,9 +21,7 @@ kiwisolver==1.1.0
 matplotlib==3.1.1
 multidict==4.5.2
 murmurhash==1.0.2
-mysqlclient==1.4.4
 networkx==2.3
-nltk==3.4.5
 numexpr==2.7.0
 numpy==1.17.2
 nvidia-ml-py3==7.352.0
