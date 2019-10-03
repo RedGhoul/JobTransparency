@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AJobBoard.Data;
+using AJobBoard.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using AJobBoard.Models;
-using AJobBoard.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace AJobBoard.Controllers
 {
@@ -28,6 +28,7 @@ namespace AJobBoard.Controllers
             List<JobPosting> Jobs = await GetRandomSetOfJobPostings();
 
             homeIndexViewModel.jobPostings = Jobs;
+
 
             return View(homeIndexViewModel);
         }

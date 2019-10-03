@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AJobBoard.Data;
+using AJobBoard.Models;
+using AJobBoard.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AJobBoard.Data;
-using AJobBoard.Models;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers
 {
+    [Authorize(Policy = "AuthKey")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-
         public JobPostingsAPIController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+
         // GET: api/JobPostingsAPI
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetJobPostings()
         {
-            return await _context.JobPostings.ToListAsync();
+           return await _context.JobPostings.ToListAsync();
         }
+
 
         // GET: api/JobPostingsAPI/5
         [HttpGet("{id}")]
@@ -40,6 +44,28 @@ namespace AJobBoard.Controllers
             }
 
             return jobPosting;
+        }
+        // GET: api/JobPostingsAPI/5
+        [HttpPost("Check")]
+        public ActionResult<JobPosting> CheckJobPosting(TestCheckDTO tcDTO)
+        {
+            if(tcDTO.url != null)
+            {
+                var jobPostingCount = _context.JobPostings.Where(x => x.URL.Equals(tcDTO.url)).FirstOrDefaultAsync();
+                if (jobPostingCount == null)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
+
+            }else
+            {
+                return BadRequest(false);
+            }
+
         }
 
         // PUT: api/JobPostingsAPI/5
@@ -102,5 +128,10 @@ namespace AJobBoard.Controllers
         {
             return _context.JobPostings.Any(e => e.Id == id);
         }
+    }
+
+    public class TestCheckDTO
+    {
+        public string url { get; set; }
     }
 }

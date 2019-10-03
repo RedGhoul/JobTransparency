@@ -1,5 +1,3 @@
-using System;
-
 namespace AJobBoard.Models
 {
     public class ErrorViewModel
