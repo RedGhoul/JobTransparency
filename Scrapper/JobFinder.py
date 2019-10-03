@@ -1,36 +1,43 @@
 import requests
 import bs4
 from bs4 import BeautifulSoup
-import pandas as pd
 import time
 from datetime import datetime
 from threading import Thread
-import os
-import glob
+import json
+import secret
 
-max_results_per_city = 400
+max_results_per_city = 100
 postionFind = [ "software+developer", "react+developer", 
                 "devops", "software+engineer",
                 "Machine+Learning+Engineer",
-                "Data+Scientist"]
+                "Data+Scientist",
+                "junior+software+developer",
+                "senior+software+developer"]
 
 job_Type = "fulltime"
 city_set = ["Ontario", "British+Columbia"]
-max_age = "15"
+max_age = "10"
 host = "ca.indeed.com"
 
+techTrans = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/"
+
+techTransCheck = "https://techtransparency93.azurewebsites.net/api/JobPostingsAPI/Check"
+
+
+
+header = {"Content-type": "application/json",
+          "Accept": "text/plain", "auth":secret.getAuthKey()} 
+
+def checkifdup(urlIn):
+    r = json.dumps({"url": urlIn})
+    response = requests.post(url =techTransCheck, data = r,headers=header)
+    time.sleep(1)
+    print(response.content)
+    result = json.loads(response.content)
+    return result
+
 def dotheWork(city, pos, start, finalFileName):
-    df_more = pd.DataFrame(
-        columns=[
-            "Title",
-            "JobURL",
-            "PostDate",
-            "Location",
-            "Company",
-            "Salary",
-            "Synopsis",
-        ]
-    )
     page = requests.get(
         "http://"
         + host
@@ -90,23 +97,29 @@ def dotheWork(city, pos, start, finalFileName):
             PostDate = each.find(class_="date").text.replace("\n", "").replace(",","")
         except:
             PostDate = "N/A"
-        
-        body = {
-                "Title": title,
-                "JobURL": job_URL,
-                "PostDate": PostDate,
-                "Location": location,
-                "Company": company,
-                "Salary": salary,
-                "Synopsis": synopsis,
-            }
-        #print(body)
-        df_more = df_more.append(
-            body,
-            ignore_index=True,
-        )
-    df_more.to_csv(finalFileName + ".csv", encoding="utf-8",index=False)
-    print(finalFileName + " is done")
+        if job_URL != 'NULL':
+            if checkifdup(job_URL) == True:
+                print("Found new URL")
+                body = {
+                        "title": title,
+                        "url": job_URL,
+                        "postDate": PostDate,
+                        "location": location,
+                        "company": company,
+                        "salary": salary,
+                        "summary": synopsis,
+                        "numberOfApplies": 0,
+                        "numberOfViews": 0,
+                        "poster": None,
+                        "posters":"ddd",
+                        "jobSource":"Indeed"
+                    }
+                r = json.dumps(body)
+                mainPage = requests.post(url =techTrans, data = r,headers=header)
+            else:
+                print("Already found this URL")
+
+    
 
 def Indeed():
     workers = []
@@ -131,37 +144,12 @@ def Indeed():
         process.join()
 
 
-if __name__ == "__main__":
+def startup():
     start = time.time()
 
-    # print("Starting Download")
-    # Indeed()
-    # print("Completed Download")
-    extension = 'csv'
-    dirr = os.getcwd()
-    print(dirr)
-    os.chdir(dirr)
-    result = glob.glob('*.{}'.format(extension))
-    all_filenames = [i for i in glob.glob("*.{}".format(extension))]
-    # combine all files in the list
-    rays = []
-    for x in all_filenames:
-        newdata = pd.read_csv(x)
-        rays.append(newdata)
-
-    print("Number of part files: " + str(len(rays)))
-
-    df_more = pd.concat(rays)
-    df_more.drop_duplicates(subset= 'Synopsis',inplace = True) 
-
-    df_more.reset_index(drop=True)
-    dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S").replace(" ", "").replace(":", "")
-    finalFileName = ("IndeedJobDump" + dt_string).replace("/", "")
-    df_more.to_csv(finalFileName+".csv", encoding="utf-8",index=False)
-
-    print("Doing Clean Up")
-    for x in all_filenames:
-        os.remove(x)
-
-    # end = time.time()
-    # print(end - start)
+    print("Starting Download")
+    Indeed()
+    print("Completed Download")
+   
+    end = time.time()
+    print(end - start)

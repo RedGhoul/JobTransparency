@@ -46,3 +46,4 @@ AJobBoard/appsettings.Development.json
 AJobBoard/appsettings.Development.json
 AJobBoard/Properties/PublishProfiles/TechTransparency93 - Web Deploy.pubxml
 Scrapper/secret.py
+Scrapper/my_name

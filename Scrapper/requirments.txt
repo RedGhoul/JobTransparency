@@ -1,6 +1,0 @@
-pytz
-tzlocal
-apscheduler
-SQLAlchemy
-pymysql
-mysqlclient

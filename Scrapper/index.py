@@ -3,7 +3,7 @@ from pytz import utc
 from apscheduler.schedulers.background import BlockingScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
-
+from .JobFinder import startup 
 
 jobstores = {
    'default': SQLAlchemyJobStore(url="mysql://APSchedulerJobs:YauaX6pIo9v37w6B@157.245.6.60:3306/APSchedulerJobs?ssl=true",tablename='APSchedulerJobs')
@@ -16,14 +16,19 @@ job_defaults = {
     'coalesce': False,
     'max_instances': 3
 }
-scheduler = BlockingScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
 
-def timed_job():
-    print('This job is run every three minutes.')
+def jobfinder_activate():
+    print('jobfinder_activated')
+    startup()
 
-job = scheduler.add_job(timed_job, 'interval', minutes=2)
+def iamAlive():
+    print('I am Alive')
 
+if __name__ == '__main__':
+    scheduler = BlockingScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults, timezone=utc)
 
+    jobiamAlive = scheduler.add_job(iamAlive,  trigger='cron', second='*')
 
+    jobjobfinder_activate = scheduler.add_job(jobfinder_activate,  trigger='cron', hour='22', minute='30')
 
-scheduler.start()
+    scheduler.start()
