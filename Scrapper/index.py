@@ -34,12 +34,12 @@ if __name__ == "__main__":
 
     jobiamAlive = scheduler.add_job(iamAlive, trigger="cron", second="*")
 
-    jobjobfinder_activate = scheduler.add_job(
-        jobfinder_activate, trigger="cron", minute="*/5"
-    )
-
     # jobjobfinder_activate = scheduler.add_job(
-    #     jobfinder_activate, trigger="cron", hour="22", minute="30"
+    #     jobfinder_activate, trigger="cron", minute="*/5"
     # )
+
+    jobjobfinder_activate = scheduler.add_job(
+        jobfinder_activate, trigger="cron", hour="22", minute="30"
+    )
 
     scheduler.start()
