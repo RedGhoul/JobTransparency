@@ -1,0 +1,108 @@
+﻿using AJobBoard.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace AJobBoard.Data
+{
+    public class JobPostingRepository : IJobPostingRepository
+    {
+        private readonly ApplicationDbContext _ctx;
+
+        public JobPostingRepository(ApplicationDbContext ctx)
+        {
+            _ctx = ctx;
+        }
+
+        public async Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount)
+        {
+            return await _ctx.JobPostings.Take(amount).ToListAsync();
+        }
+
+        public async Task<JobPosting> GetJobPostingById(int id)
+        {
+            var jobPosting = await _ctx.JobPostings.FindAsync(id);
+
+            if (jobPosting == null)
+            {
+                return null;
+            }
+
+            return jobPosting;
+        }
+
+        public async Task<bool> JobPostingExistsByURL(string url)
+        {
+            var jobPostingCount = await _ctx.JobPostings
+                .Where(x => x.URL.Equals(url))
+                .FirstOrDefaultAsync();
+
+            if (jobPostingCount != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting)
+        {
+
+            _ctx.Entry(jobPosting).State = EntityState.Modified;
+
+            try
+            {
+                await _ctx.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!JobPostingExistsById(id))
+                {
+                    return null;
+                }
+                else
+                {
+                    return jobPosting;
+                }
+            }
+
+            return jobPosting;
+        }
+
+        public async Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting)
+        {
+            try
+            {
+                await _ctx.JobPostings.AddAsync(jobPosting);
+                await _ctx.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            return jobPosting;
+        }
+
+        public async Task<JobPosting> DeleteJobPostingAsync(int id)
+        {
+            var jobPosting = await _ctx.JobPostings.FindAsync(id);
+            if (jobPosting == null)
+            {
+                return null;
+            }
+
+            _ctx.JobPostings.Remove(jobPosting);
+            await _ctx.SaveChangesAsync();
+
+            return jobPosting;
+        }
+
+
+        private bool JobPostingExistsById(int id)
+        {
+            return _ctx.JobPostings.Any(e => e.Id == id);
+        }
+
+    }
+}

@@ -78,10 +78,7 @@ namespace AJobBoard
                 // ASP.NET Core will default to /Account/Login
                 options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here,
                 // ASP.NET Core will default to /Account/Logout
-                options.AccessDeniedPath = "/Account/AccessDenied"; // If the AccessDeniedPath is
-                // not set here, ASP.NET Core 
-                // will default to 
-                // /Account/AccessDenied
+                options.AccessDeniedPath = "/Account/AccessDenied"; 
                 options.SlidingExpiration = true;
             });
 
@@ -98,6 +95,7 @@ namespace AJobBoard
 
             services.AddSingleton<AWSService>();
             services.AddScoped<UserManager<ApplicationUser>>();
+            services.AddScoped<IJobPostingRepository, JobPostingRepository>();
 
         }
 

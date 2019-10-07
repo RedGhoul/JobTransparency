@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.DTO;
 using AJobBoard.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,15 +13,15 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers
 {
-    [Authorize(Policy = "AuthKey")]
+    //[Authorize(Policy = "AuthKey")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public JobPostingsAPIController(ApplicationDbContext context)
+        private readonly IJobPostingRepository _JobPostingRepository;
+        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository)
         {
-            _context = context;
+            _JobPostingRepository = JobPostingRepository;
         }
 
 
@@ -28,7 +29,8 @@ namespace AJobBoard.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetJobPostings()
         {
-           return await _context.JobPostings.ToListAsync();
+            var jobPostings = await _JobPostingRepository.GetJobPostingsAsync(60);
+            return jobPostings.ToList();
         }
 
 
@@ -36,22 +38,17 @@ namespace AJobBoard.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<JobPosting>> GetJobPosting(int id)
         {
-            var jobPosting = await _context.JobPostings.FindAsync(id);
-
-            if (jobPosting == null)
-            {
-                return NotFound();
-            }
-
-            return jobPosting;
+            JobPosting jobposting = await _JobPostingRepository.GetJobPostingById(id);
+            return jobposting;
         }
+
         // GET: api/JobPostingsAPI/5
         [HttpPost("Check")]
         public ActionResult<JobPosting> CheckJobPosting(TestCheckDTO tcDTO)
         {
             if(tcDTO.url != null)
             {
-                var jobPostingCount = _context.JobPostings.Where(x => x.URL.Equals(tcDTO.url)).FirstOrDefaultAsync();
+                var jobPostingCount = _JobPostingRepository.JobPostingExistsByURL(tcDTO.url);
                 if (jobPostingCount == null)
                 {
                     return Ok(true);
@@ -77,34 +74,22 @@ namespace AJobBoard.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(jobPosting).State = EntityState.Modified;
+            JobPosting returnedJobPosting = await _JobPostingRepository.PutJobPostingAsync(id, jobPosting);
 
-            try
+            if(returnedJobPosting != null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!JobPostingExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Ok();
             }
 
-            return NoContent();
+            return BadRequest();
         }
 
         // POST: api/JobPostingsAPI
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            _context.JobPostings.Add(jobPosting);
-            await _context.SaveChangesAsync();
-
+            await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
+           
             return CreatedAtAction("GetJobPosting", new { id = jobPosting.Id }, jobPosting);
         }
 
@@ -112,26 +97,14 @@ namespace AJobBoard.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<JobPosting>> DeleteJobPosting(int id)
         {
-            var jobPosting = await _context.JobPostings.FindAsync(id);
+            JobPosting jobPosting = await _JobPostingRepository.DeleteJobPostingAsync(id);
+  
             if (jobPosting == null)
             {
                 return NotFound();
             }
 
-            _context.JobPostings.Remove(jobPosting);
-            await _context.SaveChangesAsync();
-
             return jobPosting;
         }
-
-        private bool JobPostingExists(int id)
-        {
-            return _context.JobPostings.Any(e => e.Id == id);
-        }
-    }
-
-    public class TestCheckDTO
-    {
-        public string url { get; set; }
     }
 }
