@@ -104,5 +104,59 @@ namespace AJobBoard.Data
             return _ctx.JobPostings.Any(e => e.Id == id);
         }
 
+        public async Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting)
+        {
+            jobPosting.NumberOfViews++;
+
+            try
+            {
+                _ctx.Update(jobPosting);
+                await _ctx.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!JobPostingExistsById(jobPosting.Id))
+                {
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return jobPosting;
+        }
+
+        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVM)
+        {
+            IQueryable<JobPosting> jobsQuery = null;
+            List<JobPosting> Jobs = null;
+            DateTime start = DateTime.Now;
+
+            // find By Location
+            if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
+            {
+                jobsQuery = _ctx.JobPostings;
+            }
+            else if (homeIndexVM.FindModel.Location.ToLower().Equals("ontario"))
+            {
+                jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains("vancouver") == false);
+            }
+            else
+            {
+                jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains(homeIndexVM.FindModel.Location) == true);
+            }
+
+            // find By Key Words
+
+            jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVM.FindModel.KeyWords) ||
+                                        x.Summary.Contains(homeIndexVM.FindModel.KeyWords));
+
+            // add Max Results
+
+            Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).ToListAsync();
+            // Calculate time
+            TimeSpan duration = DateTime.Now - start;
+            return (Jobs,duration);
+        }
     }
 }
