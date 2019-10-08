@@ -37,10 +37,10 @@
                         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
                             <h6 style="color:white">Max Results</h6>
                             <select class="form-control" name="FindModel.MaxResults" value="@ViewBag.MaxResults">
-                                @for (int i = 1; i < 11; i++)
+                                @for (int i = 1; i < 20; i++)
                                 {
 
-                                    <option>@((i * 20).ToString())</option>
+                                    <option>@((i * 100).ToString())</option>
 
 
                                 }

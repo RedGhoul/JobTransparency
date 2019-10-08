@@ -133,7 +133,7 @@ namespace AJobBoard.Data
             DateTime start = DateTime.Now;
 
             // find By Location
-            if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere"))
+            if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVM.FindModel.Location))
             {
                 jobsQuery = _ctx.JobPostings;
             }
@@ -147,13 +147,16 @@ namespace AJobBoard.Data
             }
 
             // find By Key Words
+            if (!string.IsNullOrEmpty(homeIndexVM.FindModel.KeyWords))
+            {
+                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVM.FindModel.KeyWords) ||
+                            x.Summary.Contains(homeIndexVM.FindModel.KeyWords));
+            }
 
-            jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVM.FindModel.KeyWords) ||
-                                        x.Summary.Contains(homeIndexVM.FindModel.KeyWords));
 
             // add Max Results
 
-            Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).ToListAsync();
+            Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
             // Calculate time
             TimeSpan duration = DateTime.Now - start;
             return (Jobs,duration);
