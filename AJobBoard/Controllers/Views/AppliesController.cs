@@ -3,7 +3,7 @@ using AJobBoard.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AJobBoard.Controllers
+namespace AJobBoard.Controllers.Views
 {
     public class AppliesController : Controller
     {

@@ -1,13 +1,13 @@
-﻿using AJobBoard.Data;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AJobBoard.Data;
 using AJobBoard.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AJobBoard.Controllers
+namespace AJobBoard.Controllers.Views
 {
     public class DocumentsController : Controller
     {

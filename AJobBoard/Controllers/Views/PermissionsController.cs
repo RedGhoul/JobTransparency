@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AJobBoard.Controllers
+namespace AJobBoard.Controllers.Views
 {
     public class PermissionsController : Controller
     {
