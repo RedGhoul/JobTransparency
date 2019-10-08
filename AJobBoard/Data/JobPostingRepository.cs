@@ -25,11 +25,6 @@ namespace AJobBoard.Data
         {
             var jobPosting = await _ctx.JobPostings.FindAsync(id);
 
-            if (jobPosting == null)
-            {
-                return null;
-            }
-
             return jobPosting;
         }
 
@@ -57,14 +52,7 @@ namespace AJobBoard.Data
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!JobPostingExistsById(id))
-                {
-                    return null;
-                }
-                else
-                {
-                    return jobPosting;
-                }
+                return !JobPostingExistsById(id) ? null : jobPosting;
             }
 
             return jobPosting;
@@ -126,40 +114,40 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVM)
+        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             IQueryable<JobPosting> jobsQuery = null;
-            List<JobPosting> Jobs = null;
-            DateTime start = DateTime.Now;
+            List<JobPosting> jobs = null;
+            var start = DateTime.Now;
 
             // find By Location
-            if (homeIndexVM.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVM.FindModel.Location))
+            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
             {
                 jobsQuery = _ctx.JobPostings;
             }
-            else if (homeIndexVM.FindModel.Location.ToLower().Equals("ontario"))
+            else if (homeIndexVm.FindModel.Location.ToLower().Equals("ontario"))
             {
                 jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains("vancouver") == false);
             }
             else
             {
-                jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains(homeIndexVM.FindModel.Location) == true);
+                jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains(homeIndexVm.FindModel.Location) == true);
             }
 
             // find By Key Words
-            if (!string.IsNullOrEmpty(homeIndexVM.FindModel.KeyWords))
+            if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
             {
-                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVM.FindModel.KeyWords) ||
-                            x.Summary.Contains(homeIndexVM.FindModel.KeyWords));
+                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
+                            x.Summary.Contains(homeIndexVm.FindModel.KeyWords));
             }
 
 
             // add Max Results
 
-            Jobs = await jobsQuery.Take(homeIndexVM.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
+            jobs = await jobsQuery.Take(homeIndexVm.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
             // Calculate time
-            TimeSpan duration = DateTime.Now - start;
-            return (Jobs,duration);
+            var duration = DateTime.Now - start;
+            return (jobs,duration);
         }
     }
 }

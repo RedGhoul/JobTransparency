@@ -21,7 +21,5 @@ namespace AJobBoard.Controllers
         {
             return View();
         }
-
-
     }
 }

@@ -10,33 +10,33 @@ namespace AJobBoard.Controllers
 {
     public class JobPostingsController : Controller
     {
-        private readonly IJobPostingRepository _JobPostingRepository;
+        private readonly IJobPostingRepository _jobPostingRepository;
 
-        public JobPostingsController(IJobPostingRepository JobPostingRepository)
+        public JobPostingsController(IJobPostingRepository jobPostingRepository)
         {
-            _JobPostingRepository = JobPostingRepository;
+            _jobPostingRepository = jobPostingRepository;
         }
 
-        public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVM)
+        public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
-            SetDefaultFindModel(homeIndexVM);
-            SetupViewBag(homeIndexVM);
-            (List<JobPosting> Jobs, TimeSpan duration) = await _JobPostingRepository.ConfigureSearchAsync(homeIndexVM);
+            SetDefaultFindModel(homeIndexVm);
+            SetupViewBag(homeIndexVm);
+            var (jobs, duration) = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
             ViewBag.SecsToQuery = duration.TotalSeconds.ToString().Replace("-", "");
-            Jobs = ConfigurePaging(homeIndexVM, Jobs);
-            return View(Jobs);
+            jobs = ConfigurePaging(homeIndexVm, jobs);
+            return View(jobs);
         }
 
 
         // GET: JobPostings/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            JobPosting jobPosting = await _JobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
             if (jobPosting == null)
             {
                 return NotFound();
             }
-            jobPosting = await _JobPostingRepository.TickNumberOfViewAsync(jobPosting);
+            jobPosting = await _jobPostingRepository.TickNumberOfViewAsync(jobPosting);
 
             return View(jobPosting);
         }
@@ -54,7 +54,7 @@ namespace AJobBoard.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
+                await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
                 return RedirectToAction(nameof(Index));
             }
             return View(jobPosting);
@@ -63,7 +63,7 @@ namespace AJobBoard.Controllers
         // GET: JobPostings/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            JobPosting jobPosting = await _JobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
             if (jobPosting == null)
             {
                 return NotFound();
@@ -83,7 +83,7 @@ namespace AJobBoard.Controllers
 
             if (ModelState.IsValid)
             {
-                await _JobPostingRepository.PutJobPostingAsync(id, jobPosting);
+                await _jobPostingRepository.PutJobPostingAsync(id, jobPosting);
             }
             return View(jobPosting);
         }
@@ -91,7 +91,7 @@ namespace AJobBoard.Controllers
         // GET: JobPostings/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            JobPosting jobPosting = await _JobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
             if (jobPosting == null)
             {
                 return NotFound();
@@ -105,7 +105,7 @@ namespace AJobBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _JobPostingRepository.DeleteJobPostingAsync(id);
+            await _jobPostingRepository.DeleteJobPostingAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
