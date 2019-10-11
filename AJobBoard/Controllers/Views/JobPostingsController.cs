@@ -19,7 +19,7 @@ namespace AJobBoard.Controllers.Views
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
-            SetDefaultFindModel(homeIndexVm);
+            homeIndexVm = SetDefaultFindModel(homeIndexVm);
             SetupViewBag(homeIndexVm);
             var (jobs, duration) = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
             ViewBag.SecsToQuery = duration.TotalSeconds
@@ -143,7 +143,7 @@ namespace AJobBoard.Controllers.Views
             ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults != 0 ? homeIndexVM.FindModel.MaxResults : 100;
         }
 
-        private static void SetDefaultFindModel(HomeIndexViewModel homeIndexVM)
+        private static HomeIndexViewModel SetDefaultFindModel(HomeIndexViewModel homeIndexVM)
         {
             if (homeIndexVM == null)
             {
@@ -158,21 +158,36 @@ namespace AJobBoard.Controllers.Views
                     }
                 };
             }
+            else if (homeIndexVM.FindModel == null)
+            {
+                homeIndexVM.FindModel = new FindModel();
+
+                homeIndexVM = FillFindModel(homeIndexVM);
+            }
             else
             {
-                homeIndexVM.FindModel.KeyWords = homeIndexVM.FindModel.KeyWords ?? "";
-                homeIndexVM.FindModel.Location = homeIndexVM.FindModel.Location ?? "";
-                if (homeIndexVM.FindModel.MaxResults == 0)
-                {
-                    homeIndexVM.FindModel.MaxResults = 100;
-                }
+                homeIndexVM = FillFindModel(homeIndexVM);
+            }
+            return homeIndexVM;
+        }
 
-                if (homeIndexVM.FindModel.Page == 0)
-                {
-                    homeIndexVM.FindModel.Page = 1;
-                }
+        private static HomeIndexViewModel FillFindModel(HomeIndexViewModel homeIndexVM)
+        {
+            homeIndexVM.FindModel.KeyWords = homeIndexVM.FindModel.KeyWords ?? "";
+            homeIndexVM.FindModel.Location = homeIndexVM.FindModel.Location ?? "";
+            if (homeIndexVM.FindModel.MaxResults == 0)
+            {
+                homeIndexVM.FindModel.MaxResults = 100;
             }
 
+            if (homeIndexVM.FindModel.Page == 0)
+            {
+                homeIndexVM.FindModel.Page = 1;
+            }
+
+            return homeIndexVM;
         }
+
+
     }
 }
