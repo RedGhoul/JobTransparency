@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers
 {
-    //[Authorize(Policy = "AuthKey")]
+    [Authorize(Policy = "AuthKey")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
@@ -42,14 +42,14 @@ namespace AJobBoard.Controllers
             return jobposting;
         }
 
-        // GET: api/JobPostingsAPI/5
+        // GET: api/JobPostingsAPI/Check
         [HttpPost("Check")]
-        public ActionResult<JobPosting> CheckJobPosting(TestCheckDTO tcDTO)
+        public async Task<ActionResult<JobPosting>> CheckJobPostingAsync(TestCheckDTO tcDTO)
         {
             if(tcDTO.url != null)
             {
-                var jobPostingCount = _JobPostingRepository.JobPostingExistsByURL(tcDTO.url);
-                if (jobPostingCount == null)
+                var jobPostingCount = await _JobPostingRepository.JobPostingExistsByURL(tcDTO.url);
+                if (jobPostingCount)
                 {
                     return Ok(true);
                 }
