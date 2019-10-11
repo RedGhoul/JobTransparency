@@ -124,6 +124,8 @@ namespace AJobBoard
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                    routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
             });
             //RecurringJob.AddOrUpdate("some-id", () => DataIngesterAsync(content), Cron.Minutely);
             //await CreateUserRoles(app);
