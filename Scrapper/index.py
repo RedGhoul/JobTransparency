@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # )
 
     jobjobfinder_activate = scheduler.add_job(
-        jobfinder_activate, "interval", minutes=1200, id="jobjobfinder_activate"
+        jobfinder_activate, "interval", minutes=1, id="jobfinder_activate"
     )
 
     scheduler.start()

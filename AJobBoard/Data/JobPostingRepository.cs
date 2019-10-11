@@ -36,9 +36,9 @@ namespace AJobBoard.Data
 
             if (jobPostingCount != null)
             {
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         public async Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting)

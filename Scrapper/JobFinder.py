@@ -40,9 +40,8 @@ def checkifdup(urlIn):
     r = json.dumps({"url": urlIn})
     response = requests.post(url=techTransCheck, data=r, headers=header)
     time.sleep(1)
-    print(response.content)
-    result = json.loads(response.content)
-    return result
+    print(response.ok)
+    return response.ok
 
 
 def dotheWork(city, pos, start, finalFileName):
@@ -173,3 +172,7 @@ def startup():
 
     end = time.time()
     print(end - start)
+
+
+if __name__ == "__main__":
+    startup()
