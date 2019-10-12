@@ -1,4 +1,4 @@
-![Build Status](https://dev.azure.com/Avaneesa/Job%20Transparency/_apis/build/status/RedGhoul.JobTransparency?branchName=master)](https://dev.azure.com/Avaneesa/Job%20Transparency/_build/latest?definitionId=1&branchName=master)
+![Build Status](https://dev.azure.com/Avaneesa/Job%20Transparency/_apis/build/status/RedGhoul.JobTransparency?branchName=master)
 
 # Tech Transparency
 
