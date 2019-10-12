@@ -1,3 +1,5 @@
+![Build Status](https://dev.azure.com/Avaneesa/Job%20Transparency/_apis/build/status/RedGhoul.JobTransparency?branchName=master)](https://dev.azure.com/Avaneesa/Job%20Transparency/_build/latest?definitionId=1&branchName=master)
+
 # Tech Transparency
 
 A Job Hunting CMS, designed to make finding a job a lot easier. By centralizing a lot of the job postings, and allowing you to keep track of everything you want to apply to.
