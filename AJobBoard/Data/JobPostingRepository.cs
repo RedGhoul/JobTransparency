@@ -28,7 +28,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<bool> JobPostingExistsByURL(string url)
+        public async Task<bool> JobPostingExistsByUrl(string url)
         {
             var jobPostingCount = await _ctx.JobPostings
                 .Where(x => x.URL.Equals(url))
@@ -36,9 +36,9 @@ namespace AJobBoard.Data
 
             if (jobPostingCount != null)
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         public async Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting)

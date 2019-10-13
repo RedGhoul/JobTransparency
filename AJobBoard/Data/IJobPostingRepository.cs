@@ -9,7 +9,7 @@ namespace AJobBoard.Data
     {
         Task<JobPosting> GetJobPostingById(int id);
         Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount);
-        Task<bool> JobPostingExistsByURL(string url);
+        Task<bool> JobPostingExistsByUrl(string url);
         Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting);
         Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting);
         Task<JobPosting> DeleteJobPostingAsync(int id);
