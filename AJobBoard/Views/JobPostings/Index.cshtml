@@ -195,25 +195,25 @@
 
 @section Scripts{
     <script>
-        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+        //var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
 
-        $('.AddToApplies').click(function () {
-            var d = $(this).data('id');
-            $.ajax({
-                method: "POST",
-                contentType: 'application/json',
-                headers: { "RequestVerificationToken": antiForgeryToken },
-                url: "/api/AppliesAPI",
-                data: JSON.stringify({ Id: parseInt(d) }),
-                success: function (data) {
-                    alertify.success("Added to Applies");
-                },
-                error: function (data) {
-                    alertify.error("Could Not Add this Job to your Applies");
-                }
-            })
+        //$('.AddToApplies').click(function () {
+        //    var d = $(this).data('id');
+        //    $.ajax({
+        //        method: "POST",
+        //        contentType: 'application/json',
+        //        headers: { "RequestVerificationToken": antiForgeryToken },
+        //        url: "/api/AppliesAPI",
+        //        data: JSON.stringify({ Id: parseInt(d) }),
+        //        success: function (data) {
+        //            alertify.success("Added to Applies");
+        //        },
+        //        error: function (data) {
+        //            alertify.error("Could Not Add this Job to your Applies");
+        //        }
+        //    })
 
-        });
+        //});
     </script>
 
 }

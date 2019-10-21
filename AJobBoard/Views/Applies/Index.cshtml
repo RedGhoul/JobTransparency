@@ -28,7 +28,7 @@
         font-size: smaller;
     }
 
-    #myTable > tbody{
+    #myTable > tbody {
         font-size: 18px;
     }
 </style>
@@ -36,53 +36,11 @@
 {
     @Html.AntiForgeryToken()
 }
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.css" />
+
 <section class="site-section" style="background-color: currentColor;padding-top:200px;">
     <div class="container">
-        <div class="row">
-            <table id="myTable" class="center" style="width:100%">
-                <thead>
-                    <tr>
-                        @*<th>Title</th>
-                        <th>Comapny</th>
-                        <th>Location</th>
-                        <th>JobSource</th>
-                        <th>NumberOfApplies</th>
-                        <th>NumberOfViews</th>
-                        <th>Delete</th>
-                        <th>Indeed Link</th>*@
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        @*<table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.DateAddedToApplies)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.DateAddedToApplies)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>*@
-
+        <h1>Under development</h1>
     </div>
-
 </section>
 
 @section Scripts {
@@ -95,7 +53,7 @@
                 method: "DELETE",
                 contentType: 'application/json',
                 headers: { "RequestVerificationToken": antiForgeryToken },
-                url: "/api/AppliesAPI/"+ID,
+                url: "/api/AppliesAPI/" + ID,
                 success: function (data) {
                     alertify.success("Removed");
                     table.ajax.reload();
@@ -106,73 +64,10 @@
             })
         }
         $('.delete').click(function () {
-            
+
 
         });
         $(document).ready(function () {
-            
-             table = $("#myTable").DataTable({
-                responsive: true,
-                orderCellsTop: true,
-                 deferRender: true,
-                pagingType: "full_numbers",
-                ajax: {
-                    url: '/api/AppliesAPI',
-                    type: "GET",
-                    contentType: "application/json",
-                    headers: {},
-                    data: function (data) {
-                        console.log(data);
-                        return JSON.stringify(data);
-                    },
-                    error: function () {
-                        alertify.error("Could Not Display Table");
-                        $(location).attr('href', '/Home/Index')
-                    }
-                },
-                columns: [
-                    {
-                        title: 'Title', data: "title",
-                    },
-                    { title: 'Company', data: "company" },
-                    { title: 'Location', data: "location" },
-                    { title: 'JobSource', data: "jobSource" },
-                    { title: 'Applicates', data: "applicates" },
-                    { title: 'Views', data: "views" },
-                    { title: 'PostDate', data: "postDate" },
-                    {
-                        title: '',
-                        data: 'id',
-                        render: function (data) {
-                            return '<a onclick="DeleteApp('+data+')" style="color:white" class="btn btn-danger btn-sm delete">Remove</a>';
-                        },
-                        orderable: false
-                    },
-                    {
-                        title: '',
-                        data: 'jobId',
-                        render: function (data) {
-                            return '<a style="color:white" href="/JobPostings/Details/'+data+'" class="btn btn-primary btn-sm delete">Details</a>';
-                        },
-                        orderable: false
-                    },
-                    {
-                        title: '',
-                        data: 'url',
-                        render: function (data) {
-                            return '<a href="' + data + '" class="btn btn-primary btn-sm">Original Posting</a>';
-                        },
-                        orderable: false
-                    }
-                ]
-            });
-            //$('#myTable tbody').on('click', 'tr', function () {
-            //    var data = table.row(this).data();
-            //    console.log(data)
-            //    alert('You clicked on ' + data[0] + '\'s row');
-            //});
-
-            
 
         });
 
