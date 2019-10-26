@@ -48,7 +48,8 @@ namespace AJobBoard.Controllers.Views
                 });
             }
 
-            return View(vm);
+            ViewBag.dataSource = vm;
+            return View();
         }
     }
 }
