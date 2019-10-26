@@ -59,28 +59,28 @@
 
             <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
                 <div class="d-flex align-items-center justify-content-center mb-2">
-                    <strong class="number" data-number="1930">0</strong>
+                    <strong class="number" data-number="">1930</strong>
                 </div>
                 <span class="caption">Candidates</span>
             </div>
 
             <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
                 <div class="d-flex align-items-center justify-content-center mb-2">
-                    <strong class="number" data-number="@ViewBag.TotalJobs">1500</strong>
+                    <strong class="number">@ViewBag.TotalJobs</strong>
                 </div>
                 <span class="caption">Jobs Posted</span>
             </div>
 
             <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
                 <div class="d-flex align-items-center justify-content-center mb-2">
-                    <strong class="number" data-number="120">0</strong>
+                    <strong class="number" data-number="120">120</strong>
                 </div>
                 <span class="caption">Jobs Filled</span>
             </div>
 
             <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
                 <div class="d-flex align-items-center justify-content-center mb-2">
-                    <strong class="number" data-number="550">0</strong>
+                    <strong class="number" data-number="550">550</strong>
                 </div>
                 <span class="caption">Companies</span>
             </div>
@@ -93,7 +93,7 @@
 
 
 <section class="site-section" style="background-color: beige;">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+
     <div class="container">
 
         <div class="row mb-5 justify-content-center">
@@ -175,5 +175,28 @@
         </div>
     </div>
 </section>
+@section Scripts{
+    <script>
 
+        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+        $('.AddToApplies').click(function () {
+            var d = $(this).data('id');
+            $.ajax({
+                method: "POST",
+                contentType: 'application/json',
+                headers: { "RequestVerificationToken": antiForgeryToken },
+                url: "/api/AppliesAPI",
+                data: JSON.stringify({ Id: parseInt(d) }),
+                success: function (data) {
+                    alertify.success("Added to Applies");
+                },
+                error: function (xhr) { // if error occured
+                    alertify.error("Could Not Add this Job to your Applies");
+                }
+            })
+        });
+
+    </script>
+
+}
 
