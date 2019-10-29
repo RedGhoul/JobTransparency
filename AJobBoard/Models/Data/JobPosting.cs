@@ -1,7 +1,13 @@
-﻿namespace AJobBoard.Models
+﻿using System;
+
+namespace AJobBoard.Models
 {
     public class JobPosting
     {
+        public JobPosting()
+        {
+            this.DateAdded = DateTime.UtcNow;
+        }
         public int Id { get; set; }
         public string Title { get; set; }
         public string Summary { get; set; }
@@ -15,6 +21,6 @@
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
         public ApplicationUser Poster { get; set; }
-        //need a created by
+        public DateTime DateAdded { get; set; }
     }
 }
