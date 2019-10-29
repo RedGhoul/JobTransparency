@@ -127,7 +127,11 @@ namespace AJobBoard.Data
             }
             else if (homeIndexVm.FindModel.Location.ToLower().Equals("ontario"))
             {
-                jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains("vancouver") == false);
+                jobsQuery = _ctx.JobPostings.Where(x => x.Location.ToLower().Contains("ontario"));
+            }
+            else if (homeIndexVm.FindModel.Location.ToLower().Equals("vancouver"))
+            {
+                jobsQuery = _ctx.JobPostings.Where(x => x.Location.ToLower().Contains("vancouver"));
             }
             else
             {
@@ -141,10 +145,25 @@ namespace AJobBoard.Data
                             x.Summary.Contains(homeIndexVm.FindModel.KeyWords));
             }
 
+            // find By Date (days)
+            if (!string.IsNullOrEmpty(homeIndexVm.FindModel.Date))
+            {
+                DateTime dayHolder = DateTime.Now;
+                if (homeIndexVm.FindModel.Date.Equals("Last 20 Days"))
+                {
+                    dayHolder = dayHolder.AddDays(-20);
+
+                }
+                else if (homeIndexVm.FindModel.Date.Equals("Last 30 Days"))
+                {
+                    dayHolder = dayHolder.AddDays(-30);
+                }
+                jobsQuery = jobsQuery.Where(x => x.DateAdded > dayHolder);
+            }
 
             // add Max Results
-
             jobs = await jobsQuery.Take(homeIndexVm.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
+
             // Calculate time
             var duration = DateTime.Now - start;
             return (jobs,duration);

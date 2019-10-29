@@ -6,5 +6,6 @@
         public string Location { get; set; }
         public int MaxResults { get; set; }
         public int Page { get; set; }
+        public string Date { get; set; }
     }
 }
