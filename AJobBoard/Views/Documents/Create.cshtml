@@ -1,4 +1,4 @@
-﻿@model AJobBoard.Models.Document
+﻿@model AJobBoard.Models.View.DocumentViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -15,27 +15,23 @@
                         <div class="col-md-4"></div>
                         <div class="col-md-4" >
 
-                            <form asp-action="Create" >
+                            <form asp-action="Create">
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 <div class="form-group">
-                                    <label asp-for="URL" class="control-label" style="color:white;">Name</label>
-                                    <input asp-for="URL" class="form-control" />
-                                    <span asp-validation-for="URL" class="text-danger"></span>
+                                    <label asp-for="DocumentName" class="control-label" style="color:white;">Name</label>
+                                    <input asp-for="DocumentName" class="form-control" />
+                                    <span asp-validation-for="DocumentName" class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label asp-for="URL" class="control-label" style="color:white;">Document</label>
-                                    <input asp-for="URL" class="form-control" />
-                                    <span asp-validation-for="URL" class="text-danger"></span>
-                                </div>
+                                
                                 <div class="form-group form-check">
                                     <label class="form-check-label" style="color:white;">
                                         <input class="form-check-input" asp-for="IsResume" /> @Html.DisplayNameFor(model => model.IsResume)
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" style="color:white;"> Date Created</label>
-                                    <input asp-for="DateCreated" class="form-control" />
-                                    <span asp-validation-for="DateCreated" class="text-danger"></span>
+                                    <label asp-for="Resume" class="control-label"></label>
+                                    <input asp-for="Resume" type="file" class="form-control" style="height:auto" />
+                                    <span asp-validation-for="Resume" class="text-danger"></span>
                                 </div>
                                 <div class="form-group">
                                     <input type="submit" value="Create" class="btn btn-primary" />
