@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Data;
@@ -20,7 +21,7 @@ namespace AJobBoard.Controllers.Views
 
         public DocumentsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, 
+            SignInManager<ApplicationUser> signInManager,
             AWSService AWSService)
         {
             _context = context;
@@ -69,20 +70,47 @@ namespace AJobBoard.Controllers.Views
             var User = await _userManager.GetUserAsync(HttpContext.User);
 
             _AWSService.validateFile(document.Resume, ModelState);
-            if (ModelState.IsValid)
+
+            string resumeKEY = "";
+            if (User != null)
             {
-                string resumeKEY = "";
-                if (ModelState.IsValid && User != null)
+                resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
+                    "Resumes/" + User.Id + document.Resume.FileName.Replace(" ","").Replace("-",""),
+                    document.Resume.ContentType, document.Resume.OpenReadStream());
+
+                var tempDoc = new Document()
                 {
-                    resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
-                        "Resumes/" + User.Id + document.Resume.FileName,
-                        document.Resume.ContentType, document.Resume.OpenReadStream());
+                    DocumentName = document.DocumentName,
+                    DateCreated = DateTime.Now,
+                    IsOtherDoc = document.IsOtherDoc,
+                    IsResume = document.IsResume,
+                    URL = resumeKEY
+                };
+
+                _context.Document.Add(tempDoc);
+                if (User.Documents == null)
+                {
+                    User.Documents = new List<Document>()
+                    {
+                        tempDoc
+                    };
                 }
-                _context.Add(document);
+                else
+                {
+                    User.Documents.Add(tempDoc);
+                }
+                
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(document);
+        }
+
+        public async Task<FileResult> Download(string fileName)
+        {
+            byte[] fileBytes = await _AWSService.GetFileInBytes(fileName, "ajobboard");
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
         // GET: Documents/Edit/5
@@ -145,6 +173,7 @@ namespace AJobBoard.Controllers.Views
 
             var document = await _context.Document
                 .FirstOrDefaultAsync(m => m.DocumentId == id);
+
             if (document == null)
             {
                 return NotFound();
@@ -158,7 +187,11 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var User = await _userManager.GetUserAsync(HttpContext.User);
             var document = await _context.Document.FindAsync(id);
+
+            User.Documents.Remove(document);
+            await _AWSService.DeleteFile(document.URL, "ajobboard");
             _context.Document.Remove(document);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -115,5 +115,32 @@ namespace AJobBoard.Services
             }
         }
 
+        public async Task DeleteFile(string fileName, string bucketName)
+        {
+
+
+            try
+            {
+                DeleteObjectRequest ObjectDeleteRequest = new DeleteObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = fileName,
+                };
+
+                Console.WriteLine("Deleting an object");
+                DeleteObjectResponse response = await S3Client.DeleteObjectAsync(ObjectDeleteRequest);
+            }
+            catch (AmazonS3Exception e)
+            {
+                Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
+            }
+            
+
+        }
+
     }
 }
