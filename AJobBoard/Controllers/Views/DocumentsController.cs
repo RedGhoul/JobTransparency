@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.View;
+using AJobBoard.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +16,17 @@ namespace AJobBoard.Controllers.Views
         private readonly ApplicationDbContext _context;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly AWSService _AWSService;
 
         public DocumentsController(ApplicationDbContext context,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager, 
+            AWSService AWSService)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
+            _AWSService = AWSService;
         }
 
         // GET: Documents
@@ -59,10 +64,20 @@ namespace AJobBoard.Controllers.Views
         // POST: Documents/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DocumentId,URL,IsResume,IsOtherDoc,DateCreated")] Document document)
+        public async Task<IActionResult> Create(DocumentViewModel document)
         {
+            var User = await _userManager.GetUserAsync(HttpContext.User);
+
+            _AWSService.validateFile(document.Resume, ModelState);
             if (ModelState.IsValid)
             {
+                string resumeKEY = "";
+                if (ModelState.IsValid && User != null)
+                {
+                    resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
+                        "Resumes/" + User.Id + document.Resume.FileName,
+                        document.Resume.ContentType, document.Resume.OpenReadStream());
+                }
                 _context.Add(document);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

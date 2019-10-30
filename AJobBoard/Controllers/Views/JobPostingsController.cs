@@ -120,7 +120,7 @@ namespace AJobBoard.Controllers.Views
             int PageSize = 12;
 
             var count = Jobs.Count();
-
+            ViewBag.TotalJobs = count;
             Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
             if (PageSize == 0)
             {
@@ -139,6 +139,7 @@ namespace AJobBoard.Controllers.Views
         {
             ViewBag.Location = homeIndexVM.FindModel.Location;
             ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
+            ViewBag.Date = homeIndexVM.FindModel.Date;
             ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
             ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults != 0 ? homeIndexVM.FindModel.MaxResults : 100;
         }

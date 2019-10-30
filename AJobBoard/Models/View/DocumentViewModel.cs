@@ -1,18 +1,20 @@
 ﻿using System;
-
-namespace AJobBoard.Models
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+namespace AJobBoard.Models.View
 {
-    public class Document
+    public class DocumentViewModel
     {
-        public Document()
+        public DocumentViewModel()
         {
             this.DateCreated = DateTime.UtcNow;
         }
         public string DocumentName { get; set; }
-        public int DocumentId { get; set; }
-        public string URL { get; set; }
         public bool IsResume { get; set; }
         public bool IsOtherDoc { get; set; }
         public DateTime DateCreated { get; set; }
+        public IFormFile Resume { get; set; }
     }
 }
