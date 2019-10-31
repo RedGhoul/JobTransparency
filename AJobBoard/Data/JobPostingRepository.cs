@@ -146,20 +146,20 @@ namespace AJobBoard.Data
             }
 
             // find By Date (days)
-            if (!string.IsNullOrEmpty(homeIndexVm.FindModel.Date))
-            {
-                DateTime dayHolder = DateTime.Now;
-                if (homeIndexVm.FindModel.Date.Equals("Last 20 Days"))
-                {
-                    dayHolder = dayHolder.AddDays(-20);
+            //if (!string.IsNullOrEmpty(homeIndexVm.FindModel.Date))
+            //{
+            //    DateTime dayHolder = DateTime.Now;
+            //    if (homeIndexVm.FindModel.Date.Equals("Last 20 Days"))
+            //    {
+            //        dayHolder = dayHolder.AddDays(-20);
 
-                }
-                else if (homeIndexVm.FindModel.Date.Equals("Last 30 Days"))
-                {
-                    dayHolder = dayHolder.AddDays(-30);
-                }
-                jobsQuery = jobsQuery.Where(x => x.DateAdded > dayHolder);
-            }
+            //    }
+            //    else if (homeIndexVm.FindModel.Date.Equals("Last 30 Days"))
+            //    {
+            //        dayHolder = dayHolder.AddDays(-30);
+            //    }
+            //    jobsQuery = jobsQuery.Where(x => x.DateAdded > dayHolder);
+            //}
 
             // add Max Results
             jobs = await jobsQuery.Take(homeIndexVm.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
