@@ -120,18 +120,22 @@ namespace AJobBoard.Controllers.Views
             int PageSize = 12;
 
             var count = Jobs.Count();
-            ViewBag.TotalJobs = count;
-            Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
-            if (PageSize == 0)
+            if (count > 25)
             {
-                ViewBag.MaxPage = 10;
-            }
-            else
-            {
-                ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+                ViewBag.TotalJobs = count;
+                Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
+                if (PageSize == 0)
+                {
+                    ViewBag.MaxPage = 10;
+                }
+                else
+                {
+                    ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+                }
+                ViewBag.Page = homeIndexVM.FindModel.Page;
             }
 
-            ViewBag.Page = homeIndexVM.FindModel.Page;
+            
             return Jobs;
         }
 
