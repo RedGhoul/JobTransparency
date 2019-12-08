@@ -41,6 +41,19 @@ namespace AJobBoard.Data
             return false;
         }
 
+        public async Task<bool> JobPostingExistsByDescription(string Summary)
+        {
+            var jobPostingCount = await _ctx.JobPostings
+                .Where(x => x.Summary.Equals(Summary))
+                .FirstOrDefaultAsync();
+
+            if (jobPostingCount != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting)
         {
 
