@@ -21,6 +21,11 @@ namespace AJobBoard.Data
             return await _ctx.JobPostings.Take(amount).ToListAsync();
         }
 
+        public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
+        {
+            return await _ctx.JobPostings.Where(x => x.KeyWords != null).ToListAsync();
+        }
+
         public async Task<JobPosting> GetJobPostingById(int id)
         {
             var jobPosting = await _ctx.JobPostings.FindAsync(id);
@@ -182,5 +187,7 @@ namespace AJobBoard.Data
             var duration = DateTime.Now - start;
             return (jobs,duration);
         }
+
+
     }
 }
