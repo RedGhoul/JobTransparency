@@ -9,6 +9,7 @@ namespace AJobBoard.Data
     {
         Task<JobPosting> GetJobPostingById(int id);
         Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount);
+        Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings();
         Task<bool> JobPostingExistsByUrl(string url);
         Task<bool> JobPostingExistsByDescription(string Summary);
         Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting);

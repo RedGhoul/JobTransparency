@@ -20,6 +20,7 @@ namespace AJobBoard.Models
         public string JobSource { get; set; }
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
+        public string KeyWords { get; set; }
         public ApplicationUser Poster { get; set; }
         public DateTime DateAdded { get; set; }
     }

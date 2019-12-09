@@ -29,6 +29,13 @@ namespace AJobBoard.Controllers
             return jobPostings.ToList();
         }
 
+        [HttpPost("GetAllNoneKeywords")]
+        public async Task<ActionResult<IEnumerable<JobPosting>>> GetAllNoneKeywordsJobPostings()
+        {
+            var jobPostings = await _JobPostingRepository.GetAllNoneKeywordsJobPostings();
+            return jobPostings.ToList();
+        }
+
 
         // GET: api/JobPostingsAPI/5
         [HttpGet("{id}")]
