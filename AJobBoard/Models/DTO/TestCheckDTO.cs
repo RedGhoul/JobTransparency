@@ -9,5 +9,6 @@ namespace AJobBoard.Models.DTO
     {
         public string url { get; set; }
         public string description { get; set; }
+        public string title { get; set; }
     }
 }

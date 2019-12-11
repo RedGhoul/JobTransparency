@@ -1,4 +1,5 @@
 ﻿using AJobBoard.Models;
+using AJobBoard.Models.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,20 @@ namespace AJobBoard.Data
         public JobPostingRepository(ApplicationDbContext ctx)
         {
             _ctx = ctx;
+        }
+        public async Task<bool> JobPostingExists(TestCheckDTO tcDTO)
+        {
+            var jobPostingCount = await _ctx.JobPostings
+                .Where(x => x.URL.Equals(tcDTO.url) == true || 
+                x.Summary.Equals(tcDTO.description) == true ||
+                x.Title.Equals(tcDTO.title) == true)
+                .FirstOrDefaultAsync();
+
+            if (jobPostingCount != null)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount)
