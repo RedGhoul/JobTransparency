@@ -95,7 +95,7 @@ namespace AJobBoard.Data
         {
             try
             {
-                jobPosting.Summary = jobPosting.Summary.Replace(" ", "");
+                jobPosting.Summary = jobPosting.Summary;
                 await _ctx.JobPostings.AddAsync(jobPosting);
                 await _ctx.SaveChangesAsync();
             }
