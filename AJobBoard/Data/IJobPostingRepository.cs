@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AJobBoard.Models;
+using AJobBoard.Models.DTO;
 
 namespace AJobBoard.Data
 {
@@ -17,6 +18,6 @@ namespace AJobBoard.Data
         Task<JobPosting> DeleteJobPostingAsync(int id);
         Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting);
         Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVM);
-
+        Task<bool> JobPostingExists(TestCheckDTO tcDTO);
     }
 }

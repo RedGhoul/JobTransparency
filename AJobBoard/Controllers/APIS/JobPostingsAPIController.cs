@@ -51,7 +51,7 @@ namespace AJobBoard.Controllers
         {
             if(tcDTO.url != null)
             {
-                bool jobPostingCount = await _JobPostingRepository.JobPostingExistsByDescription(tcDTO.description);
+                bool jobPostingCount = await _JobPostingRepository.JobPostingExists(tcDTO);
                 return Ok(jobPostingCount);
             }else
             {
