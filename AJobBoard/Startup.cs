@@ -38,6 +38,11 @@ namespace AJobBoard
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = Configuration.GetConnectionString("RedisConnection");
+                option.InstanceName = "master";
+            });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseMySql(
