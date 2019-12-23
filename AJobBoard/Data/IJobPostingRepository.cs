@@ -8,6 +8,7 @@ namespace AJobBoard.Data
 {
     public interface IJobPostingRepository
     {
+        Task<string> GetTotalJobs();
         Task<JobPosting> GetJobPostingById(int id);
         Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount);
         Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings();
@@ -19,5 +20,6 @@ namespace AJobBoard.Data
         Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting);
         Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVM);
         Task<bool> JobPostingExists(TestCheckDTO tcDTO);
+        Task<List<JobPosting>> GetRandomSetOfJobPostings();
     }
 }
