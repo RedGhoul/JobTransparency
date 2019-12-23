@@ -7,28 +7,28 @@ using AJobBoard.Data;
 using AJobBoard.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace AJobBoard.Controllers.Views
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IJobPostingRepository _jobPostingRepository;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(IJobPostingRepository jobPostingRepository)
         {
-            _context = context;
+            _jobPostingRepository = jobPostingRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.TotalJobs = await _context.JobPostings.CountAsync();
+            ViewBag.TotalJobs = await _jobPostingRepository.GetTotalJobs();
 
             HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
             homeIndexViewModel.FindModel = new FindModel();
-            List<JobPosting> Jobs = await GetRandomSetOfJobPostings();
 
-            homeIndexViewModel.jobPostings = Jobs;
-
+            homeIndexViewModel.jobPostings = await _jobPostingRepository.GetRandomSetOfJobPostings();
 
             return View(homeIndexViewModel);
         }
@@ -53,14 +53,6 @@ namespace AJobBoard.Controllers.Views
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        private async Task<List<JobPosting>> GetRandomSetOfJobPostings()
-        {
-            Random random = new Random();
-            int NumberOfResults = random.Next(10, 20);
-            var Jobs = await _context.JobPostings.Take(NumberOfResults * 2).ToListAsync();
-            int SkipNumberOfResults = random.Next(10, 20);
-            Jobs = Jobs.Skip(SkipNumberOfResults).Reverse().ToList();
-            return Jobs;
-        }
+
     }
 }
