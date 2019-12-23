@@ -45,13 +45,20 @@
                         </div>
                         <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
                             <h6 style="color:white">Max Results</h6>
-                            <select class="form-control" name="FindModel.MaxResults" value="@(ViewBag.MaxResults ?? 0)">
+                            <select class="form-control" name="FindModel.MaxResults">
                                 @for (int i = 1; i < 20; i++)
                                 {
+                                    var currentValue = i * 100;
+                                    var currentMax = ViewBag.MaxResults ?? 0;
 
-                                    <option>@((i * 100).ToString())</option>
-
-
+                                    if (currentValue == currentMax)
+                                    {
+                                        <option selected="selected">@(currentValue.ToString())</option>
+                                    }
+                                    else
+                                    {
+                                        <option>@(currentValue.ToString())</option>
+                                    }
                                 }
                             </select>
                         </div>
