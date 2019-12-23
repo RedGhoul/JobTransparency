@@ -1,10 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace AJobBoard.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser()
+        {
+            this.DateCreated = DateTime.UtcNow;
+        }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsJobSeeker { get; set; }
@@ -12,5 +18,6 @@ namespace AJobBoard.Models
         public List<Document> Documents { get; set; }
         public List<JobPosting> JobPostings { get; set; }
         public List<Apply> Applies { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 }
