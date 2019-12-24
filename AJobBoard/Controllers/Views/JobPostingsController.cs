@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.Data;
+using AJobBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AJobBoard.Controllers.Views
@@ -11,10 +14,11 @@ namespace AJobBoard.Controllers.Views
     public class JobPostingsController : Controller
     {
         private readonly IJobPostingRepository _jobPostingRepository;
-
-        public JobPostingsController(IJobPostingRepository jobPostingRepository)
+        private readonly NLTKService _NLTKService;
+        public JobPostingsController(IJobPostingRepository jobPostingRepository, NLTKService NLTKService)
         {
             _jobPostingRepository = jobPostingRepository;
+            _NLTKService = NLTKService;
         }
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
@@ -43,26 +47,48 @@ namespace AJobBoard.Controllers.Views
             return View(jobPosting);
         }
 
+
         // GET: JobPostings/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: JobPostings/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Summary,URL,Company,Location,PostDate,Salary,Posters")] JobPosting jobPosting)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,URL,Company,Location,PostDate,Salary,Posters")] JobPosting jobPosting)
         {
             if (ModelState.IsValid)
             {
-                await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
+                JobPosting newPosting = await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
+
+                var wrapper = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+                
+                if(newPosting.SummaryData == null)
+                {
+                    newPosting.SummaryData = new List<SummaryData>();
+                }
+
+                foreach (var item in wrapper.rank_list)
+                {
+                    newPosting.SummaryData.Add(new SummaryData
+                    {
+                        Affinty = item.Affinty,
+                        Text = item.Text
+                    });
+                }
+
+                await _jobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
                 return RedirectToAction(nameof(Index));
             }
             return View(jobPosting);
         }
 
         // GET: JobPostings/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
@@ -74,6 +100,7 @@ namespace AJobBoard.Controllers.Views
         }
 
         // POST: JobPostings/Edit/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Summary,URL,Company,Location,PostDate,Salary,Posters")] JobPosting jobPosting)
@@ -90,6 +117,7 @@ namespace AJobBoard.Controllers.Views
             return View(jobPosting);
         }
 
+        [Authorize]
         // GET: JobPostings/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
@@ -102,6 +130,7 @@ namespace AJobBoard.Controllers.Views
             return View(jobPosting);
         }
 
+        [Authorize]
         // POST: JobPostings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

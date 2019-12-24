@@ -42,7 +42,7 @@ namespace AJobBoard.Data
         {
             var jobPostingCount = await _ctx.JobPostings
                 .Where(x => x.URL.Equals(tcDTO.url) == true || 
-                x.Summary.Equals(tcDTO.description) == true ||
+                x.Description.Equals(tcDTO.description) == true ||
                 x.Title.Equals(tcDTO.title) == true)
                 .FirstOrDefaultAsync();
 
@@ -75,7 +75,7 @@ namespace AJobBoard.Data
 
         public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
         {
-            return await _ctx.JobPostings.Where(x => x.KeyWords != null).ToListAsync();
+            return await _ctx.JobPostings.Where(x => x.SummaryData != null).ToListAsync();
         }
 
         public async Task<JobPosting> GetJobPostingById(int id)
@@ -115,7 +115,7 @@ namespace AJobBoard.Data
         public async Task<bool> JobPostingExistsByDescription(string Summary)
         {
             var jobPostingCount = await _ctx.JobPostings
-                .Where(x => x.Summary.Equals(Summary))
+                .Where(x => x.Description.Equals(Summary))
                 .FirstOrDefaultAsync();
 
             if (jobPostingCount != null)
@@ -146,7 +146,7 @@ namespace AJobBoard.Data
         {
             try
             {
-                jobPosting.Summary = jobPosting.Summary;
+                jobPosting.Description = jobPosting.Description;
                 await _ctx.JobPostings.AddAsync(jobPosting);
                 await _ctx.SaveChangesAsync();
             }
@@ -257,7 +257,7 @@ namespace AJobBoard.Data
                 if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
                 {
                     jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
-                                x.Summary.Contains(homeIndexVm.FindModel.KeyWords));
+                                x.Description.Contains(homeIndexVm.FindModel.KeyWords));
                 }
 
                 // find By Date (days)
@@ -291,7 +291,5 @@ namespace AJobBoard.Data
             var duration = DateTime.Now - start;
             return (jobs,duration);
         }
-
-
     }
 }

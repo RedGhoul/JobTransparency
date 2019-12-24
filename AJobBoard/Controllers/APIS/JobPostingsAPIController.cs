@@ -1,6 +1,8 @@
 ﻿using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
+using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -15,9 +17,11 @@ namespace AJobBoard.Controllers
     public class JobPostingsAPIController : ControllerBase
     {
         private readonly IJobPostingRepository _JobPostingRepository;
-        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository)
+        private readonly NLTKService _NLTKService;
+        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository, NLTKService NLTKService)
         {
             _JobPostingRepository = JobPostingRepository;
+            _NLTKService = NLTKService;
         }
 
 
@@ -83,8 +87,25 @@ namespace AJobBoard.Controllers
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
-           
+            var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
+            var wrapper = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+
+            if (newPosting.SummaryData == null)
+            {
+                newPosting.SummaryData = new List<SummaryData>();
+            }
+
+            foreach (var item in wrapper.rank_list)
+            {
+                newPosting.SummaryData.Add(new SummaryData
+                {
+                    Affinty = item.Affinty,
+                    Text = item.Text
+                });
+            }
+
+            await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
+
             return CreatedAtAction("GetJobPosting", new { id = jobPosting.Id }, jobPosting);
         }
 

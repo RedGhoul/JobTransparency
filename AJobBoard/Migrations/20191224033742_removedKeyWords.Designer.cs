@@ -3,14 +3,16 @@ using System;
 using AJobBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AJobBoard.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191224033742_removedKeyWords")]
+    partial class removedKeyWords
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,28 +99,12 @@ namespace AJobBoard.Migrations
                     b.ToTable("Applies");
                 });
 
-            modelBuilder.Entity("AJobBoard.Models.Data.SummaryData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Affinty");
-
-                    b.Property<int?>("JobPostingId");
-
-                    b.Property<string>("Text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobPostingId");
-
-                    b.ToTable("SummaryData");
-                });
-
             modelBuilder.Entity("AJobBoard.Models.Document", b =>
                 {
                     b.Property<int>("DocumentId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationUserId");
 
                     b.Property<DateTime>("DateCreated");
 
@@ -128,13 +114,11 @@ namespace AJobBoard.Migrations
 
                     b.Property<bool>("IsResume");
 
-                    b.Property<string>("OwnerId");
-
                     b.Property<string>("URL");
 
                     b.HasKey("DocumentId");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Document");
                 });
@@ -165,6 +149,8 @@ namespace AJobBoard.Migrations
                     b.Property<string>("Posters");
 
                     b.Property<string>("Salary");
+
+                    b.Property<string>("SummaryData");
 
                     b.Property<string>("Title");
 
@@ -291,22 +277,15 @@ namespace AJobBoard.Migrations
                         .HasForeignKey("ApplierId");
 
                     b.HasOne("AJobBoard.Models.JobPosting", "JobPosting")
-                        .WithMany("Applies")
-                        .HasForeignKey("JobPostingId");
-                });
-
-            modelBuilder.Entity("AJobBoard.Models.Data.SummaryData", b =>
-                {
-                    b.HasOne("AJobBoard.Models.JobPosting", "JobPosting")
-                        .WithMany("SummaryData")
+                        .WithMany()
                         .HasForeignKey("JobPostingId");
                 });
 
             modelBuilder.Entity("AJobBoard.Models.Document", b =>
                 {
-                    b.HasOne("AJobBoard.Models.ApplicationUser", "Owner")
+                    b.HasOne("AJobBoard.Models.ApplicationUser")
                         .WithMany("Documents")
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("AJobBoard.Models.JobPosting", b =>
