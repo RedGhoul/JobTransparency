@@ -5,6 +5,7 @@ using AJobBoard.Models.DTO;
 using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,20 +89,43 @@ namespace AJobBoard.Controllers
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
             var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
-            var wrapper = await _NLTKService.GetNLTKSummary(jobPosting.Description);
 
-            if (newPosting.SummaryData == null)
+            try
             {
-                newPosting.SummaryData = new List<SummaryData>();
+                var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
+                if (wrapper != null)
+                {
+                    var ListKeyPhrase = new List<KeyPhrase>();
+
+                    foreach (var item in wrapper.rank_list)
+                    {
+                        ListKeyPhrase.Add(new KeyPhrase
+                        {
+                            Affinty = item.Affinty,
+                            Text = item.Text,
+                            JobPosting = newPosting
+                        });
+                    }
+                    newPosting.KeyPhrases = ListKeyPhrase;
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
-            foreach (var item in wrapper.rank_list)
+            try
             {
-                newPosting.SummaryData.Add(new SummaryData
+                var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+                if(NLTKSummary != null)
                 {
-                    Affinty = item.Affinty,
-                    Text = item.Text
-                });
+                    newPosting.Summary = NLTKSummary.SummaryText;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
 
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);

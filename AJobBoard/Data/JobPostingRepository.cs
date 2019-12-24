@@ -41,7 +41,7 @@ namespace AJobBoard.Data
         public async Task<bool> JobPostingExists(TestCheckDTO tcDTO)
         {
             var jobPostingCount = await _ctx.JobPostings
-                .Where(x => x.URL.Equals(tcDTO.url) == true || 
+                .Where(x => x.URL.Equals(tcDTO.url) == true ||
                 x.Description.Equals(tcDTO.description) == true ||
                 x.Title.Equals(tcDTO.title) == true)
                 .FirstOrDefaultAsync();
@@ -73,9 +73,34 @@ namespace AJobBoard.Data
             return jobs;
         }
 
+        public async Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount)
+        {
+            string cacheKey = "JobsKeyPhrase" + amount;
+            string JobsString = null;//await _cache.GetStringAsync(cacheKey);
+            IEnumerable<JobPosting> jobs = null;
+            if (string.IsNullOrEmpty(JobsString))
+            {
+                jobs = await _ctx.JobPostings.Take(amount).Include(x => x.KeyPhrases).ToListAsync();
+                var options = new DistributedCacheEntryOptions();
+                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
+
+                //await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobs, Formatting.None,
+                //        new JsonSerializerSettings()
+                //        {
+                //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                //        }), options);
+            }
+            else
+            {
+                jobs = JsonConvert.DeserializeObject<IEnumerable<JobPosting>>(JobsString);
+            }
+
+            return jobs;
+        }
+
         public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
         {
-            return await _ctx.JobPostings.Where(x => x.SummaryData != null).ToListAsync();
+            return await _ctx.JobPostings.Where(x => x.KeyPhrases != null).ToListAsync();
         }
 
         public async Task<JobPosting> GetJobPostingById(int id)
@@ -90,7 +115,8 @@ namespace AJobBoard.Data
                 var options = new DistributedCacheEntryOptions();
                 options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
                 await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPosting), options);
-            } else
+            }
+            else
             {
                 jobPosting = JsonConvert.DeserializeObject<JobPosting>(jobPostingString);
             }
@@ -218,7 +244,7 @@ namespace AJobBoard.Data
             {
                 RandomjobsList = JsonConvert.DeserializeObject<List<JobPosting>>(Randomjobs);
             }
-           
+
             return RandomjobsList;
         }
 
@@ -289,7 +315,7 @@ namespace AJobBoard.Data
             }
 
             var duration = DateTime.Now - start;
-            return (jobs,duration);
+            return (jobs, duration);
         }
     }
 }

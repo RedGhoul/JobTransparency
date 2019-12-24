@@ -26,6 +26,7 @@ namespace AJobBoard.Models
         public List<Apply> Applies { get; set; }
         public ApplicationUser Poster { get; set; }
         public DateTime DateAdded { get; set; }
-        public List<SummaryData> SummaryData { get; set; }
+        public List<KeyPhrase> KeyPhrases { get; set; }
+        public string Summary  { get; set; }
     }
 }

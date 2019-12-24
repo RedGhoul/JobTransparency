@@ -8,6 +8,7 @@ namespace AJobBoard.Data
 {
     public interface IJobPostingRepository
     {
+        Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount);
         Task<string> GetTotalJobs();
         Task<JobPosting> GetJobPostingById(int id);
         Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount);

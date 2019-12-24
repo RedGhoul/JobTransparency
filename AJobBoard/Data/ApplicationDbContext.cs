@@ -14,15 +14,17 @@ namespace AJobBoard.Data
 
         public DbSet<JobPosting> JobPostings { get; set; }
         public DbSet<Apply> Applies { get; set; }
-        public DbSet<SummaryData> SummaryData { get; set; }
+        public DbSet<KeyPhrase> KeyPhrase { get; set; }
         public DbSet<Document> Document { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             builder.Entity<JobPosting>()
-            .HasMany(c => c.SummaryData)
-            .WithOne(e => e.JobPosting);
+            .HasMany(c => c.KeyPhrases)
+            .WithOne(e => e.JobPosting)
+            .IsRequired();
 
             builder.Entity<JobPosting>()
             .HasMany(c => c.Applies)
