@@ -10,7 +10,7 @@ namespace AJobBoard.Models
         }
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Summary { get; set; }
+        public string Description { get; set; }
         public string URL { get; set; }
         public string Company { get; set; }
         public string Location { get; set; }
@@ -23,5 +23,6 @@ namespace AJobBoard.Models
         public string KeyWords { get; set; }
         public ApplicationUser Poster { get; set; }
         public DateTime DateAdded { get; set; }
+        public string SummaryData { get; set; }
     }
 }

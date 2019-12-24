@@ -56,7 +56,9 @@ namespace AJobBoard.Controllers.Views
         {
             if (ModelState.IsValid)
             {
-                await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
+                JobPosting newPosting = await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
+
+                await _jobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
                 return RedirectToAction(nameof(Index));
             }
             return View(jobPosting);

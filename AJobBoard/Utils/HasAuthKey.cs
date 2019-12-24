@@ -24,7 +24,8 @@ namespace AJobBoard.Utils
             var authContext = (AuthorizationFilterContext)context.Resource;
             if(authContext.HttpContext.Request.Headers.ContainsKey("Auth") == true)
             {
-                if (authContext.HttpContext.Request.Headers["Auth"].Equals(_configuration.GetSection("AppSettings")["Auth"]))
+                string Key = authContext.HttpContext.Request.Headers["Auth"];
+                if (Key.Equals(_configuration.GetSection("AppSettings")["Auth-AzureFunction"]))
                 {
                     context.Succeed(requirment);
                 }
