@@ -23,10 +23,11 @@ namespace AJobBoard.Services
     public class NLTKService
     {
         private string NLTKSecretKey = "";
-
+        private string URLFLASK = "";
         public NLTKService(IConfiguration configuration)
         {
             NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-Classify"];
+            URLFLASK = configuration.GetConnectionString("FlaskClassify");
         }
 
         public async Task<SummaryDataWrapperDTO> GetNLTKSummary(string Description)
@@ -38,10 +39,9 @@ namespace AJobBoard.Services
             });
             var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var url = "http://127.0.0.1:5000/Classify";
             var client = new HttpClient();
 
-            var response = await client.PostAsync(url, data);
+            var response = await client.PostAsync(URLFLASK, data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
