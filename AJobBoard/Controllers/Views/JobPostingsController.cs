@@ -15,12 +15,12 @@ namespace AJobBoard.Controllers.Views
     {
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly NLTKService _NLTKService;
-        private readonly KeyPharseRepository _KeyPharseRepository;
+        private readonly IKeyPharseRepository _KeyPharseRepository;
 
         public JobPostingsController(
             IJobPostingRepository jobPostingRepository,
             NLTKService NLTKService,
-            KeyPharseRepository KeyPharseRepository)
+            IKeyPharseRepository KeyPharseRepository)
         {
             _jobPostingRepository = jobPostingRepository;
             _NLTKService = NLTKService;
