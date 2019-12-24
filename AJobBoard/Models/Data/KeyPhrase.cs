@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Models.Data
 {
-    public class SummaryData
+    public class KeyPhrase
     {
         public int Id { get; set; }
         public string Affinty { get; set; }

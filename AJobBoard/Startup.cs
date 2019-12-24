@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Syncfusion.Licensing;
 using System;
 using System.Threading.Tasks;
@@ -89,7 +90,9 @@ namespace AJobBoard
 
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore); ;
 
             services.AddAuthorization(options =>
             {
@@ -102,6 +105,7 @@ namespace AJobBoard
             services.AddSingleton<AWSService>();
             services.AddScoped<UserManager<ApplicationUser>>();
             services.AddScoped<IJobPostingRepository, JobPostingRepository>();
+            services.AddScoped<IKeyPharseRepository,KeyPharseRepository>();
             services.AddScoped<NLTKService>();
 
         }

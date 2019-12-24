@@ -15,11 +15,57 @@ namespace AJobBoard.Controllers.Views
     {
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly NLTKService _NLTKService;
-        public JobPostingsController(IJobPostingRepository jobPostingRepository, NLTKService NLTKService)
+        private readonly KeyPharseRepository _KeyPharseRepository;
+
+        public JobPostingsController(
+            IJobPostingRepository jobPostingRepository,
+            NLTKService NLTKService,
+            KeyPharseRepository KeyPharseRepository)
         {
             _jobPostingRepository = jobPostingRepository;
             _NLTKService = NLTKService;
+            _KeyPharseRepository = KeyPharseRepository;
         }
+        //public async Task<IActionResult> Ingest()
+        //{
+        //    IEnumerable<JobPosting> things = await _jobPostingRepository.GetJobPostingsWithKeyPhraseAsync(1000);
+
+        //    foreach (var JobPosting in things)
+        //    {
+
+        //        if (JobPosting.KeyPhrases != null || JobPosting.KeyPhrases.Count == 0)
+        //        {
+        //            var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
+        //            var ListKeyPhrase = new List<KeyPhrase>();
+
+        //            foreach (var item in wrapper.rank_list)
+        //            {
+        //                ListKeyPhrase.Add(new KeyPhrase
+        //                {
+        //                    Affinty = item.Affinty,
+        //                    Text = item.Text,
+        //                    JobPosting = JobPosting
+        //                });
+        //            }
+
+        //            //await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
+
+        //            JobPosting.KeyPhrases = ListKeyPhrase;
+        //        }
+
+        //        if (string.IsNullOrEmpty(JobPosting.Summary))
+        //        {
+        //            var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
+
+        //            JobPosting.Summary = NLTKSummary.SummaryText;
+        //        }
+
+
+        //        await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+        //    }
+
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
@@ -65,23 +111,28 @@ namespace AJobBoard.Controllers.Views
             {
                 JobPosting newPosting = await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
 
-                var wrapper = await _NLTKService.GetNLTKSummary(jobPosting.Description);
-                
-                if(newPosting.SummaryData == null)
+                var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
+
+                if (newPosting.KeyPhrases == null)
                 {
-                    newPosting.SummaryData = new List<SummaryData>();
+                    newPosting.KeyPhrases = new List<KeyPhrase>();
                 }
 
                 foreach (var item in wrapper.rank_list)
                 {
-                    newPosting.SummaryData.Add(new SummaryData
+                    newPosting.KeyPhrases.Add(new KeyPhrase
                     {
                         Affinty = item.Affinty,
                         Text = item.Text
                     });
                 }
 
+                var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+
+                newPosting.Summary = NLTKSummary.SummaryText;
+
                 await _jobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(jobPosting);
@@ -164,7 +215,7 @@ namespace AJobBoard.Controllers.Views
                 ViewBag.Page = homeIndexVM.FindModel.Page;
             }
 
-            
+
             return Jobs;
         }
 

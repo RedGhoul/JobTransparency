@@ -26,11 +26,11 @@ namespace AJobBoard.Services
         private string URLFLASK = "";
         public NLTKService(IConfiguration configuration)
         {
-            NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-Classify"];
-            URLFLASK = configuration.GetConnectionString("FlaskClassify");
+            NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-FlaskNLTK"];
+            URLFLASK = configuration.GetConnectionString("FlaskNLTK");
         }
 
-        public async Task<SummaryDataWrapperDTO> GetNLTKSummary(string Description)
+        public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
         {
             var json = JsonConvert.SerializeObject(new
             {
@@ -41,14 +41,48 @@ namespace AJobBoard.Services
 
             var client = new HttpClient();
 
-            var response = await client.PostAsync(URLFLASK, data);
+            var response = await client.PostAsync(URLFLASK+ "/extract_keyphrases_from_text", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
-            SummaryDataWrapperDTO list = JsonConvert
-                .DeserializeObject<SummaryDataWrapperDTO>(result);
+            try
+            {
+                KeyPhrasesWrapperDTO list = JsonConvert
+                .DeserializeObject<KeyPhrasesWrapperDTO>(result);
+                return list;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
-            return list;
+        public async Task<SummaryDTO> GetNLTKSummary(string Description)
+        {
+            var json = JsonConvert.SerializeObject(new
+            {
+                textIn = Description,
+                authKey = NLTKSecretKey
+            });
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var client = new HttpClient();
+
+            var response = await client.PostAsync(URLFLASK + "/extract_summary_from_text", data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+
+            try
+            {
+                 SummaryDTO list = JsonConvert
+                .DeserializeObject<SummaryDTO>(result);
+                return list;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
     }
