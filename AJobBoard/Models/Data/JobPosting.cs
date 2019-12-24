@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AJobBoard.Models.Data;
+using System;
+using System.Collections.Generic;
 
 namespace AJobBoard.Models
 {
@@ -8,6 +10,7 @@ namespace AJobBoard.Models
         {
             this.DateAdded = DateTime.UtcNow;
         }
+
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -20,9 +23,9 @@ namespace AJobBoard.Models
         public string JobSource { get; set; }
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
-        public string KeyWords { get; set; }
+        public List<Apply> Applies { get; set; }
         public ApplicationUser Poster { get; set; }
         public DateTime DateAdded { get; set; }
-        public string SummaryData { get; set; }
+        public List<SummaryData> SummaryData { get; set; }
     }
 }

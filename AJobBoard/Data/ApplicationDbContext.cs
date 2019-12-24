@@ -1,4 +1,5 @@
 ﻿using AJobBoard.Models;
+using AJobBoard.Models.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,13 +14,35 @@ namespace AJobBoard.Data
 
         public DbSet<JobPosting> JobPostings { get; set; }
         public DbSet<Apply> Applies { get; set; }
+        public DbSet<SummaryData> SummaryData { get; set; }
+        public DbSet<Document> Document { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<JobPosting>()
+            .HasMany(c => c.SummaryData)
+            .WithOne(e => e.JobPosting);
+
+            builder.Entity<JobPosting>()
+            .HasMany(c => c.Applies)
+            .WithOne(e => e.JobPosting);
+
+            builder.Entity<ApplicationUser>()
+            .HasMany(c => c.Documents)
+            .WithOne(e => e.Owner);
+
+            builder.Entity<ApplicationUser>()
+            .HasMany(c => c.JobPostings)
+            .WithOne(e => e.Poster);
+
+            builder.Entity<ApplicationUser>()
+            .HasMany(c => c.Applies)
+            .WithOne(e => e.Applier);
+
         }
 
-        public DbSet<AJobBoard.Models.Document> Document { get; set; }
+        
     }
 
 

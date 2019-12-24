@@ -14,5 +14,6 @@ namespace AJobBoard.Models
         public bool IsResume { get; set; }
         public bool IsOtherDoc { get; set; }
         public DateTime DateCreated { get; set; }
+        public ApplicationUser Owner { get; set; }
     }
 }
