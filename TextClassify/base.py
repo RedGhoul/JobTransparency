@@ -1,12 +1,13 @@
-from rake_nltk import Rake
-from bs4 import BeautifulSoup
-
-import nltk
 
 from flask import Flask,request,jsonify
+
+import nltk
+import secrets
+import NLTKProcessor
+
 app = Flask(__name__)
 
-import secrets
+
 @app.before_first_request
 def downloadNLTK():
     nltk.download('popular')
@@ -15,27 +16,27 @@ def downloadNLTK():
 def hello():
     return "I am here to Classify"
 
-@app.route("/Classify",methods=["POST"])
-def classify():
+@app.route("/extract_keyphrases_from_text",methods=["POST"])
+def extract_keyphrases_from_text():
     try:
         authKey = request.json["authKey"]
         if authKey == secrets.AUTHKEYPrime:
-            soup = BeautifulSoup(request.json["textIn"])
-            htmlFreeText = soup.get_text()
-            htmlFreeText.replace("-","")
-            r = Rake()
-            r.extract_keywords_from_text(htmlFreeText)
-            final = []
-            for pair in r.rank_list:
-                newDic = {}
-                newDic["Affinty"] = pair[0]
-                newDic["Text"] = pair[1]
-                final.append(newDic)
-
-
+            final = NLTKProcessor.extractKeyPhrasesFromText(request.json["textIn"])
             return jsonify({"rank_list":final})
         else:
-            return 'Record not found',400
+            return 'Processing Error Occured',500
     except:
-        return 'Record not found',400
+        return 'Processing Error Occured',500
+
+@app.route("/extract_summary_from_text",methods=["POST"])
+def extract_summary_from_text():
+    try:
+        authKey = request.json["authKey"]
+        if authKey == secrets.AUTHKEYPrime:
+            final = NLTKProcessor.generate_summary(request.json["textIn"])
+            return jsonify({"SummaryText":final})
+        else:
+            return 'Processing Error Occured',500
+    except:
+        return 'Processing Error Occured',500
     
