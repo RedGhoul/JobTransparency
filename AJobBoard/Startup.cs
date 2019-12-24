@@ -102,6 +102,7 @@ namespace AJobBoard
             services.AddSingleton<AWSService>();
             services.AddScoped<UserManager<ApplicationUser>>();
             services.AddScoped<IJobPostingRepository, JobPostingRepository>();
+            services.AddScoped<NLTKService>();
 
         }
 

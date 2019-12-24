@@ -11,6 +11,12 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
+using System.Collections.Generic;
+using AJobBoard.Models.Data;
+using AJobBoard.Models.DTO;
 
 namespace AJobBoard.Services
 {
@@ -20,13 +26,29 @@ namespace AJobBoard.Services
 
         public NLTKService(IConfiguration configuration)
         {
-            string NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-Classify"];
+            NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-Classify"];
         }
 
-        public string getSummary(string Description)
+        public async Task<SummaryDataWrapperDTO> GetNLTKSummary(string Description)
         {
+            var json = JsonConvert.SerializeObject(new
+            {
+                textIn = Description,
+                authKey = NLTKSecretKey
+            });
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            return "";
+            var url = "http://127.0.0.1:5000/Classify";
+            var client = new HttpClient();
+
+            var response = await client.PostAsync(url, data);
+
+            string result = response.Content.ReadAsStringAsync().Result;
+
+            SummaryDataWrapperDTO list = JsonConvert
+                .DeserializeObject<SummaryDataWrapperDTO>(result);
+
+            return list;
         }
 
     }
