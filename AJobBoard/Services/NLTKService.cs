@@ -27,7 +27,7 @@ namespace AJobBoard.Services
         public NLTKService(IConfiguration configuration)
         {
             NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-FlaskNLTK"];
-            URLFLASK = configuration.GetConnectionString("FlaskNLTK");
+            URLFLASK = configuration.GetConnectionString("FlaskNLTK-Prod");
         }
 
         public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
