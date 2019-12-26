@@ -113,6 +113,7 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return BadRequest(ex);
             }
 
             try
@@ -126,11 +127,12 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return BadRequest(ex);
             }
 
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
 
-            return CreatedAtAction("GetJobPosting", new { id = jobPosting.Id }, jobPosting);
+            return Ok();
         }
 
         // DELETE: api/JobPostingsAPI/5
