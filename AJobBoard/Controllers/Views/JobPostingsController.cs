@@ -32,25 +32,32 @@ namespace AJobBoard.Controllers.Views
 
         //    foreach (var JobPosting in things)
         //    {
+        //        bool change = false;
 
-        //        if (JobPosting.KeyPhrases != null || JobPosting.KeyPhrases.Count == 0)
+        //        if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
         //        {
         //            var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
-        //            var ListKeyPhrase = new List<KeyPhrase>();
-
-        //            foreach (var item in wrapper.rank_list)
+        //            if(wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
         //            {
-        //                ListKeyPhrase.Add(new KeyPhrase
+        //                var ListKeyPhrase = new List<KeyPhrase>();
+
+        //                foreach (var item in wrapper.rank_list)
         //                {
-        //                    Affinty = item.Affinty,
-        //                    Text = item.Text,
-        //                    JobPosting = JobPosting
-        //                });
+        //                    ListKeyPhrase.Add(new KeyPhrase
+        //                    {
+        //                        Affinty = item.Affinty,
+        //                        Text = item.Text,
+        //                        JobPosting = JobPosting
+        //                    });
+        //                }
+
+        //                //await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
+
+        //                JobPosting.KeyPhrases = ListKeyPhrase;
+        //                change = true;
         //            }
 
-        //            //await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
-
-        //            JobPosting.KeyPhrases = ListKeyPhrase;
+                    
         //        }
 
         //        if (string.IsNullOrEmpty(JobPosting.Summary))
@@ -58,10 +65,14 @@ namespace AJobBoard.Controllers.Views
         //            var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
 
         //            JobPosting.Summary = NLTKSummary.SummaryText;
+        //            change = true;
         //        }
 
-
-        //        await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+        //        if(change == true)
+        //        {
+        //            await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+        //            change = false;
+        //        }
         //    }
 
         //    return RedirectToAction(nameof(Index));

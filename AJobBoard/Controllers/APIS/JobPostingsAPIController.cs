@@ -90,45 +90,45 @@ namespace AJobBoard.Controllers
         {
             var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
 
-            try
-            {
-                var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
-                if (wrapper != null)
-                {
-                    var ListKeyPhrase = new List<KeyPhrase>();
+            //try
+            //{
+            //    var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
+            //    if (wrapper != null)
+            //    {
+            //        var ListKeyPhrase = new List<KeyPhrase>();
 
-                    foreach (var item in wrapper.rank_list)
-                    {
-                        ListKeyPhrase.Add(new KeyPhrase
-                        {
-                            Affinty = item.Affinty,
-                            Text = item.Text,
-                            JobPosting = newPosting
-                        });
-                    }
-                    newPosting.KeyPhrases = ListKeyPhrase;
-                }
+            //        foreach (var item in wrapper.rank_list)
+            //        {
+            //            ListKeyPhrase.Add(new KeyPhrase
+            //            {
+            //                Affinty = item.Affinty,
+            //                Text = item.Text,
+            //                JobPosting = newPosting
+            //            });
+            //        }
+            //        newPosting.KeyPhrases = ListKeyPhrase;
+            //    }
                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
 
-            try
-            {
-                var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
-                if(NLTKSummary != null)
-                {
-                    newPosting.Summary = NLTKSummary.SummaryText;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //try
+            //{
+            //    var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+            //    if(NLTKSummary != null)
+            //    {
+            //        newPosting.Summary = NLTKSummary.SummaryText;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
 
-            await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
+            //await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
 
             return CreatedAtAction("GetJobPosting", new { id = jobPosting.Id }, jobPosting);
         }
