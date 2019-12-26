@@ -108,17 +108,18 @@ namespace AJobBoard.Controllers
                     }
                     newPosting.KeyPhrases = ListKeyPhrase;
                 }
-               
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return BadRequest(ex);
             }
 
             try
             {
                 var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
-                if(NLTKSummary != null)
+                if (NLTKSummary != null)
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;
                 }
@@ -126,11 +127,12 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                return BadRequest(ex);
             }
 
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
 
-            return CreatedAtAction("GetJobPosting", new { id = jobPosting.Id }, jobPosting);
+            return Ok();
         }
 
         // DELETE: api/JobPostingsAPI/5
