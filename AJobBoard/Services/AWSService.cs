@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Services
 {
-    public class AWSService
+    public class AWSService : IAWSService
     {
         private AmazonS3Client S3Client;
         private long MAX_FILE_SIZE = 4048576;
@@ -138,7 +138,7 @@ namespace AJobBoard.Services
             {
                 Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
             }
-            
+
 
         }
 

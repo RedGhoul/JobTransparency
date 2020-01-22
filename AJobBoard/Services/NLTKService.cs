@@ -20,7 +20,7 @@ using AJobBoard.Models.DTO;
 
 namespace AJobBoard.Services
 {
-    public class NLTKService
+    public class NLTKService : INLTKService
     {
         private string NLTKSecretKey = "";
         private string URLFLASK = "";
@@ -41,7 +41,7 @@ namespace AJobBoard.Services
 
             var client = new HttpClient();
 
-            var response = await client.PostAsync(URLFLASK+ "/extract_keyphrases_from_text", data);
+            var response = await client.PostAsync(URLFLASK + "/extract_keyphrases_from_text", data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
@@ -74,8 +74,8 @@ namespace AJobBoard.Services
 
             try
             {
-                 SummaryDTO list = JsonConvert
-                .DeserializeObject<SummaryDTO>(result);
+                SummaryDTO list = JsonConvert
+               .DeserializeObject<SummaryDTO>(result);
                 return list;
             }
             catch (Exception)

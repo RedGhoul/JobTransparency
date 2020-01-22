@@ -98,15 +98,16 @@ namespace AJobBoard
             {
                 options.AddPolicy("AuthKey", policy =>
                     policy.Requirements.Add(new HasAuthKey(Configuration)));
+                //options.AddPolicy("")
             });
 
             services.AddSingleton<IConfiguration>(Configuration);
 
-            services.AddSingleton<AWSService>();
             services.AddScoped<UserManager<ApplicationUser>>();
+            services.AddSingleton<IAWSService,AWSService>();
             services.AddScoped<IJobPostingRepository, JobPostingRepository>();
             services.AddScoped<IKeyPharseRepository,KeyPharseRepository>();
-            services.AddScoped<NLTKService>();
+            services.AddScoped<INLTKService ,NLTKService>();
 
         }
 
