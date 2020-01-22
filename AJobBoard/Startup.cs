@@ -2,6 +2,7 @@ using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Services;
 using AJobBoard.Utils;
+using AJobBoard.Utils.AuthorizationHandler;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

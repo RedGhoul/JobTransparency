@@ -6,6 +6,7 @@ using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Services;
+using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -84,13 +85,14 @@ namespace AJobBoard.Controllers.Views
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
-            homeIndexVm = SetDefaultFindModel(homeIndexVm);
-            SetupViewBag(homeIndexVm);
+           
+            homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
+            JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
             var (jobs, duration) = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
             ViewBag.SecsToQuery = duration.TotalSeconds
                 .ToString(CultureInfo.CurrentCulture)
                 .Replace("-", "");
-            jobs = ConfigurePaging(homeIndexVm, jobs);
+            jobs = JobPostingHelper.ConfigurePaging(homeIndexVm, jobs, ViewBag);
             return View(jobs);
         }
 
@@ -103,6 +105,7 @@ namespace AJobBoard.Controllers.Views
             {
                 return NotFound();
             }
+
             jobPosting = await _jobPostingRepository.TickNumberOfViewAsync(jobPosting);
 
             return View(jobPosting);
@@ -166,7 +169,6 @@ namespace AJobBoard.Controllers.Views
         }
 
         // POST: JobPostings/Edit/5
-        
         [HttpPost]
         [Authorize(Policy = "CanEditPosting")]
         [ValidateAntiForgeryToken]
@@ -207,88 +209,6 @@ namespace AJobBoard.Controllers.Views
             await _jobPostingRepository.DeleteJobPostingAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
-
-        // Helpers
-
-        private List<JobPosting> ConfigurePaging(HomeIndexViewModel homeIndexVM, List<JobPosting> Jobs)
-        {
-            int PageSize = 12;
-
-            var count = Jobs.Count();
-            if (count > 25)
-            {
-                ViewBag.TotalJobs = count;
-                Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
-                if (PageSize == 0)
-                {
-                    ViewBag.MaxPage = 10;
-                }
-                else
-                {
-                    ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
-                }
-                ViewBag.Page = homeIndexVM.FindModel.Page;
-            }
-
-
-            return Jobs;
-        }
-
-        private void SetupViewBag(HomeIndexViewModel homeIndexVM)
-        {
-            ViewBag.Location = homeIndexVM.FindModel.Location;
-            ViewBag.KeyWords = homeIndexVM.FindModel.KeyWords;
-            ViewBag.Date = homeIndexVM.FindModel.Date;
-            ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
-            ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults != 0 ? homeIndexVM.FindModel.MaxResults : 100;
-        }
-
-        private static HomeIndexViewModel SetDefaultFindModel(HomeIndexViewModel homeIndexVM)
-        {
-            if (homeIndexVM == null)
-            {
-                homeIndexVM = new HomeIndexViewModel
-                {
-                    FindModel = new FindModel
-                    {
-                        Location = "anywhere",
-                        KeyWords = "",
-                        MaxResults = 100,
-                        Page = 0
-                    }
-                };
-            }
-            else if (homeIndexVM.FindModel == null)
-            {
-                homeIndexVM.FindModel = new FindModel();
-
-                homeIndexVM = FillFindModel(homeIndexVM);
-            }
-            else
-            {
-                homeIndexVM = FillFindModel(homeIndexVM);
-            }
-            return homeIndexVM;
-        }
-
-        private static HomeIndexViewModel FillFindModel(HomeIndexViewModel homeIndexVM)
-        {
-            homeIndexVM.FindModel.KeyWords = homeIndexVM.FindModel.KeyWords ?? "";
-            homeIndexVM.FindModel.Location = homeIndexVM.FindModel.Location ?? "";
-            if (homeIndexVM.FindModel.MaxResults == 0)
-            {
-                homeIndexVM.FindModel.MaxResults = 100;
-            }
-
-            if (homeIndexVM.FindModel.Page == 0)
-            {
-                homeIndexVM.FindModel.Page = 1;
-            }
-
-            return homeIndexVM;
-        }
-
 
     }
 }

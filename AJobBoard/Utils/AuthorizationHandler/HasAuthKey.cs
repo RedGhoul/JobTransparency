@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace AJobBoard.Utils
+namespace AJobBoard.Utils.AuthorizationHandler
 {
     public class HasAuthKey : AuthorizationHandler<HasAuthKey>, IAuthorizationRequirement
     {
