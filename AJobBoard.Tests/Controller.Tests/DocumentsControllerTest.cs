@@ -12,23 +12,81 @@ namespace AJobBoard.Tests.Controller.Tests
         [Fact]
         public async Task Index_ReturnViewResult_With_Documents()
         {
-            //// Arrange
-            //var mockRepo = new Mock<IJobPostingRepository>();
-            //mockRepo.Setup(repo => repo.GetRandomSetOfJobPostings())
-            //    .ReturnsAsync(GetRandomSetOfJobPostings());
-            //mockRepo.Setup(repo => repo.GetTotalJobs())
-            //   .ReturnsAsync(GetTotalJobs());
-            //var controller = new HomeController(mockRepo.Object);
 
-            //// Act
-            //var result = await controller.Index();
-
-            //// Assert
-            //var viewResult = Assert.IsType<ViewResult>(result);
-            //var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
-            //    viewResult.ViewData.Model);
-            //Assert.Equal(10, model.jobPostings.Count());
         }
+
+        [Fact]
+        public async Task Details_ReturnViewResult_With_Document()
+        {
+
+        }
+
+        [Fact]
+        public async Task Details_ReturnNotFoundViewResult_When_NoValidIdGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Create_ReturnsReDirectResult_When_ValidModelIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Create_ReturnsViewResult_When_InValidModelIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Edit_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Edit_Get_ReturnsViewResult_When_ValidIDIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Edit_Post_ReturnsViewResult_When_ValidModelIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Edit_Post_ReturnsViewResult_When_InValidModelIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Edit_Post_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Delete_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Delete_Get_ReturnsViewResult_When_ValidIDIsGiven()
+        {
+
+        }
+
+        [Fact]
+        public async Task Delete_Post_ReturnsRedirectResult_When_ValidIDIsGiven()
+        {
+
+        }
+
 
     }
 }
