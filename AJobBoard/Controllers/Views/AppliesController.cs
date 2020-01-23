@@ -12,22 +12,23 @@ namespace AJobBoard.Controllers.Views
 {
     public class AppliesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAppliesRepository _appliesRepository;
 
-        public AppliesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IUserRepository _userRepository;
+
+        public AppliesController(IAppliesRepository appliesRepository, IUserRepository userRepository)
         {
-            _context = context;
-            _userManager = userManager;
+            _appliesRepository = appliesRepository;
+            _userRepository = userRepository;
         }
 
         // GET: Applies
         public async Task<IActionResult> Index()
         {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
 
-            var applications = await _context.Applies.Include(x => x.JobPosting)
-                .Where(x => x.Applier.Id == User.Id).ToListAsync();
+            var currentUser = await _userRepository.getUserFromHttpContextAsync(HttpContext);
+
+            var applications = await _appliesRepository.GetUsersAppliesAsync(currentUser);
 
             List<AppliesIndexViewModel> vm = new List<AppliesIndexViewModel>();
 
