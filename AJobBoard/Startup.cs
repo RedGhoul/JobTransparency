@@ -16,6 +16,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Syncfusion.Licensing;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AJobBoard
@@ -99,7 +101,10 @@ namespace AJobBoard
             {
                 options.AddPolicy("AuthKey", policy =>
                     policy.Requirements.Add(new HasAuthKey(Configuration)));
-                //options.AddPolicy("")
+                options.AddPolicy("CanCreatePosting", policy => policy.RequireClaim("CanCreatePosting"));
+                options.AddPolicy("CanEditPosting", policy => policy.RequireClaim("CanEditPosting"));
+                options.AddPolicy("CanDeletePosting", policy => policy.RequireClaim("CanDeletePosting"));
+
             });
 
             services.AddSingleton<IConfiguration>(Configuration);
@@ -138,7 +143,7 @@ namespace AJobBoard
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
 
-                    routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
+                    //routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
             });
             //RecurringJob.AddOrUpdate("some-id", () => DataIngesterAsync(content), Cron.Minutely);
             //await CreateUserRoles(app);
@@ -172,6 +177,19 @@ namespace AJobBoard
                     if (!currentUserRoles.Contains("Admin"))
                     {
                         await UserManager.AddToRoleAsync(user, "Admin");
+                    }
+
+                    var currentClaims = await UserManager.GetClaimsAsync(user);
+                    if(currentClaims.Count() == 0)
+                    {
+                        var CanCreatePostingClaim = new Claim("CanCreatePosting", "True");
+                        await UserManager.AddClaimAsync(user, CanCreatePostingClaim);
+
+                        var CanEditPostingClaim = new Claim("CanEditPosting", "True");
+                        await UserManager.AddClaimAsync(user, CanEditPostingClaim);
+
+                        var CanDeletePostingClaim = new Claim("CanDeletePosting", "True");
+                        await UserManager.AddClaimAsync(user, CanDeletePostingClaim);
                     }
                 }
             }
