@@ -110,15 +110,20 @@ namespace AJobBoard
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddScoped<UserManager<ApplicationUser>>();
-            services.AddSingleton<IAWSService,AWSService>();
+            
             services.AddScoped<IJobPostingRepository, JobPostingRepository>();
             services.AddScoped<IKeyPharseRepository,KeyPharseRepository>();
+            services.AddScoped<IAppliesRepository, AppliesRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            
+            services.AddSingleton<IAWSService, AWSService>();
             services.AddScoped<INLTKService ,NLTKService>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -146,7 +151,7 @@ namespace AJobBoard
                     //routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
             });
             //RecurringJob.AddOrUpdate("some-id", () => DataIngesterAsync(content), Cron.Minutely);
-            //await CreateUserRoles(app);
+            await CreateUserRoles(app);
         }
 
         private async Task CreateUserRoles(IApplicationBuilder app)
@@ -170,6 +175,7 @@ namespace AJobBoard
 
                 //Assign Admin role to the main User here we have given our newly registered 
                 //login id for Admin management
+                // Also Assigning them Claims to perform CUD operations
                 ApplicationUser user = await UserManager.FindByEmailAsync("avaneesab5@gmail.com");
                 if (user != null)
                 {

@@ -14,26 +14,23 @@ namespace AJobBoard.Controllers.Views
 {
     public class DocumentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly AWSService _AWSService;
-
-        public DocumentsController(ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            AWSService AWSService)
+        private readonly IUserRepository _userRepository;
+        private readonly IDocumentRepository _documentRepository;
+        public DocumentsController(
+            IUserRepository userRepository,
+            IDocumentRepository documentRepository)
         {
-            _context = context;
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _AWSService = AWSService;
+            _documentRepository = documentRepository;
+            _userRepository = userRepository;
         }
 
         // GET: Documents
         public async Task<IActionResult> Index()
         {
-            List<Document> Documents = await GetDocumentsOfCurrentUser();
+            var currentUser = await _userRepository
+                .getUserFromHttpContextAsync(HttpContext);
+            List<Document> Documents = _documentRepository
+                .GetDocumentsOfCurrentUser(currentUser.Id);
 
             return View(Documents);
         }
@@ -46,8 +43,8 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _context.Document
-                .FirstOrDefaultAsync(m => m.DocumentId == id);
+            var document = await _documentRepository.GetDocumentByIdAsync(id);
+
             if (document == null)
             {
                 return NotFound();
@@ -67,50 +64,20 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DocumentViewModel document)
         {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
+            var currentUser = await _userRepository
+                .getUserFromHttpContextAsync(HttpContext);
 
-            _AWSService.validateFile(document.Resume, ModelState);
 
-            string resumeKEY = "";
-            if (User != null)
+            var saveResult = await _documentRepository
+                .SaveDocumentToUser(document, ModelState, currentUser);
+
+            if (saveResult)
             {
-                resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
-                    "Resumes/" + User.Id + document.Resume.FileName.Replace(" ","").Replace("-",""),
-                    document.Resume.ContentType, document.Resume.OpenReadStream());
-
-                var tempDoc = new Document()
-                {
-                    DocumentName = document.DocumentName,
-                    DateCreated = DateTime.Now,
-                    IsOtherDoc = document.IsOtherDoc,
-                    IsResume = document.IsResume,
-                    URL = resumeKEY
-                };
-
-                _context.Document.Add(tempDoc);
-                if (User.Documents == null)
-                {
-                    User.Documents = new List<Document>()
-                    {
-                        tempDoc
-                    };
-                }
-                else
-                {
-                    User.Documents.Add(tempDoc);
-                }
-                
-
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(document);
-        }
 
-        public async Task<FileResult> Download(string fileName)
-        {
-            byte[] fileBytes = await _AWSService.GetFileInBytes(fileName, "ajobboard");
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+            
+            return View(document);
         }
 
         // GET: Documents/Edit/5
@@ -121,7 +88,7 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _context.Document.FindAsync(id);
+            var document = await _documentRepository.GetDocumentByIdAsync(id);
             if (document == null)
             {
                 return NotFound();
@@ -141,22 +108,8 @@ namespace AJobBoard.Controllers.Views
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(document);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DocumentExists(document.DocumentId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _documentRepository.UpdateDocument(document);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(document);
@@ -171,8 +124,7 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _context.Document
-                .FirstOrDefaultAsync(m => m.DocumentId == id);
+            var document = await _documentRepository.GetDocumentByIdAsync(id);
 
             if (document == null)
             {
@@ -187,27 +139,16 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
-            var document = await _context.Document.FindAsync(id);
+            var User = await _userRepository
+                .getUserFromHttpContextAsync(HttpContext);
 
-            User.Documents.Remove(document);
-            await _AWSService.DeleteFile(document.URL, "ajobboard");
-            _context.Document.Remove(document);
-            await _context.SaveChangesAsync();
+            _documentRepository.RemoveDocumentFromUser(id, User);
+           
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DocumentExists(int id)
-        {
-            return _context.Document.Any(e => e.DocumentId == id);
-        }
 
-        private async Task<List<Document>> GetDocumentsOfCurrentUser()
-        {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
-            var Documents = _context.Users.Include(x => x.Documents)
-                .Where(x => x.Id.Equals(User.Id)).Select(x => x.Documents).FirstOrDefault();
-            return Documents;
-        }
+
+       
     }
 }
