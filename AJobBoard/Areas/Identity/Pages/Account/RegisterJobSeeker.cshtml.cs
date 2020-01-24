@@ -81,8 +81,8 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            _AWSService.validateFile(Input.Resume, ModelState);
-            if (ModelState.IsValid)
+            List<string> errors = _AWSService.validateFile(Input.Resume);
+            if (ModelState.IsValid && errors.Count == 0)
             {
 
                 var user = new ApplicationUser

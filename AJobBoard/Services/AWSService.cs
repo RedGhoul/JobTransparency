@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net;
@@ -42,29 +43,29 @@ namespace AJobBoard.Services
         }
 
 
-        public void validateFile(IFormFile formFile, ModelStateDictionary modelState)
+        public List<string> validateFile(IFormFile formFile)
         {
             var fieldDisplayName = string.Empty;
             string fileName = GetFileName(formFile);
-
+            List<string> errors = new List<string>();
             if (formFile.ContentType.ToLower() != "text/plain" &&
                 formFile.ContentType.ToLower() != "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 && formFile.ContentType.ToLower() != "application/pdf")
             {
-                modelState.AddModelError(formFile.Name,
-                    $"The {fieldDisplayName}file ({fileName}) must be a text file.");
+                
+                errors.Add($"The {fieldDisplayName}file ({fileName}) must be a text file.");
             }
 
             if (formFile.Length == 0)
             {
-                modelState.AddModelError(formFile.Name,
-                    $"The {fieldDisplayName}file ({fileName}) is empty.");
+                errors.Add($"The {fieldDisplayName}file ({fileName}) is empty.");
             }
             else if (formFile.Length > MAX_FILE_SIZE)
             {
-                modelState.AddModelError(formFile.Name,
-                    $"The {fieldDisplayName}file ({fileName}) exceeds 5 MB.");
+                errors.Add($"The {fieldDisplayName}file ({fileName}) exceeds 5 MB.");
             }
+
+            return errors;
         }
 
         public string GetFileName(IFormFile formFile)

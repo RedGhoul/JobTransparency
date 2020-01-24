@@ -69,7 +69,7 @@ namespace AJobBoard.Controllers.Views
 
 
             var saveResult = await _documentRepository
-                .SaveDocumentToUser(document, ModelState, currentUser);
+                .SaveDocumentToUser(document, currentUser);
 
             if (saveResult)
             {
