@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AJobBoard.Utils.ControllerHelpers;
+using Syncfusion.EJ2.Linq;
 
 namespace AJobBoard.Data
 {
@@ -24,7 +26,15 @@ namespace AJobBoard.Data
         public async Task<string> GetTotalJobs()
         {
             string cacheKey = "TotalJobs";
-            string TotalJobs = await _cache.GetStringAsync(cacheKey);
+            string TotalJobs = "";
+            try
+            {
+                TotalJobs = await _cache.GetStringAsync(cacheKey);
+            }
+            catch (Exception e)
+            {
+            }
+            
 
             if (string.IsNullOrEmpty(TotalJobs))
             {
@@ -68,6 +78,7 @@ namespace AJobBoard.Data
             else
             {
                 jobs = JsonConvert.DeserializeObject<IEnumerable<JobPosting>>(JobsString);
+                jobs = jobs.Reverse();
             }
 
             return jobs;
@@ -243,6 +254,7 @@ namespace AJobBoard.Data
             else
             {
                 RandomjobsList = JsonConvert.DeserializeObject<List<JobPosting>>(Randomjobs);
+                RandomjobsList.Reverse();
             }
 
             return RandomjobsList;
@@ -251,71 +263,70 @@ namespace AJobBoard.Data
         public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             IQueryable<JobPosting> jobsQuery = null;
-            List<JobPosting> jobs = null;
+
             var start = DateTime.Now;
 
-            string cacheKey = homeIndexVm.FindModel.Location.ToLower() +
-                              homeIndexVm.FindModel.KeyWords.ToLower() +
-                              homeIndexVm.FindModel.MaxResults;
+            string key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
 
-            string SearchJobs = await _cache.GetStringAsync(cacheKey);
-            if (string.IsNullOrEmpty(SearchJobs))
+            string SearchJobs = await _cache.GetStringAsync(key);
+            try
             {
-                // find By Location
-                if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
-                {
-                    jobsQuery = _ctx.JobPostings;
-                }
-                else if (homeIndexVm.FindModel.Location.ToLower().Equals("ontario"))
-                {
-                    jobsQuery = _ctx.JobPostings.Where(x => x.Location.ToLower().Contains("ontario"));
-                }
-                else if (homeIndexVm.FindModel.Location.ToLower().Equals("vancouver"))
-                {
-                    jobsQuery = _ctx.JobPostings.Where(x => x.Location.ToLower().Contains("vancouver"));
-                }
-                else
-                {
-                    jobsQuery = _ctx.JobPostings.Where(x => x.Location.Contains(homeIndexVm.FindModel.Location) == true);
-                }
+                jobsQuery = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs).AsQueryable();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+           
 
-                // find By Key Words
-                if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
-                {
-                    jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
-                                x.Description.Contains(homeIndexVm.FindModel.KeyWords));
-                }
-
-                // find By Date (days)
-                //if (!string.IsNullOrEmpty(homeIndexVm.FindModel.Date))
-                //{
-                //    DateTime dayHolder = DateTime.Now;
-                //    if (homeIndexVm.FindModel.Date.Equals("Last 20 Days"))
-                //    {
-                //        dayHolder = dayHolder.AddDays(-20);
-
-                //    }
-                //    else if (homeIndexVm.FindModel.Date.Equals("Last 30 Days"))
-                //    {
-                //        dayHolder = dayHolder.AddDays(-30);
-                //    }
-                //    jobsQuery = jobsQuery.Where(x => x.DateAdded > dayHolder);
-                //}
-
-                // add Max Results
-                jobs = await jobsQuery.Take(homeIndexVm.FindModel.MaxResults).OrderByDescending(x => x.Title).ToListAsync();
-                var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
-                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobs), options);
+            // find By Location
+            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
+            {
+                //jobsQuery = _ctx.JobPostings;
+            }
+            else if (homeIndexVm.FindModel.Location.ToLower().Equals("ontario"))
+            {
+                jobsQuery = jobsQuery.Where(x => x.Location.ToLower().Contains("ontario"));
+            }
+            else if (homeIndexVm.FindModel.Location.ToLower().Equals("vancouver"))
+            {
+                jobsQuery = jobsQuery.Where(x => x.Location.ToLower().Contains("vancouver"));
             }
             else
             {
-                jobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
-
+                jobsQuery = jobsQuery.Where(x => x.Location.Contains(homeIndexVm.FindModel.Location) == true);
             }
 
+            // find By Key Words
+            if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
+            {
+                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
+                                                 x.Description.Contains(homeIndexVm.FindModel.KeyWords));
+            }
+
+            //jobsQuery = jobsQuery.Reverse();
+
             var duration = DateTime.Now - start;
+            var jobs = jobsQuery.ToList<JobPosting>();
+            jobs.Reverse();
             return (jobs, duration);
+        }
+
+        public async Task BuildCache()
+        {
+            var allJobs = await _ctx.JobPostings.ToListAsync();
+            int pageSize = 12;
+            var count = allJobs.Count();
+            count = count / 12;
+            for (int i = 0; i < count; i++)
+            {
+                var Jobs = allJobs.Skip(i * pageSize).Take(pageSize).ToList();
+                var options = new DistributedCacheEntryOptions();
+                options.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+                await _cache.SetStringAsync("JobPosting_12_" + i, JsonConvert.SerializeObject(Jobs), options);
+
+            }
         }
     }
 }

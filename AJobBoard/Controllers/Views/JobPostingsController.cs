@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,14 +86,20 @@ namespace AJobBoard.Controllers.Views
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
-           
             homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
+            
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
+            
             var (jobs, duration) = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
+            
+            var count = await _jobPostingRepository.GetTotalJobs();
+            
+            ViewBag.MaxPage = int.Parse(count)/12;
+            
             ViewBag.SecsToQuery = duration.TotalSeconds
                 .ToString(CultureInfo.CurrentCulture)
                 .Replace("-", "");
-            jobs = JobPostingHelper.ConfigurePaging(homeIndexVm, jobs, ViewBag);
+            
             return View(jobs);
         }
 

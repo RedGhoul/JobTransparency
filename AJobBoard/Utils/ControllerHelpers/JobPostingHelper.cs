@@ -8,29 +8,31 @@ namespace AJobBoard.Utils.ControllerHelpers
 {
     public class JobPostingHelper
     {
-        public static List<JobPosting> ConfigurePaging(HomeIndexViewModel homeIndexVM, List<JobPosting> Jobs, dynamic ViewBag)
+        public static List<JobPosting> ConfigurePaging(HomeIndexViewModel homeIndexVM, List<JobPosting> Jobs, int totalJobs, int MaxPage, int Page)
         {
             int PageSize = 12;
 
             var count = Jobs.Count();
             if (count > 25)
             {
-                ViewBag.TotalJobs = count;
+                totalJobs = count;
                 Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
                 if (PageSize == 0)
                 {
-                    ViewBag.MaxPage = 10;
+                    MaxPage = 10;
                 }
                 else
                 {
-                    ViewBag.MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
+                    MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
                 }
-                ViewBag.Page = homeIndexVM.FindModel.Page;
+                Page = homeIndexVM.FindModel.Page;
             }
 
 
             return Jobs;
         }
+
+
 
         public static void SetupViewBag(HomeIndexViewModel homeIndexVM, dynamic ViewBag)
         {
@@ -39,6 +41,7 @@ namespace AJobBoard.Utils.ControllerHelpers
             ViewBag.Date = homeIndexVM.FindModel.Date;
             ViewBag.MaxResults = homeIndexVM.FindModel.MaxResults;
             ViewBag.TotalJobs = homeIndexVM.FindModel.MaxResults != 0 ? homeIndexVM.FindModel.MaxResults : 100;
+            ViewBag.Page = homeIndexVM.FindModel.Page;
         }
 
         public static HomeIndexViewModel SetDefaultFindModel(HomeIndexViewModel homeIndexVM)
@@ -52,7 +55,7 @@ namespace AJobBoard.Utils.ControllerHelpers
                         Location = "anywhere",
                         KeyWords = "",
                         MaxResults = 100,
-                        Page = 0
+                        Page = 1
                     }
                 };
             }

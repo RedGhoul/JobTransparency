@@ -97,14 +97,14 @@
                                 <div class="ml-auto">
                                     <div class="row">
                                         <div class="col-4">
-                                            @if (ViewBag.Page > 0)
+                                            @if (ViewBag.Page > 0 && ViewBag.Page!= 1)
                                             {
                                                 @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
                                                 {
                                                     <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
-                                                    <input type="hidden" name="FindModel.page" value="@(ViewBag.Page - 1)" />
+                                                    <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page - 1)" />
                                                     <button type="submit" class="btn btn-primary btn-lg next">&laquo; Prev</button>
                                                 }
                                             }
@@ -194,14 +194,14 @@
                                 <div class="ml-auto">
                                     <div class="row">
                                         <div class="col-4">
-                                            @if (ViewBag.Page > 0)
+                                            @if (ViewBag.Page > 0 && ViewBag.Page != 1)
                                             {
                                                 @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
                                                 {
                                                     <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
-                                                    <input type="hidden" name="FindModel.page" value="@(ViewBag.Page - 1)" />
+                                                    <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page - 1)" />
                                                     <button type="submit" class="btn btn-primary btn-lg next">&laquo; Prev</button>
                                                 }
                                             }
@@ -240,7 +240,15 @@
             {
                 <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
                     <div class="col-md-2"></div>
-                    <div class="col-md-8"><h4 style="text-align:center;">Sorry nothing was found matching that criteria</h4></div>
+                    <div class="col-md-4"><h4 style="text-align:center;">Sorry nothing was found matching that criteria</h4></div>
+                    <div class="col-md-4">@using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
+                                          {
+                                              <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
+                                              <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
+                                              <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
+                                              <input type="hidden" name="FindModel.page" value="1" />
+                                              <button type="submit" class="btn btn-primary btn-lg">Back To Search</button>
+                                          }</div>
                     <div class="col-md-2"></div>
 
                 </div>

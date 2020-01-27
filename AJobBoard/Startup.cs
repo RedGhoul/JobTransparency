@@ -45,10 +45,9 @@ namespace AJobBoard
             services.AddDistributedRedisCache(option =>
             {
                 option.Configuration = Configuration.GetConnectionString("RedisConnection");
-                option.InstanceName = "master";
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options => 
                options.UseMySql(
                    Configuration.GetConnectionString("JobTransparncyPROD")));
 
@@ -160,7 +159,8 @@ namespace AJobBoard
             {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
+                var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
+                await JobsRepo.BuildCache();
                 var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 IdentityResult roleResult;
