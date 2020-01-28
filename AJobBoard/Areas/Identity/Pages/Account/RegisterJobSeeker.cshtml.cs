@@ -19,14 +19,14 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterJobSeekerModel> _logger;
-        private readonly AWSService _AWSService;
+        private readonly IAWSService _AWSService;
         private readonly IEmailSender _emailSender;
 
         public RegisterJobSeekerModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterJobSeekerModel> logger,
-            IEmailSender emailSender, AWSService AWSService)
+            IEmailSender emailSender, IAWSService AWSService)
         {
             _userManager = userManager;
             _signInManager = signInManager;

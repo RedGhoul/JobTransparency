@@ -323,7 +323,7 @@ namespace AJobBoard.Data
             {
                 var Jobs = allJobs.Skip(i * pageSize).Take(pageSize).ToList();
                 var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(15));
+                options.SetSlidingExpiration(TimeSpan.FromMinutes(50));
                 await _cache.SetStringAsync("JobPosting_12_" + i, JsonConvert.SerializeObject(Jobs), options);
 
             }

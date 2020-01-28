@@ -6,33 +6,8 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.ControllerHelpers
 {
-    public class JobPostingHelper
+    public static class JobPostingHelper
     {
-        public static List<JobPosting> ConfigurePaging(HomeIndexViewModel homeIndexVM, List<JobPosting> Jobs, int totalJobs, int MaxPage, int Page)
-        {
-            int PageSize = 12;
-
-            var count = Jobs.Count();
-            if (count > 25)
-            {
-                totalJobs = count;
-                Jobs = Jobs.Skip((int)homeIndexVM.FindModel.Page * PageSize).Take(PageSize).ToList();
-                if (PageSize == 0)
-                {
-                    MaxPage = 10;
-                }
-                else
-                {
-                    MaxPage = (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
-                }
-                Page = homeIndexVM.FindModel.Page;
-            }
-
-
-            return Jobs;
-        }
-
-
 
         public static void SetupViewBag(HomeIndexViewModel homeIndexVM, dynamic ViewBag)
         {
@@ -72,7 +47,7 @@ namespace AJobBoard.Utils.ControllerHelpers
             return homeIndexVM;
         }
 
-        public static HomeIndexViewModel FillFindModel(HomeIndexViewModel homeIndexVM)
+        private static HomeIndexViewModel FillFindModel(HomeIndexViewModel homeIndexVM)
         {
             homeIndexVM.FindModel.KeyWords = homeIndexVM.FindModel.KeyWords ?? "";
             homeIndexVM.FindModel.Location = homeIndexVM.FindModel.Location ?? "";
