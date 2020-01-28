@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.DTO;
 using AJobBoard.Models.View;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,11 +31,11 @@ namespace AJobBoard.Controllers.Views
 
             var applications = await _appliesRepository.GetUsersAppliesAsync(currentUser);
 
-            List<AppliesIndexViewModel> vm = new List<AppliesIndexViewModel>();
+            AppliesIndexViewModel vm = new AppliesIndexViewModel();
 
             foreach (var applies in applications)
             {
-                vm.Add(new AppliesIndexViewModel
+                vm.Applies.Add(new AppliesIndexDTO
                 {
                     Id = applies.Id,
                     JobId = applies.JobPosting.Id,
@@ -48,9 +49,7 @@ namespace AJobBoard.Controllers.Views
                     PostDate = applies.JobPosting.PostDate
                 });
             }
-
-            ViewBag.dataSource = vm;
-            return View();
+            return View(vm);
         }
     }
 }

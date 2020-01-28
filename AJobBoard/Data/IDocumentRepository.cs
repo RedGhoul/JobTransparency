@@ -12,7 +12,7 @@ namespace AJobBoard.Data
         Task<Document> GetDocumentByIdAsync(int? id);
         List<Document> GetDocumentsOfCurrentUser(string userId);
         void RemoveDocumentFromUser(int documentId, ApplicationUser user);
-        Task<bool> SaveDocumentToUser(DocumentViewModel document, ModelStateDictionary modelState, ApplicationUser user);
+        Task<bool> SaveDocumentToUser(DocumentViewModel document, ApplicationUser user);
         Task<bool> UpdateDocument(Document document);
     }
 }

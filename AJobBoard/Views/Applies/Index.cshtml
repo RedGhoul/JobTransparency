@@ -1,5 +1,6 @@
-﻿
-@using Syncfusion.EJ2
+﻿@model AJobBoard.Models.View.AppliesIndexViewModel
+
+@*@using Syncfusion.EJ2*@
 @using (Html.BeginForm("Create", "Applies", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
@@ -9,58 +10,69 @@
 <section class="site-section" style="background-color: burlywood;padding-top:200px; padding-right: 20px; padding-left: 20px;">
 
     <h2 style="text-align: center; color: white; padding-bottom: 20px">My Applies</h2>
-    <ejs-grid id="Grid" dataSource="ViewBag.dataSource" allowExcelExport="true" toolbarClick="toolbarClick" toolbar="@(new List<string>() { "Delete", "Cancel","ExcelExport", "PdfExport","Search"})" allowPaging="true" actionBegin="actionBegin" allowReordering="true" allowSorting="true">
-        <e-grid-editSettings allowAdding="true" allowDeleting="true" allowEditing="true" newRowPosition="Top"></e-grid-editSettings>
-        <e-grid-pagesettings pageCount="5"></e-grid-pagesettings>
-        <e-grid-columns>
-            <e-grid-column field="Title" headerText="Title" width="200"></e-grid-column>
-            <e-grid-column field="Company" headerText="Company" width="100"></e-grid-column>
-            <e-grid-column field="Location" headerText="Location" width="80"></e-grid-column>
-            <e-grid-column field="JobSource" headerText="JobSource" width="80"></e-grid-column>
-            <e-grid-column field="Applicates" headerText="Applicates" width="80"></e-grid-column>
-            <e-grid-column field="Views" headerText="Views" width="80"></e-grid-column>
-            <e-grid-column field="URL" headerText="Source Link" width="100"></e-grid-column>
-        </e-grid-columns>
-    </ejs-grid>
+    
+    <ul>
+        @foreach (var item in Model.Applies)
+        {
+            <li>
+                @item.Title
+            </li>
+        }
+    </ul>
+
+
+    @*<ejs-grid id="Grid" dataSource="ViewBag.dataSource" allowExcelExport="true" toolbarClick="toolbarClick" toolbar="@(new List<string>() { "Delete", "Cancel","ExcelExport", "PdfExport","Search"})" allowPaging="true" actionBegin="actionBegin" allowReordering="true" allowSorting="true">
+            <e-grid-editSettings allowAdding="true" allowDeleting="true" allowEditing="true" newRowPosition="Top"></e-grid-editSettings>
+            <e-grid-pagesettings pageCount="5"></e-grid-pagesettings>
+            <e-grid-columns>
+                <e-grid-column field="Title" headerText="Title" width="200"></e-grid-column>
+                <e-grid-column field="Company" headerText="Company" width="100"></e-grid-column>
+                <e-grid-column field="Location" headerText="Location" width="80"></e-grid-column>
+                <e-grid-column field="JobSource" headerText="JobSource" width="80"></e-grid-column>
+                <e-grid-column field="Applicates" headerText="Applicates" width="80"></e-grid-column>
+                <e-grid-column field="Views" headerText="Views" width="80"></e-grid-column>
+                <e-grid-column field="URL" headerText="Source Link" width="100"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>*@
 
 
 
 </section>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-    function toolbarClick(args) {
-        var gridObj = document.getElementById("Grid").ej2_instances[0];
-        if (args.item.id === 'Grid_pdfexport') {
-            gridObj.pdfExport();
+@*<script src="https://unpkg.com/axios/dist/axios.min.js"></script>*@
+@*<script>
+        function toolbarClick(args) {
+            var gridObj = document.getElementById("Grid").ej2_instances[0];
+            if (args.item.id === 'Grid_pdfexport') {
+                gridObj.pdfExport();
+            }
+            if (args.item.id === 'Grid_excelexport') {
+                gridObj.excelExport();
+            }
         }
-        if (args.item.id === 'Grid_excelexport') {
-            gridObj.excelExport();
+        var antiForgeryToken = document.getElementsByName("__RequestVerificationToken")[0].value;
+        axios.defaults.headers.delete['Content-Type'] = 'application/json';
+        axios.defaults.headers.common['RequestVerificationToken'] = antiForgeryToken;
+
+        function actionBegin(args) {
+            var grid = document.getElementById("Grid").ej2_instances[0];
+
+            if (args.requestType === 'save') {
+
+            }
+
+            if (args.requestType === 'delete') {
+                console.log("delete");
+                console.log(args.data);
+                const id = args.data[0].Id;
+                axios.delete('/api/AppliesAPI/' + id)
+                    .then(function (response) {
+                        console.log(response);
+                        alertify.success("Removed");
+                    })
+                    .catch(function (error) {
+                        alertify.error("Could Not remove this Job from your Applies");
+                        console.log(error);
+                    });
+            }
         }
-    }
-    var antiForgeryToken = document.getElementsByName("__RequestVerificationToken")[0].value;
-    axios.defaults.headers.delete['Content-Type'] = 'application/json';
-    axios.defaults.headers.common['RequestVerificationToken'] = antiForgeryToken;
-
-    function actionBegin(args) {
-        var grid = document.getElementById("Grid").ej2_instances[0];
-
-        if (args.requestType === 'save') {
-
-        }
-
-        if (args.requestType === 'delete') {
-            console.log("delete");
-            console.log(args.data);
-            const id = args.data[0].Id;
-            axios.delete('/api/AppliesAPI/' + id)
-                .then(function (response) {
-                    console.log(response);
-                    alertify.success("Removed");
-                })
-                .catch(function (error) {
-                    alertify.error("Could Not remove this Job from your Applies");
-                    console.log(error);
-                });
-        }
-    }
-</script>
+    </script>*@

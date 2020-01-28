@@ -28,13 +28,14 @@ namespace AJobBoard.Data
             return document;
         }
 
-        public async Task<bool> SaveDocumentToUser(DocumentViewModel document, ModelStateDictionary modelState, ApplicationUser user)
+        public async Task<bool> SaveDocumentToUser(DocumentViewModel document,  ApplicationUser user)
         {
 
-            _AWSService.validateFile(document.Resume, modelState);
+            List<string> errors = _AWSService.validateFile(document.Resume);
+            
 
             string resumeKEY = "";
-            if (user != null)
+            if (user != null && errors.Count == 0)
             {
                 resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
                     "Resumes/" + user.Id + document.Resume.FileName.Replace(" ", "").Replace("-", ""),
