@@ -23,5 +23,42 @@ namespace AJobBoard.Data
 
             return applications;
         }
+
+
+        public async Task<Apply> DeleteAppliesAsync(int id)
+        {
+            var apply = await _ctx.Applies.FindAsync(id);
+            if (apply == null)
+            {
+                return null;
+            }
+
+            _ctx.Applies.Remove(apply);
+            await _ctx.SaveChangesAsync();
+
+            return apply;
+        }
+
+        public async Task<Apply> PutApplyAsync(int id, Apply apply)
+        {
+
+            _ctx.Entry(apply).State = EntityState.Modified;
+
+            try
+            {
+                await _ctx.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return !ApplyExistsById(id) ? null : apply;
+            }
+
+            return apply;
+        }
+
+        private bool ApplyExistsById(int id)
+        {
+            return _ctx.Applies.Any(e => e.Id == id);
+        }
     }
 }

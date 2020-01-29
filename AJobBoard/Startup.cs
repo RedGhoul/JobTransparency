@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Syncfusion.Licensing;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -30,8 +29,6 @@ namespace AJobBoard
     {
         public Startup(IConfiguration configuration)
         {
-            string key = configuration.GetSection("AppSettings")["SYNC"];
-            SyncfusionLicenseProvider.RegisterLicense(key);
             Configuration = configuration;
         }
 

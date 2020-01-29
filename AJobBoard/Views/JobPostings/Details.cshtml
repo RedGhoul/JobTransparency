@@ -10,7 +10,8 @@
         </div>
     </div>
 </section>
-@using (Html.BeginForm("Find", "JobPostings", FormMethod.Post)) { }
+
+@Html.AntiForgeryToken()
 
 <section class="site-section">
     <div class="container">
