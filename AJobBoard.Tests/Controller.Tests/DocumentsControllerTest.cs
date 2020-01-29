@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Mvc;
 using Xunit;
 using ViewResult = Microsoft.AspNetCore.Mvc.ViewResult;
 
@@ -40,7 +39,7 @@ namespace AJobBoard.Tests.Controller.Tests
             var result = await controller.Index();
 
             // Assert
-            var viewResult = Assert.IsType<System.Web.Mvc.ViewResult>(result);
+            var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<Document>>(
                 viewResult.ViewData.Model);
             Assert.Equal(10, model.Count());
@@ -68,7 +67,7 @@ namespace AJobBoard.Tests.Controller.Tests
             var result = await controller.Details(tempDoc.DocumentId);
 
             // Assert
-            var viewResult = Assert.IsType<System.Web.Mvc.ViewResult>(result);
+            var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<Document>(
                 viewResult.ViewData.Model);
         }
