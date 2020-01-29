@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Utils.ControllerHelpers;
-using Syncfusion.EJ2.Linq;
 
 namespace AJobBoard.Data
 {

@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Syncfusion.Licensing;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -30,8 +29,6 @@ namespace AJobBoard
     {
         public Startup(IConfiguration configuration)
         {
-            string key = configuration.GetSection("AppSettings")["SYNC"];
-            SyncfusionLicenseProvider.RegisterLicense(key);
             Configuration = configuration;
         }
 
@@ -53,7 +50,7 @@ namespace AJobBoard
 
             services.AddDbContext<ApplicationDbContext>(options => 
                options.UseMySql(
-                   Configuration.GetConnectionString("JobTransparncyPROD")));
+                   Configuration.GetConnectionString("JobTransparncyDigitalOceanPROD")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
@@ -128,7 +125,7 @@ namespace AJobBoard
                     .UseRecommendedSerializerSettings()
                     .UseStorage(
                         new MySqlStorage(
-                            Configuration.GetConnectionString("HangfireConnection"),
+                            Configuration.GetConnectionString("HangfireConnectionDigitalOceanPROD"),
                             new MySqlStorageOptions
                             {
                                 QueuePollInterval = TimeSpan.FromSeconds(15),
@@ -148,6 +145,7 @@ namespace AJobBoard
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -161,7 +159,6 @@ namespace AJobBoard
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
             UseHangfireDashboardCustom(app);
@@ -174,12 +171,13 @@ namespace AJobBoard
 
                     //routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
             });
-            
 
-            
+
+
             await CreateUserRoles(app);
             RecurringJob.AddOrUpdate<CacheBuilder>("buildCache-id", x => x.Build(),
-                Cron.Daily,null,"CacheQQ");
+                Cron.Hourly, null, "cacheqq");
+            
         }
 
 
@@ -203,8 +201,8 @@ namespace AJobBoard
             {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
-                await JobsRepo.BuildCache();
+                //var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
+                //await JobsRepo.BuildCache();
                 var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 IdentityResult roleResult;

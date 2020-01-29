@@ -6,12 +6,14 @@ using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AJobBoard.Controllers.Views
 {
+    [Authorize]
     public class DocumentsController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -147,8 +149,27 @@ namespace AJobBoard.Controllers.Views
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Download(int id, string fileName)
+        {
+            var currentUser = await _userRepository
+                .getUserFromHttpContextAsync(HttpContext);
+            var file = await _documentRepository.DownLoadDocument(id, currentUser);
+
+            if (file != null)
+            {
+                var contentType = "APPLICATION/octet-stream";
+                fileName = fileName + ".pdf";
+                return File(file, contentType, fileName);
+            }
+
+            return RedirectToAction("Details",new{id = id});
+
+        }
 
 
-       
+
+
+
+
     }
 }

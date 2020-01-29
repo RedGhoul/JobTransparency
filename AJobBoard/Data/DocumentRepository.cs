@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -80,6 +81,23 @@ namespace AJobBoard.Data
             await _AWSService.DeleteFile(document.URL, "ajobboard");
             _ctx.Document.Remove(document);
             await _ctx.SaveChangesAsync();
+        }
+
+        public async Task<MemoryStream> DownLoadDocument(int documentId,ApplicationUser user)
+        {
+
+            var document = await _ctx.Document.FindAsync(documentId);
+            var isValid = user.Documents.FirstOrDefault(x => x.DocumentId == documentId);
+            if (isValid != null)
+            {
+                var data = await _AWSService.GetFileInBytes(document.URL, "ajobboard");
+
+                MemoryStream temp = new MemoryStream(data);
+                return temp;
+            }
+
+            return null;
+
         }
 
         public async Task<bool> UpdateDocument(Document document)

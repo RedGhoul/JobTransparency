@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AJobBoard.Controllers.Views
 {
+    [Authorize]
     public class AppliesController : Controller
     {
         private readonly IAppliesRepository _appliesRepository;
@@ -50,6 +52,48 @@ namespace AJobBoard.Controllers.Views
                 });
             }
             return View(vm);
+        }
+
+        [HttpGet]
+        public IActionResult Delete()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        { 
+            var deletedApply = await _appliesRepository.DeleteAppliesAsync(id);
+            if (deletedApply != null)
+            {
+                return Redirect(nameof(Index));
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Details()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Edit()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Apply deletedApply)
+        {
+            var apply = await _appliesRepository.PutApplyAsync(id, deletedApply);
+            if (apply != null)
+            {
+                return Redirect(nameof(Index));
+            }
+            return View();
         }
     }
 }
