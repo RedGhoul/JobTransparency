@@ -45,12 +45,12 @@ namespace AJobBoard
             });
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = Configuration.GetConnectionString("RedisConnection");
+                option.Configuration = Environment.GetEnvironmentVariable("RedisConnection");
             });
 
             services.AddDbContext<ApplicationDbContext>(options => 
                options.UseMySql(
-                   Configuration.GetConnectionString("JobTransparncyDigitalOceanPROD")));
+                   Environment.GetEnvironmentVariable("JobTransparncyDigitalOceanPROD")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
@@ -125,7 +125,7 @@ namespace AJobBoard
                     .UseRecommendedSerializerSettings()
                     .UseStorage(
                         new MySqlStorage(
-                            Configuration.GetConnectionString("HangfireConnectionDigitalOceanPROD"),
+                            Environment.GetEnvironmentVariable("HangfireConnectionDigitalOceanPROD"),
                             new MySqlStorageOptions
                             {
                                 QueuePollInterval = TimeSpan.FromSeconds(15),
