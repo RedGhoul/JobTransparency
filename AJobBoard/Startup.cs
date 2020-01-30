@@ -201,8 +201,8 @@ namespace AJobBoard
             {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                //var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
-                //await JobsRepo.BuildCache();
+                var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
+                await JobsRepo.BuildCache();
                 var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 IdentityResult roleResult;
