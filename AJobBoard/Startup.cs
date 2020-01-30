@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -161,8 +162,12 @@ namespace AJobBoard
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseAuthentication();
-            UseHangfireDashboardCustom(app);
-            app.UseHangfireDashboard();
+            //UseHangfireDashboardCustom(app);
+            app.UseHangfireDashboard("/Jobs", new DashboardOptions()
+            {
+                Authorization = new[] { new HangFireAuthorizationFilter() }
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -201,8 +206,8 @@ namespace AJobBoard
             {
                 var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
-                await JobsRepo.BuildCache();
+                //var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
+                //await JobsRepo.BuildCache();
                 var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 IdentityResult roleResult;
