@@ -110,41 +110,19 @@ namespace AJobBoard.Controllers.Views
             
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
 
-            //var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
-            //var jobs = result.Item1;
-            //var duration = result.Item2;
-            //homeIndexVm = result.Item3;
 
-            var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
-                .DefaultIndex("jobposting");
+            var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
+            var jobsCollection = result.Item1;
+            var duration = result.Item2;
 
-            var client = new ElasticClient(settings);
-            var fromNumber = 0;
-            if (homeIndexVm.FindModel.Page > 1)
-            {
-                fromNumber = homeIndexVm.FindModel.Page * 12;
-            }
-            var searchResponse = client.Search<JobPosting>(s => s
-                .From(fromNumber)
-                .Size(12)
-                .Query(q => q
-                    .Match(m => m
-                        .Field(f => f.Description)
-                        
-                        .Query(homeIndexVm.FindModel.KeyWords)
-                    )
-                )
-            );
-
-            var jobsCollection = searchResponse.Documents;
             var count = await _jobPostingRepository.GetTotalJobs();
             
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
 
-            //ViewBag.SecsToQuery = duration.TotalSeconds
-            //    .ToString(CultureInfo.CurrentCulture)
-            //    .Replace("-", "");
-            
+            ViewBag.SecsToQuery = duration.TotalSeconds
+                .ToString(CultureInfo.CurrentCulture)
+                .Replace("-", "");
+
             ViewBag.Page = homeIndexVm.FindModel.Page;
             homeIndexVm.jobPostings = jobsCollection;
             return View(homeIndexVm);
