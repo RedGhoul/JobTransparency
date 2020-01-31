@@ -268,19 +268,45 @@ namespace AJobBoard.Data
             string key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
 
             string SearchJobs = await _cache.GetStringAsync(key);
-            try
-            {
-                jobsQuery = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs).AsQueryable();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-           
+            
+            var currentListOfJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
 
-            // find By Location
-            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
+            jobsQuery = currentListOfJobs.AsQueryable();
+
+            jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
+
+            var jobs = jobsQuery.ToList<JobPosting>();
+
+            IEnumerable<JobPosting> totalJobs = currentListOfJobs.AsEnumerable();
+
+            while (jobs.Count() < 12)
+            {
+                homeIndexVm.FindModel.Page++;
+
+                key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
+
+                SearchJobs = await _cache.GetStringAsync(key);
+
+                var newJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
+
+                totalJobs = totalJobs.Concat(newJobs);
+
+                jobsQuery = totalJobs.AsQueryable();
+
+                jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
+
+                jobs = jobsQuery.ToList<JobPosting>();
+            }
+            jobs.Reverse();
+            var duration = DateTime.Now - start;
+            return (jobs, duration);
+        }
+
+
+        private static IQueryable<JobPosting> JobPostingsFilter(HomeIndexViewModel homeIndexVm, IQueryable<JobPosting> jobsQuery)
+        {
+            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") ||
+                string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
             {
                 //jobsQuery = _ctx.JobPostings;
             }
@@ -304,12 +330,7 @@ namespace AJobBoard.Data
                                                  x.Description.Contains(homeIndexVm.FindModel.KeyWords));
             }
 
-            //jobsQuery = jobsQuery.Reverse();
-
-            var duration = DateTime.Now - start;
-            var jobs = jobsQuery.ToList<JobPosting>();
-            jobs.Reverse();
-            return (jobs, duration);
+            return jobsQuery;
         }
 
         public async Task BuildCache()
