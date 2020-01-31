@@ -1,8 +1,4 @@
 ﻿@model HomeIndexViewModel
-@{
-    string imageName = "'" + "/images/tech" + new Random().Next(1, 10) + "-min.jpg" + "'";
-    int timeToCache = 10;
-}
 <cache expires-sliding="TimeSpan.FromMinutes(@Model.TimeToCache)">
     <section class="home-section section-hero overlay bg-image" style="background-image: url(@Model.ImageName);" id="home-section">
         <div class="container">
