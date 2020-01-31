@@ -14,29 +14,12 @@
                     {
                         @Html.AntiForgeryToken()
                         <div class="row mb-5">
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                            <div class="col-12">
                                 <h6 style="color:white">Key Words</h6>
                                 <input style="height:47px;" type="text" name="FindModel.KeyWords" class="form-control form-control-lg" placeholder="Job title, keywords...">
                             </div>
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                <h6 style="color:white">Location</h6>
-                                <select class="form-control" name="FindModel.Location">
-                                    <option>Anywhere</option>
-                                    <option>Ontario</option>
-                                    <option>Toronto</option>
-                                    <option>Vancouver</option>
-                                </select>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                                <h6 style="color:white">Post Age</h6>
-                                <select class="form-control" name="FindModel.Date">
-                                    <option>Newest Posts</option>
-                                    <option>Last 20 Days</option>
-                                    <option>Last 30 Days</option>
-                                </select>
-                            </div>
-
-                            <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                           
+                            <div class="col-12">
                                 <button style="margin-top:25px;" type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
                             </div>
                         </div>

@@ -293,9 +293,11 @@ namespace AJobBoard.Data
                 .Query(q => q
                     .Match(m => m
                         .Field(f => f.Description)
-
                         .Query(homeIndexVm.FindModel.KeyWords)
+                        //.Field(f => f.Location)
+                        //.Query(homeIndexVm.FindModel.Location)
                     )
+                    
                 )
             );
 

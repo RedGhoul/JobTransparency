@@ -3,10 +3,10 @@
 <section class="site-section JobPostingList" style="background-color: #343a40;">
     <div class="container">
         <div class="row mb-5 justify-content-center">
-            <div class="col-md-7 text-center" style="padding-bottom: 100px;padding-top: 50px;">
+            @*<div class="col-md-7 text-center" style="padding-bottom: 100px;padding-top: 50px;">
                 @if (ViewBag.TotalJobs > 0)
                 {
-                    <h2 class="section-title mb-2" style="color:white;"> Found: @ViewBag.TotalJobs Jobs in @ViewBag.SecsToQuery Seconds</h2>
+                    <h2 class="section-title mb-2" style="color:white;"> Found the following Jobs in @ViewBag.SecsToQuery Seconds</h2>
 
                 }
                 else
@@ -14,54 +14,20 @@
                     <h2 class="section-title mb-2" style="color:white;"> Could not find any jobs :(</h2>
 
                 }
-            </div>
+            </div>*@
             <div class="col-md-12 text-center">
                 @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     <div class="row mb-5">
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                        <div class="col-12">
                             <h6 style="color:white">Key Words</h6>
                             <input style="height:47px;" type="text" name="FindModel.KeyWords"
                                    class="form-control form-control-lg" placeholder="Job title, keywords..."
                                    value="@(ViewBag.KeyWords ?? "")">
                         </div>
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                            <h6 style="color:white">Location</h6>
-                            <select class="form-control" name="FindModel.Location" value="@(ViewBag.KeyWords ?? "")">
-                                <option>Anywhere</option>
-                                <option>Ontario</option>
-                                <option>Toronto</option>
-                                <option>Vancouver</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                            <h6 style="color:white">Post Age</h6>
-                            <select class="form-control" name="FindModel.Date">
-                                <option>Newest Posts</option>
-                                <option>Last 20 Days</option>
-                                <option>Last 30 Days</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                            <h6 style="color:white">Max Results</h6>
-                            <select class="form-control" name="FindModel.MaxResults">
-                                @for (int i = 1; i < 20; i++)
-                                {
-                                    var currentValue = i * 100;
-                                    var currentMax = ViewBag.MaxResults ?? 0;
 
-                                    if (currentValue == currentMax)
-                                    {
-                                        <option selected="selected">@(currentValue.ToString())</option>
-                                    }
-                                    else
-                                    {
-                                        <option>@(currentValue.ToString())</option>
-                                    }
-                                }
-                            </select>
-                        </div>
+
                         @if (ViewBag.Page == null)
                         {
                             <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page)" />
