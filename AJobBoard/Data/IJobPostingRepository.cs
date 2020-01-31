@@ -19,7 +19,7 @@ namespace AJobBoard.Data
         Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting);
         Task<JobPosting> DeleteJobPostingAsync(int id);
         Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting);
-        Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm);
+        Task<(List<JobPosting>, TimeSpan, HomeIndexViewModel)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm);
         Task<bool> JobPostingExists(TestCheckDTO tcDto);
         Task<List<JobPosting>> GetRandomSetOfJobPostings();
 

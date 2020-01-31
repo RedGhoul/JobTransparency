@@ -259,15 +259,23 @@ namespace AJobBoard.Data
             return RandomjobsList;
         }
 
-        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<(List<JobPosting>, TimeSpan, HomeIndexViewModel)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             IQueryable<JobPosting> jobsQuery = null;
 
             var start = DateTime.Now;
 
             string key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
-
-            string SearchJobs = await _cache.GetStringAsync(key);
+            string SearchJobs = "";
+            try
+            {
+                SearchJobs = await _cache.GetStringAsync(key);
+            }
+            catch (Exception e)
+            {
+                return (new List<JobPosting>(), DateTime.Now - start, homeIndexVm);
+            }
+            
             
             var currentListOfJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
 
@@ -278,9 +286,14 @@ namespace AJobBoard.Data
             var jobs = jobsQuery.ToList<JobPosting>();
 
             IEnumerable<JobPosting> totalJobs = currentListOfJobs.AsEnumerable();
-
-            while (jobs.Count() < 12)
+            int tryCount = 0;
+            int currentCount = 0;
+            while (currentCount < 12)
             {
+                if (tryCount == 40)
+                {
+                    break;
+                }
                 homeIndexVm.FindModel.Page++;
 
                 key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
@@ -296,10 +309,12 @@ namespace AJobBoard.Data
                 jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
 
                 jobs = jobsQuery.ToList<JobPosting>();
+                tryCount++;
+                currentCount = jobs.Count();
             }
             jobs.Reverse();
             var duration = DateTime.Now - start;
-            return (jobs, duration);
+            return (jobs, duration, homeIndexVm);
         }
 
 
@@ -326,8 +341,8 @@ namespace AJobBoard.Data
             // find By Key Words
             if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
             {
-                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
-                                                 x.Description.Contains(homeIndexVm.FindModel.KeyWords));
+                jobsQuery = jobsQuery.Where(x => x.Title.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()) ||
+                                                 x.Description.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()));
             }
 
             return jobsQuery;
