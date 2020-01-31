@@ -30,6 +30,9 @@ namespace AJobBoard.Controllers.Views
 
             homeIndexViewModel.jobPostings = await _jobPostingRepository.GetRandomSetOfJobPostings();
 
+            homeIndexViewModel.ImageName = "https://staticassetsforsites.s3-us-west-2.amazonaws.com/tech" + new Random().Next(1, 10) + "-min.jpg";
+
+            homeIndexViewModel.TimeToCache = 10;
             return View(homeIndexViewModel);
         }
 

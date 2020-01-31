@@ -4,7 +4,10 @@ namespace AJobBoard.Models
 {
     public class HomeIndexViewModel
     {
-        public IEnumerable<AJobBoard.Models.JobPosting> jobPostings { get; set; }
+        public IEnumerable<JobPosting> jobPostings { get; set; }
         public FindModel FindModel { get; set; }
+
+        public string ImageName { get; set; }
+        public int TimeToCache { get; set; }
     }
 }
