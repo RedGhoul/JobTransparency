@@ -17,6 +17,7 @@ using System.Text;
 using System.Collections.Generic;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
+using AJobBoard.Utils;
 
 namespace AJobBoard.Services
 {
@@ -26,8 +27,8 @@ namespace AJobBoard.Services
         private string URLFLASK = "";
         public NLTKService(IConfiguration configuration)
         {
-            NLTKSecretKey = configuration.GetSection("AppSettings")["Auth-FlaskNLTK"];
-            URLFLASK = configuration.GetConnectionString("FlaskNLTK-Prod");
+            NLTKSecretKey = Secrets.getAppSettingsValue(configuration, "Auth-FlaskNLTK");
+            URLFLASK = Secrets.getAppSettingsValue(configuration, "FlaskNLTK-Prod");
         }
 
         public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)

@@ -11,6 +11,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using AJobBoard.Utils;
 
 namespace AJobBoard.Services
 {
@@ -21,8 +22,8 @@ namespace AJobBoard.Services
 
         public AWSService(IConfiguration configuration)
         {
-            string AccessKeyId = configuration.GetSection("AppSettings")["AKIDS3"];
-            string AwsSecretKey = configuration.GetSection("AppSettings")["SAK"];
+            string AccessKeyId = Secrets.getAppSettingsValue(configuration, "AKIDS3");
+            string AwsSecretKey = Secrets.getAppSettingsValue(configuration, "SAK");
             S3Client = new AmazonS3Client(AccessKeyId, AwsSecretKey, Amazon.RegionEndpoint.USEast1);
         }
 
