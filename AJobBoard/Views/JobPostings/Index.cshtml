@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AJobBoard.Models.JobPosting>
+﻿@model HomeIndexViewModel
 
 <section class="site-section JobPostingList" style="background-color: #343a40;">
     <div class="container">
@@ -85,7 +85,7 @@
         </div>
 
         <div class="mb-5">
-            @if (Model.Count() > 0)
+            @if (Model.jobPostings.Count() > 0)
             {
                 <div class="row">
                     <div class="col-4">
@@ -142,7 +142,7 @@
                 <div class="border-top pb-3 mb-3 pt-3" style="margin-top: 20px;">
                 </div>
 
-                @foreach (var item in Model)
+                @foreach (var item in Model.jobPostings)
                 {
                     <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
                         <div class="col-md-2">
@@ -161,7 +161,7 @@
                             <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong> In: <strong style="color: beige">Design</strong></p>
                         </div>
                         <div class="col-md-3 text-left">
-                            <h3 style="color: beige">@Html.DisplayNameFor(model => model.Location):</h3>
+                            <h3 style="color: beige">@Html.DisplayNameFor(model => model.FindModel.Location):</h3>
                             @if (string.IsNullOrEmpty(item.Location))
                             {
                                 <h3 style="color: beige">Non - Found</h3>
@@ -265,7 +265,7 @@
 
 
 
-<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url('/images/hero_1.jpg');">
+<section class="py-5 bg-image overlay-primary fixed overlay" style="background-image: url(@Model.ImageName);">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">

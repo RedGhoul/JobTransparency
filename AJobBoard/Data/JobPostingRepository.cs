@@ -259,28 +259,69 @@ namespace AJobBoard.Data
             return RandomjobsList;
         }
 
-        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<(List<JobPosting>, TimeSpan, HomeIndexViewModel)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             IQueryable<JobPosting> jobsQuery = null;
 
             var start = DateTime.Now;
 
             string key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
-
-            string SearchJobs = await _cache.GetStringAsync(key);
+            string SearchJobs = "";
             try
             {
-                jobsQuery = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs).AsQueryable();
+                SearchJobs = await _cache.GetStringAsync(key);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                return (new List<JobPosting>(), DateTime.Now - start, homeIndexVm);
             }
-           
+            
+            
+            var currentListOfJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
 
-            // find By Location
-            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") || string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
+            jobsQuery = currentListOfJobs.AsQueryable();
+
+            jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
+
+            var jobs = jobsQuery.ToList<JobPosting>();
+
+            IEnumerable<JobPosting> totalJobs = currentListOfJobs.AsEnumerable();
+            int tryCount = 0;
+            int currentCount = 0;
+            while (currentCount < 12)
+            {
+                if (tryCount == 40)
+                {
+                    break;
+                }
+                homeIndexVm.FindModel.Page++;
+
+                key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
+
+                SearchJobs = await _cache.GetStringAsync(key);
+
+                var newJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
+
+                totalJobs = totalJobs.Concat(newJobs);
+
+                jobsQuery = totalJobs.AsQueryable();
+
+                jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
+
+                jobs = jobsQuery.ToList<JobPosting>();
+                tryCount++;
+                currentCount = jobs.Count();
+            }
+            jobs.Reverse();
+            var duration = DateTime.Now - start;
+            return (jobs, duration, homeIndexVm);
+        }
+
+
+        private static IQueryable<JobPosting> JobPostingsFilter(HomeIndexViewModel homeIndexVm, IQueryable<JobPosting> jobsQuery)
+        {
+            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") ||
+                string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
             {
                 //jobsQuery = _ctx.JobPostings;
             }
@@ -300,16 +341,11 @@ namespace AJobBoard.Data
             // find By Key Words
             if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
             {
-                jobsQuery = jobsQuery.Where(x => x.Title.Contains(homeIndexVm.FindModel.KeyWords) ||
-                                                 x.Description.Contains(homeIndexVm.FindModel.KeyWords));
+                jobsQuery = jobsQuery.Where(x => x.Title.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()) ||
+                                                 x.Description.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()));
             }
 
-            //jobsQuery = jobsQuery.Reverse();
-
-            var duration = DateTime.Now - start;
-            var jobs = jobsQuery.ToList<JobPosting>();
-            jobs.Reverse();
-            return (jobs, duration);
+            return jobsQuery;
         }
 
         public async Task BuildCache()

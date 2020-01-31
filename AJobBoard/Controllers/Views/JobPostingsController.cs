@@ -90,17 +90,21 @@ namespace AJobBoard.Controllers.Views
             
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
             
-            var (jobs, duration) = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
-            
+            var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
+            var jobs = result.Item1;
+            var duration = result.Item2;
+            homeIndexVm = result.Item3;
+
             var count = await _jobPostingRepository.GetTotalJobs();
             
-            ViewBag.MaxPage = int.Parse(count)/12;
+            ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
             
             ViewBag.SecsToQuery = duration.TotalSeconds
                 .ToString(CultureInfo.CurrentCulture)
                 .Replace("-", "");
-            
-            return View(jobs);
+            ViewBag.Page = homeIndexVm.FindModel.Page;
+            homeIndexVm.jobPostings = jobs;
+            return View(homeIndexVm);
         }
 
 
