@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Utils.ControllerHelpers;
+using Nest;
 
 namespace AJobBoard.Data
 {
@@ -166,6 +167,8 @@ namespace AJobBoard.Data
 
             _ctx.Entry(jobPosting).State = EntityState.Modified;
 
+          
+
             try
             {
                 await _ctx.SaveChangesAsync();
@@ -174,6 +177,12 @@ namespace AJobBoard.Data
             {
                 return !JobPostingExistsById(id) ? null : jobPosting;
             }
+
+            var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
+                .DefaultIndex("jobposting");
+            var client = new ElasticClient(settings);
+            var job = await client.UpdateAsync<JobPosting>(jobPosting.Id,
+                u => u.Index("jobposting").Doc(jobPosting));
 
             return jobPosting;
         }
@@ -185,6 +194,13 @@ namespace AJobBoard.Data
                 jobPosting.Description = jobPosting.Description;
                 await _ctx.JobPostings.AddAsync(jobPosting);
                 await _ctx.SaveChangesAsync();
+
+                var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
+                               .DefaultIndex("jobposting");
+
+                var client = new ElasticClient(settings);
+
+                var job = await client.IndexDocumentAsync(jobPosting);
             }
             catch (Exception)
             {
@@ -259,94 +275,39 @@ namespace AJobBoard.Data
             return RandomjobsList;
         }
 
-        public async Task<(List<JobPosting>, TimeSpan, HomeIndexViewModel)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
-            IQueryable<JobPosting> jobsQuery = null;
-
             var start = DateTime.Now;
+            var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
+                .DefaultIndex("jobposting");
 
-            string key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
-            string SearchJobs = "";
-            try
+            var client = new ElasticClient(settings);
+            var fromNumber = 0;
+            if (homeIndexVm.FindModel.Page > 1)
             {
-                SearchJobs = await _cache.GetStringAsync(key);
+                fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            catch (Exception e)
-            {
-                return (new List<JobPosting>(), DateTime.Now - start, homeIndexVm);
-            }
-            
-            
-            var currentListOfJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
+            var searchResponse = await client.SearchAsync<JobPosting>(s => s
+                .From(fromNumber)
+                .Size(12)
+                .Query(q => q
+                    .Match(m => m
+                        .Field(f => f.Description)
+                        .Query(homeIndexVm.FindModel.KeyWords)
+                        //.Field(f => f.Location)
+                        //.Query(homeIndexVm.FindModel.Location)
+                    )
+                    
+                )
+            );
 
-            jobsQuery = currentListOfJobs.AsQueryable();
-
-            jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
-
-            var jobs = jobsQuery.ToList<JobPosting>();
-
-            IEnumerable<JobPosting> totalJobs = currentListOfJobs.AsEnumerable();
-            int tryCount = 0;
-            int currentCount = 0;
-            while (currentCount < 12)
-            {
-                if (tryCount == 40)
-                {
-                    break;
-                }
-                homeIndexVm.FindModel.Page++;
-
-                key = "JobPosting_12_" + homeIndexVm.FindModel.Page;
-
-                SearchJobs = await _cache.GetStringAsync(key);
-
-                var newJobs = JsonConvert.DeserializeObject<List<JobPosting>>(SearchJobs);
-
-                totalJobs = totalJobs.Concat(newJobs);
-
-                jobsQuery = totalJobs.AsQueryable();
-
-                jobsQuery = JobPostingsFilter(homeIndexVm, jobsQuery);
-
-                jobs = jobsQuery.ToList<JobPosting>();
-                tryCount++;
-                currentCount = jobs.Count();
-            }
-            jobs.Reverse();
+            var jobsCollection = searchResponse.Documents.ToList();
             var duration = DateTime.Now - start;
-            return (jobs, duration, homeIndexVm);
+            return (jobsCollection, duration);
         }
 
 
-        private static IQueryable<JobPosting> JobPostingsFilter(HomeIndexViewModel homeIndexVm, IQueryable<JobPosting> jobsQuery)
-        {
-            if (homeIndexVm.FindModel.Location.ToLower().Equals("anywhere") ||
-                string.IsNullOrEmpty(homeIndexVm.FindModel.Location))
-            {
-                //jobsQuery = _ctx.JobPostings;
-            }
-            else if (homeIndexVm.FindModel.Location.ToLower().Equals("ontario"))
-            {
-                jobsQuery = jobsQuery.Where(x => x.Location.ToLower().Contains("ontario"));
-            }
-            else if (homeIndexVm.FindModel.Location.ToLower().Equals("vancouver"))
-            {
-                jobsQuery = jobsQuery.Where(x => x.Location.ToLower().Contains("vancouver"));
-            }
-            else
-            {
-                jobsQuery = jobsQuery.Where(x => x.Location.Contains(homeIndexVm.FindModel.Location) == true);
-            }
-
-            // find By Key Words
-            if (!string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
-            {
-                jobsQuery = jobsQuery.Where(x => x.Title.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()) ||
-                                                 x.Description.ToLower().Contains(homeIndexVm.FindModel.KeyWords.ToLower()));
-            }
-
-            return jobsQuery;
-        }
+        
 
         public async Task BuildCache()
         {

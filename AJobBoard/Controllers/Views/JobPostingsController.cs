@@ -10,6 +10,7 @@ using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -29,6 +30,25 @@ namespace AJobBoard.Controllers.Views
             _NLTKService = NLTKService;
             _KeyPharseRepository = KeyPharseRepository;
         }
+
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> IndexDoc()
+        //{
+        //    var allJobs = await _jobPostingRepository.GetJobPostingsAsync(1978);
+
+        //    var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
+        //        .DefaultIndex("jobposting");
+
+        //    var client = new ElasticClient(settings);
+
+        //    foreach (var jobPosting in allJobs)
+        //    {
+        //        var job = await client.IndexDocumentAsync(jobPosting);
+        //    }
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
 
         // Need to put this in its own controller
         [Authorize(Roles = "Admin")]
@@ -89,21 +109,22 @@ namespace AJobBoard.Controllers.Views
             homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
             
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
-            
+
+
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
-            var jobs = result.Item1;
+            var jobsCollection = result.Item1;
             var duration = result.Item2;
-            homeIndexVm = result.Item3;
 
             var count = await _jobPostingRepository.GetTotalJobs();
             
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
-            
+
             ViewBag.SecsToQuery = duration.TotalSeconds
                 .ToString(CultureInfo.CurrentCulture)
                 .Replace("-", "");
+
             ViewBag.Page = homeIndexVm.FindModel.Page;
-            homeIndexVm.jobPostings = jobs;
+            homeIndexVm.jobPostings = jobsCollection;
             return View(homeIndexVm);
         }
 
