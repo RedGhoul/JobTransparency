@@ -13,7 +13,7 @@ A Job Hunting CMS, designed to make finding a job a lot easier, by centralizing 
 
 #### Lanagues
 
-- C# .Net Core 2.2 - ASP.NET MVC
+- C# .Net Core 3.0 - ASP.NET MVC
 - Python - Flask
 - JavaScript - JQuery
 
