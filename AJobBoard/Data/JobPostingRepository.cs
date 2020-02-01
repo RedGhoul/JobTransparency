@@ -46,15 +46,7 @@ namespace AJobBoard.Data
         {
             string cacheKey = "TotalJobs";
             string TotalJobs = "";
-            try
-            {
-                TotalJobs = await _cache.GetStringAsync(cacheKey);
-            }
-            catch (Exception e)
-            {
-            }
-            
-
+            TotalJobs = await _cache.GetStringAsync(cacheKey);
             if (string.IsNullOrEmpty(TotalJobs))
             {
                 int TotalJobsI = await _ctx.JobPostings.CountAsync();

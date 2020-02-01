@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using AJobBoard.Models;
@@ -15,6 +16,7 @@ namespace AJobBoard.Services
     public class ElasticService
     {
 
+        public string baseUrlsearch = "http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?";
 
         public ElasticClient SetUp()
         {
@@ -27,7 +29,18 @@ namespace AJobBoard.Services
         {
             var client = new HttpClient();
             //http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?q=Description:aws&from=12&size=12
-            HttpResponseMessage response = await client.GetAsync("http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size="+12);
+
+            HttpResponseMessage response = null;
+            string finalQueryString = "";
+            if (string.IsNullOrEmpty(keywords))
+            {
+                finalQueryString = baseUrlsearch + "q=from=" + fromNumber + "&size=" + 12;
+            }
+            else
+            {
+                finalQueryString = baseUrlsearch + "q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12;
+            }
+            response = await client.GetAsync(finalQueryString);
 
             var result = response.Content.ReadAsStringAsync().Result;
 
@@ -101,8 +114,6 @@ namespace AJobBoard.Services
 
                 var updateResponse = await SetUp().DeleteAsync<JobPosting>(job);
                 return updateResponse;
-                //var job = await _client.UpdateAsync<JobPosting>(jobPosting.Id,
-                //    u => u.Index("jobposting").Doc(jobPosting));
             }
             catch (Exception e)
             {
@@ -136,8 +147,7 @@ namespace AJobBoard.Services
             {
                 return null;
             }
-         
-            return null;
+
         }
     }
 }
