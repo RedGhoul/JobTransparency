@@ -107,8 +107,8 @@ namespace AJobBoard
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AuthKey", policy =>
-                    policy.Requirements.Add(new HasAuthKey(Configuration)));
+                //options.AddPolicy("AuthKey", policy =>
+                //    policy.Requirements.Add(new HasAuthKey(Configuration)));
                 options.AddPolicy("CanCreatePosting", policy => policy.RequireClaim("CanCreatePosting"));
                 options.AddPolicy("CanEditPosting", policy => policy.RequireClaim("CanEditPosting"));
                 options.AddPolicy("CanDeletePosting", policy => policy.RequireClaim("CanDeletePosting"));
@@ -127,7 +127,7 @@ namespace AJobBoard
             
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
-            services.AddScoped<INLTKService ,NLTKService>();
+            services.AddSingleton<INLTKService ,NLTKService>();
             
 
             //services.AddHangfire(configuration => configuration

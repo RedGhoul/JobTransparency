@@ -12,14 +12,13 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers
 {
-    [Authorize(Policy = "AuthKey")]
     [Route("api/[controller]")]
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
     {
         private readonly IJobPostingRepository _JobPostingRepository;
-        private readonly NLTKService _NLTKService;
-        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository, NLTKService NLTKService)
+        private readonly INLTKService _NLTKService;
+        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository, INLTKService NLTKService)
         {
             _JobPostingRepository = JobPostingRepository;
             _NLTKService = NLTKService;
