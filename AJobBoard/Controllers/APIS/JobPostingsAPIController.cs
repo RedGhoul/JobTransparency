@@ -88,16 +88,12 @@ namespace AJobBoard.Controllers
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            Console.WriteLine("1");
             var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
-            Console.WriteLine("2");
             try
             {
-                Console.WriteLine("3");
                 var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
                 if (wrapper != null)
                 {
-                    Console.WriteLine("4");
                     var ListKeyPhrase = new List<KeyPhrase>();
 
                     foreach (var item in wrapper.rank_list)
@@ -110,7 +106,6 @@ namespace AJobBoard.Controllers
                         });
                     }
                     newPosting.KeyPhrases = ListKeyPhrase;
-                    Console.WriteLine("5");
                 }
 
             }

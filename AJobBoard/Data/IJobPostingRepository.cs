@@ -9,8 +9,10 @@ namespace AJobBoard.Data
     public interface IJobPostingRepository
     {
         Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount);
+        Task<List<JobPosting>> GetAllJobPostingsWithKeyPhrase();
         Task<string> GetTotalJobs();
         Task<JobPosting> GetJobPostingById(int id);
+        JobPosting GetJobPostingByIdWithKeyPhrase(int id);
         Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount);
         Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings();
         Task<bool> JobPostingExistsByUrl(string url);
@@ -23,6 +25,5 @@ namespace AJobBoard.Data
         Task<bool> JobPostingExists(TestCheckDTO tcDto);
         Task<List<JobPosting>> GetRandomSetOfJobPostings();
 
-        Task BuildCache();
     }
 }

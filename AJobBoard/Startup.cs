@@ -3,12 +3,10 @@ using AJobBoard.Models;
 using AJobBoard.Services;
 using AJobBoard.Utils;
 using AJobBoard.Utils.AuthorizationHandler;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +21,9 @@ using System.Transactions;
 using Hangfire;
 using Hangfire.MySql.Core;
 using Hangfire.Dashboard;
+using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 
 namespace AJobBoard
 {
@@ -49,12 +50,19 @@ namespace AJobBoard
                 option.Configuration = Secrets.getConnectionString(Configuration,"RedisConnection");
             });
 
-            services.AddDbContext<ApplicationDbContext>(options => 
-               options.UseMySql(
-                   Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD")));
+            //services.AddDbContext<ApplicationDbContext>(options => 
+            //   options.UseMySql(
+            //       Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD")));
+            
+            services.AddDbContextPool<ApplicationDbContext>(options => options
+                // replace with your connection string
+                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD"), mySqlOptions => mySqlOptions
+                    // replace with your Server Version and Type
+                    .ServerVersion(new ServerVersion(new Version(5, 7, 29), ServerType.MySql))
+                    .CommandTimeout(300)
+                ));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -95,8 +103,7 @@ namespace AJobBoard
 
 
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore); ;
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddAuthorization(options =>
             {
@@ -119,38 +126,39 @@ namespace AJobBoard
             services.AddScoped<IUserRepository, UserRepository>();
             
             services.AddSingleton<IAWSService, AWSService>();
+            services.AddSingleton<ElasticService, ElasticService>();
             services.AddScoped<INLTKService ,NLTKService>();
-            services.AddHangfire(configuration => configuration
-                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                    .UseSimpleAssemblyNameTypeSerializer()
-                    .UseRecommendedSerializerSettings()
-                    .UseStorage(
-                        new MySqlStorage(
-                            Secrets.getConnectionString(Configuration, "HangfireConnectionDigitalOceanPROD"),
-                            new MySqlStorageOptions
-                            {
-                                QueuePollInterval = TimeSpan.FromSeconds(15),
-                                JobExpirationCheckInterval = TimeSpan.FromHours(1),
-                                CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                                PrepareSchemaIfNecessary = true,
-                                DashboardJobListLimit = 50000,
-                                TransactionTimeout = TimeSpan.FromMinutes(1),
-                                TablePrefix = "Hangfire"
-                            })));
+            
+
+            //services.AddHangfire(configuration => configuration
+            //        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            //        .UseSimpleAssemblyNameTypeSerializer()
+            //        .UseRecommendedSerializerSettings()
+            //        .UseStorage(
+            //            new MySqlStorage(
+            //                Secrets.getConnectionString(Configuration, "HangfireConnectionDigitalOceanPROD"),
+            //                new MySqlStorageOptions
+            //                {
+            //                    QueuePollInterval = TimeSpan.FromSeconds(15),
+            //                    JobExpirationCheckInterval = TimeSpan.FromHours(1),
+            //                    CountersAggregateInterval = TimeSpan.FromMinutes(5),
+            //                    PrepareSchemaIfNecessary = true,
+            //                    DashboardJobListLimit = 50000,
+            //                    TransactionTimeout = TimeSpan.FromMinutes(1),
+            //                    TablePrefix = "Hangfire"
+            //                })));
 
 
-            services.AddHangfireServer();
+            //services.AddHangfireServer();
             
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -160,28 +168,26 @@ namespace AJobBoard
             }
 
             app.UseHttpsRedirection();
-            app.UseCookiePolicy();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
             app.UseAuthentication();
-            //UseHangfireDashboardCustom(app);
-            app.UseHangfireDashboard("/Jobs", new DashboardOptions()
-            {
-                Authorization = new[] { new HangFireAuthorizationFilter() }
-            });
+            app.UseAuthorization();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-
-                    //routes.MapRoute("CHECKUP", "{controller=JobPostingsAPI}/{action=Check}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
 
 
             await CreateUserRoles(app);
-            RecurringJob.AddOrUpdate<CacheBuilder>("buildCache-id", x => x.Build(),
-                Cron.Hourly, null, "cacheqq");
+            //RecurringJob.AddOrUpdate<CacheBuilder>("buildCache-id", x => x.Build(),
+            //    Cron.Hourly, null, "cacheqq");
             
         }
 
