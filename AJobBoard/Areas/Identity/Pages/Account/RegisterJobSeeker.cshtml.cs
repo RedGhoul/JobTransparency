@@ -3,7 +3,6 @@ using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
@@ -20,18 +19,15 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterJobSeekerModel> _logger;
         private readonly IAWSService _AWSService;
-        private readonly IEmailSender _emailSender;
 
         public RegisterJobSeekerModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterJobSeekerModel> logger,
-            IEmailSender emailSender, IAWSService AWSService)
+            ILogger<RegisterJobSeekerModel> logger, IAWSService AWSService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
             _AWSService = AWSService;
         }
 

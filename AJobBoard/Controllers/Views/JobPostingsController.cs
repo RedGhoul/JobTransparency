@@ -31,85 +31,15 @@ namespace AJobBoard.Controllers.Views
             _KeyPharseRepository = KeyPharseRepository;
         }
 
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> IndexDoc()
-        //{
-        //    var allJobs = await _jobPostingRepository.GetJobPostingsAsync(1978);
-
-        //    var settings = new ConnectionSettings(new Uri("http://ttestelk.experimentsinthedeep.com"))
-        //        .DefaultIndex("jobposting");
-
-        //    var client = new ElasticClient(settings);
-
-        //    foreach (var jobPosting in allJobs)
-        //    {
-        //        var job = await client.IndexDocumentAsync(jobPosting);
-        //    }
-
-        //    return RedirectToAction(nameof(Index));
-        //}
 
 
-        // Need to put this in its own controller
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Ingest()
-        {
-            IEnumerable<JobPosting> things = await _jobPostingRepository.GetJobPostingsWithKeyPhraseAsync(1000);
-
-            foreach (var JobPosting in things)
-            {
-                bool change = false;
-
-                if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
-                {
-                    var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
-                    if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
-                    {
-                        var ListKeyPhrase = new List<KeyPhrase>();
-
-                        foreach (var item in wrapper.rank_list)
-                        {
-                            ListKeyPhrase.Add(new KeyPhrase
-                            {
-                                Affinty = item.Affinty,
-                                Text = item.Text,
-                                JobPosting = JobPosting
-                            });
-                        }
-
-                        await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
-
-                        JobPosting.KeyPhrases = ListKeyPhrase;
-                        change = true;
-                    }
-
-
-                }
-
-                if (string.IsNullOrEmpty(JobPosting.Summary))
-                {
-                    var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
-
-                    JobPosting.Summary = NLTKSummary.SummaryText;
-                    change = true;
-                }
-
-                if (change == true)
-                {
-                    await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
-                    change = false;
-                }
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
+        
 
         public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
         {
             homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
             
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
-
 
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
             var jobsCollection = result.Item1;
@@ -118,10 +48,6 @@ namespace AJobBoard.Controllers.Views
             var count = await _jobPostingRepository.GetTotalJobs();
             
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
-
-            ViewBag.SecsToQuery = duration.TotalSeconds
-                .ToString(CultureInfo.CurrentCulture)
-                .Replace("-", "");
 
             ViewBag.Page = homeIndexVm.FindModel.Page;
             homeIndexVm.jobPostings = jobsCollection;
