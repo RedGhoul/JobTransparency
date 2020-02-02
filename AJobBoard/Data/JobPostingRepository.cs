@@ -44,19 +44,9 @@ namespace AJobBoard.Data
 
         public async Task<string> GetTotalJobs()
         {
-            string cacheKey = "TotalJobs";
-            string TotalJobs = "";
-            TotalJobs = await _cache.GetStringAsync(cacheKey);
-            if (string.IsNullOrEmpty(TotalJobs))
-            {
-                int TotalJobsI = await _ctx.JobPostings.CountAsync();
-                TotalJobs = TotalJobsI.ToString();
-                var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
-                await _cache.SetStringAsync(cacheKey, TotalJobs, options);
-            }
+            int totalJobs = await _ctx.JobPostings.CountAsync();
 
-            return TotalJobs;
+            return totalJobs.ToString();
         }
 
         public async Task<bool> JobPostingExists(TestCheckDTO tcDTO)
@@ -74,46 +64,13 @@ namespace AJobBoard.Data
             return false;
         }
 
-        public async Task<IEnumerable<JobPosting>> GetJobPostingsAsync(int amount)
-        {
-            string cacheKey = "Jobs" + amount;
-            string JobsString = await _cache.GetStringAsync(cacheKey);
-            IEnumerable<JobPosting> jobs = null;
-            if (string.IsNullOrEmpty(JobsString))
-            {
-                jobs = await _ctx.JobPostings.Take(amount).ToListAsync();
-                var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
-                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobs), options);
-            }
-            else
-            {
-                jobs = JsonConvert.DeserializeObject<IEnumerable<JobPosting>>(JobsString);
-                jobs = jobs.Reverse();
-            }
-
-            return jobs;
-        }
-
         public async Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount)
         {
-            string cacheKey = "JobsKeyPhrase" + amount;
-            string JobsString = await _cache.GetStringAsync(cacheKey);
-            IEnumerable<JobPosting> jobs = null;
-            if (string.IsNullOrEmpty(JobsString))
-            {
-                jobs = await _ctx.JobPostings.Take(amount).Include(x => x.KeyPhrases).ToListAsync();
-                var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
-
-            }
-            else
-            {
-                jobs = JsonConvert.DeserializeObject<IEnumerable<JobPosting>>(JobsString);
-            }
-
+            var jobs = await _ctx.JobPostings.Take(amount)
+                .Include(x => x.KeyPhrases).ToListAsync();
             return jobs;
         }
+
 
         public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
         {
@@ -176,7 +133,6 @@ namespace AJobBoard.Data
             try
             {
                 await _ctx.SaveChangesAsync();
-                //await _es.CreateJobPostingAsync(jobPosting);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -192,11 +148,10 @@ namespace AJobBoard.Data
             {
                 await _ctx.JobPostings.AddAsync(jobPosting);
                 await _ctx.SaveChangesAsync();
-                
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                Console.WriteLine(ex.InnerException);
             }
             return jobPosting;
         }
@@ -230,14 +185,15 @@ namespace AJobBoard.Data
                 _ctx.Update(jobPosting);
                 await _ctx.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
                 if (!JobPostingExistsById(jobPosting.Id))
                 {
+                    Console.WriteLine("JobPosting does not exist");
                 }
                 else
                 {
-                    throw;
+                    Console.WriteLine(ex.InnerException);
                 }
             }
             return jobPosting;
@@ -248,9 +204,8 @@ namespace AJobBoard.Data
             return await _es.GetRandomSetOfJobPosting();
         }
 
-        public async Task<(List<JobPosting>, TimeSpan)> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<List<JobPosting>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
-            var start = DateTime.Now;
             var fromNumber = 0;
             if (homeIndexVm.FindModel.Page > 1)
             {
@@ -258,13 +213,14 @@ namespace AJobBoard.Data
             }
             var jobsCollection = await _es.QueryJobPosting(fromNumber, homeIndexVm.FindModel.KeyWords);
             
-            var duration = DateTime.Now - start;
-            return (jobsCollection, duration);
+            return jobsCollection;
         }
 
         public JobPosting GetJobPostingByIdWithKeyPhrase(int id)
         {
-            var jobPosting = _ctx.JobPostings.Where(x => x.Id == id).Include(x => x.KeyPhrases).FirstOrDefault();
+            var jobPosting = _ctx.JobPostings.Where(x => x.Id == id)
+                .Include(x => x.KeyPhrases)
+                .FirstOrDefault();
             return jobPosting;
         }
     }

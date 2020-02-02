@@ -98,6 +98,26 @@ namespace AJobBoard.Controllers.Views
                 var item =  _jobPostingRepository.GetJobPostingByIdWithKeyPhrase(i);
                 if (item != null)
                 {
+                    if (item.Summary == null)
+                    {
+                        item.Summary = "";
+                    }
+
+                    if (item.Description == null)
+                    {
+                        item.Description = "";
+                    }
+
+                    if (item.KeyPhrases == null)
+                    {
+                        item.KeyPhrases = new List<KeyPhrase>();
+                        item.KeyPhrases.Add(new KeyPhrase
+                        {
+                            Affinty = "Affinty",
+                            Text = "item.Text",
+                            JobPosting = item
+                        });
+                    }
                     var json = JsonConvert.SerializeObject(item, Formatting.None,
                         new JsonSerializerSettings()
                         {

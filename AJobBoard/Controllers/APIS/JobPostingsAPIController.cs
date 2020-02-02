@@ -17,24 +17,18 @@ namespace AJobBoard.Controllers
     public class JobPostingsAPIController : ControllerBase
     {
         private readonly IJobPostingRepository _JobPostingRepository;
-        private readonly INLTKService _NLTKService;
-        private readonly IKeyPharseRepository _KeyPharseRepository;
+        private readonly INLTKService _nltkService;
+        private readonly IKeyPharseRepository _keyPharseRepository;
+        private readonly ElasticService _es;
         public JobPostingsAPIController(IJobPostingRepository JobPostingRepository,
-            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository)
+            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService)
         {
             _JobPostingRepository = JobPostingRepository;
-            _NLTKService = NLTKService;
-            _KeyPharseRepository = KeyPharseRepository;
+            _nltkService = NLTKService;
+            _keyPharseRepository = KeyPharseRepository;
+            _es = elasticService;
         }
 
-
-        // GET: api/JobPostingsAPI
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobPosting>>> GetJobPostings()
-        {
-            var jobPostings = await _JobPostingRepository.GetJobPostingsAsync(60);
-            return jobPostings.ToList();
-        }
 
         [HttpPost("GetAllNoneKeywords")]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetAllNoneKeywordsJobPostings()
@@ -93,7 +87,7 @@ namespace AJobBoard.Controllers
             var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
             try
             {
-                var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
+                var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
                 if (wrapper != null && wrapper.rank_list != null)
                 {
                     var ListKeyPhrase = new List<KeyPhrase>();
@@ -118,20 +112,18 @@ namespace AJobBoard.Controllers
                         Text = "item.Text",
                         JobPosting = newPosting
                     });
-                    await _KeyPharseRepository.CreateKeyPhrasesAsync(newPosting.KeyPhrases);
+                    await _keyPharseRepository.CreateKeyPhrasesAsync(newPosting.KeyPhrases);
                 }
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                //return BadRequest(ex);
             }
 
             try
             {
-                Console.WriteLine("6");
-                var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+                var NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
                 if (NLTKSummary != null)
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;
@@ -145,11 +137,9 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                //return BadRequest(ex);
             }
-            Console.WriteLine("7");
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
-
+            await _es.CreateJobPostingAsync(newPosting);
             return Ok();
         }
 
