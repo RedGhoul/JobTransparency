@@ -176,7 +176,7 @@ namespace AJobBoard.Data
             try
             {
                 await _ctx.SaveChangesAsync();
-                await _es.CreateJobPostingAsync(jobPosting);
+                //await _es.CreateJobPostingAsync(jobPosting);
             }
             catch (DbUpdateConcurrencyException)
             {

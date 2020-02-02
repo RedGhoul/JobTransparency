@@ -93,7 +93,7 @@ namespace AJobBoard.Controllers.Views
         public async Task<IActionResult> IndexJobPostings()
         {
 
-            for (int i = 388; i < 2664; i++)
+            for (int i = 388; i < 5349; i++)
             {
                 var item =  _jobPostingRepository.GetJobPostingByIdWithKeyPhrase(i);
                 if (item != null)
