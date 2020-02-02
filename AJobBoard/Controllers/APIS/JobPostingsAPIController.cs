@@ -18,10 +18,13 @@ namespace AJobBoard.Controllers
     {
         private readonly IJobPostingRepository _JobPostingRepository;
         private readonly INLTKService _NLTKService;
-        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository, INLTKService NLTKService)
+        private readonly IKeyPharseRepository _KeyPharseRepository;
+        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository,
+            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository)
         {
             _JobPostingRepository = JobPostingRepository;
             _NLTKService = NLTKService;
+            _KeyPharseRepository = KeyPharseRepository;
         }
 
 
@@ -91,7 +94,7 @@ namespace AJobBoard.Controllers
             try
             {
                 var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
-                if (wrapper != null)
+                if (wrapper != null && wrapper.rank_list != null)
                 {
                     var ListKeyPhrase = new List<KeyPhrase>();
 
@@ -105,6 +108,17 @@ namespace AJobBoard.Controllers
                         });
                     }
                     newPosting.KeyPhrases = ListKeyPhrase;
+                }
+                else
+                {
+                    newPosting.KeyPhrases = new List<KeyPhrase>();
+                    newPosting.KeyPhrases.Add(new KeyPhrase
+                    {
+                        Affinty = "Affinty",
+                        Text = "item.Text",
+                        JobPosting = newPosting
+                    });
+                    await _KeyPharseRepository.CreateKeyPhrasesAsync(newPosting.KeyPhrases);
                 }
 
             }
@@ -122,6 +136,11 @@ namespace AJobBoard.Controllers
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;
                 }
+                else
+                {
+                    newPosting.Summary = "none";
+                }
+
             }
             catch (Exception ex)
             {
