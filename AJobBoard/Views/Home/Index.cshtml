@@ -85,7 +85,9 @@
             </div>
 
             @Html.AntiForgeryToken()
-            <div class="mb-5">
+        <div class="mb-5">
+            @if (Model.jobPostings != null)
+            {
                 @foreach (var item in Model.jobPostings)
                 {
                     <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
@@ -127,9 +129,11 @@
                     </div>
 
                 }
+            }
 
 
-            </div>
+
+        </div>
 
             <div class="row pagination-wrap">
                 <div class="col-md-6 text-center text-md-left">

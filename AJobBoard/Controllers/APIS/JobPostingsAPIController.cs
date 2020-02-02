@@ -111,7 +111,7 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return BadRequest(ex);
+                //return BadRequest(ex);
             }
 
             try
@@ -126,7 +126,7 @@ namespace AJobBoard.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return BadRequest(ex);
+                //return BadRequest(ex);
             }
             Console.WriteLine("7");
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
