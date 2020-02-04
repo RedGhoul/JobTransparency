@@ -37,7 +37,7 @@ namespace AJobBoard.Data
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return null;
+                return new List<JobPosting>();
             }
           
         }
