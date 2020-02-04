@@ -12,12 +12,18 @@ namespace AJobBoard
     {
         public static void Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .Build();
-
-
-
+            IConfiguration configuration = null;
+            try
+            {
+                configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .Build();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
