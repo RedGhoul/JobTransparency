@@ -18,13 +18,6 @@ namespace AJobBoard.Services
 
         public string baseUrlsearch = "http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?";
 
-        public ElasticClient SetUp()
-        {
-            var node = new Uri("http://a-main-elastic.experimentsinthedeep.com");
-            var settings = new ConnectionSettings(node).DefaultIndex("jobpostings");
-            var client = new ElasticClient(settings);
-            return client;
-        }
         public async Task<List<JobPosting>> QueryJobPosting(int fromNumber, string keywords)
         {
             var client = new HttpClient();
@@ -80,48 +73,48 @@ namespace AJobBoard.Services
 
         public async Task CreateJobPostingBulk(List<JobPosting> jobPostings)
         {
-            var indexManyAsyncResponse = await SetUp().IndexManyAsync(jobPostings);
-            if (indexManyAsyncResponse.Errors)
-            {
-                foreach (var itemWithError in indexManyAsyncResponse.ItemsWithErrors)
-                {
-                    Console.WriteLine("Failed to index document {0}: {1}", itemWithError.Id, itemWithError.Error);
-                }
-            }
+            //var indexManyAsyncResponse = await SetUp().IndexManyAsync(jobPostings);
+            //if (indexManyAsyncResponse.Errors)
+            //{
+            //    foreach (var itemWithError in indexManyAsyncResponse.ItemsWithErrors)
+            //    {
+            //        Console.WriteLine("Failed to index document {0}: {1}", itemWithError.Id, itemWithError.Error);
+            //    }
+            //}
         }
 
 
         public void UpdateJobPosting(JobPosting jobPosting)
         {
-            try
-            { 
-                var job = SetUp().Update<JobPosting,object>(jobPosting.Id.ToString(), 
-                    u => u.Doc(jobPosting));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            //try
+            //{ 
+            //    var job = SetUp().Update<JobPosting,object>(jobPosting.Id.ToString(), 
+            //        u => u.Doc(jobPosting));
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e);
+            //}
            
         }
-        public async Task<DeleteResponse> DeleteJobPosting(JobPosting jobPosting)
-        {
-            try
-            {
-                var getResponse = SetUp().Get<JobPosting>(jobPosting.Id.ToString());
+        //public async Task<DeleteResponse> DeleteJobPosting(JobPosting jobPosting)
+        //{
+        //    try
+        //    {
+        //        var getResponse = SetUp().Get<JobPosting>(jobPosting.Id.ToString());
 
-                var job = getResponse.Source;
+        //        var job = getResponse.Source;
 
-                var updateResponse = await SetUp().DeleteAsync<JobPosting>(job);
-                return updateResponse;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return null;
-            }
+        //        var updateResponse = await SetUp().DeleteAsync<JobPosting>(job);
+        //        return updateResponse;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        return null;
+        //    }
 
-        }
+        //}
 
         public async Task<List<JobPosting>> GetRandomSetOfJobPosting()
         {

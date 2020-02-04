@@ -42,15 +42,12 @@ namespace AJobBoard.Controllers.Views
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
 
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
-            var jobsCollection = result.Item1;
-            var duration = result.Item2;
-
             var count = await _jobPostingRepository.GetTotalJobs();
             
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
 
             ViewBag.Page = homeIndexVm.FindModel.Page;
-            homeIndexVm.jobPostings = jobsCollection;
+            homeIndexVm.jobPostings = result;
             return View(homeIndexVm);
         }
 

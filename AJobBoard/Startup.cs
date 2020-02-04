@@ -129,27 +129,6 @@ namespace AJobBoard
             services.AddSingleton<ElasticService, ElasticService>();
             services.AddSingleton<INLTKService ,NLTKService>();
             
-
-            //services.AddHangfire(configuration => configuration
-            //        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-            //        .UseSimpleAssemblyNameTypeSerializer()
-            //        .UseRecommendedSerializerSettings()
-            //        .UseStorage(
-            //            new MySqlStorage(
-            //                Secrets.getConnectionString(Configuration, "HangfireConnectionDigitalOceanPROD"),
-            //                new MySqlStorageOptions
-            //                {
-            //                    QueuePollInterval = TimeSpan.FromSeconds(15),
-            //                    JobExpirationCheckInterval = TimeSpan.FromHours(1),
-            //                    CountersAggregateInterval = TimeSpan.FromMinutes(5),
-            //                    PrepareSchemaIfNecessary = true,
-            //                    DashboardJobListLimit = 50000,
-            //                    TransactionTimeout = TimeSpan.FromMinutes(1),
-            //                    TablePrefix = "Hangfire"
-            //                })));
-
-
-            //services.AddHangfireServer();
             
         }
 
@@ -185,25 +164,10 @@ namespace AJobBoard
 
 
 
-            await CreateUserRoles(app);
-            //RecurringJob.AddOrUpdate<CacheBuilder>("buildCache-id", x => x.Build(),
-            //    Cron.Hourly, null, "cacheqq");
-            
+            //await CreateUserRoles(app);
+
         }
 
-
-        private static IApplicationBuilder UseHangfireDashboardCustom(IApplicationBuilder app, string pathMatch = "/hangfire", DashboardOptions options = null, JobStorage storage = null)
-        {
-            var services = app.ApplicationServices;
-            storage = storage ?? services.GetRequiredService<JobStorage>();
-            options = options ?? services.GetService<DashboardOptions>() ?? new DashboardOptions();
-            var routes = app.ApplicationServices.GetRequiredService<RouteCollection>();
-
-            app.Map(new PathString(pathMatch), x =>
-                x.UseMiddleware<HangfireDashboardMiddleware>(storage, options, routes));
-
-            return app;
-        }
 
 
         private async Task CreateUserRoles(IApplicationBuilder app)

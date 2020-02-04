@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace AJobBoard.Tests.Controller.Tests
@@ -22,7 +23,8 @@ namespace AJobBoard.Tests.Controller.Tests
                 .ReturnsAsync(GetRandomSetOfJobPostings());
             mockRepo.Setup(repo => repo.GetTotalJobs())
                .ReturnsAsync(GetTotalJobs());
-            var controller = new HomeController(mockRepo.Object);
+            var mockLogger = new Mock<ILogger<HomeController>>();
+            var controller = new HomeController(mockRepo.Object, mockLogger.Object);
 
             // Act
             var result = await controller.Index();
@@ -39,7 +41,8 @@ namespace AJobBoard.Tests.Controller.Tests
         {
             // Arrange
             var mockRepo = new Mock<IJobPostingRepository>();
-            var controller = new HomeController(mockRepo.Object);
+            var mockLogger = new Mock<ILogger<HomeController>>();
+            var controller = new HomeController(mockRepo.Object, mockLogger.Object);
 
             // Act
             var result = controller.RegisterType();
