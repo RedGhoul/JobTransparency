@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using AJobBoard.Models;
 using AJobBoard.Models.DTO;
-using Elasticsearch.Net;
+using AJobBoard.Utils;
+using Microsoft.Extensions.Configuration;
 using Nest;
 using Newtonsoft.Json;
 
@@ -16,27 +17,31 @@ namespace AJobBoard.Services
     public class ElasticService
     {
 
-        public string baseUrlsearch = "http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?";
+        private static string baseUrlsearch;
+
+        public ElasticService(IConfiguration configuration)
+        {
+            baseUrlsearch = Secrets.getConnectionString(configuration,"ElasticIndexBaseUrl");
+        }
 
         public async Task<List<JobPosting>> QueryJobPosting(int fromNumber, string keywords)
         {
             var client = new HttpClient();
-            //http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?q=Description:aws&from=12&size=12
-
+            
             HttpResponseMessage response = null;
             string finalQueryString = "";
             if (string.IsNullOrEmpty(keywords))
             {
-                finalQueryString = baseUrlsearch + "q=from=" + fromNumber + "&size=" + 12;
+                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12;
             }
             else
             {
-                finalQueryString = baseUrlsearch + "q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12;
+                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12;
             }
             response = await client.GetAsync(finalQueryString);
 
             var result = response.Content.ReadAsStringAsync().Result;
-
+            
             try
             {
                 RootObject list = JsonConvert
@@ -51,7 +56,8 @@ namespace AJobBoard.Services
             }
             catch (Exception ex)
             {
-                return null;
+                Console.WriteLine(ex.InnerException);
+                return new List<JobPosting>();
             }
 
 
@@ -68,59 +74,16 @@ namespace AJobBoard.Services
 
             var client = new HttpClient();
 
-            var response = await client.PutAsync("http://a-main-elastic.experimentsinthedeep.com" + "/jobpostings/_doc/" + jobPosting.Id, data);
+            var response = await client.PutAsync(baseUrlsearch + "/jobpostings/_doc/" + jobPosting.Id, data);
         }
 
-        public async Task CreateJobPostingBulk(List<JobPosting> jobPostings)
-        {
-            //var indexManyAsyncResponse = await SetUp().IndexManyAsync(jobPostings);
-            //if (indexManyAsyncResponse.Errors)
-            //{
-            //    foreach (var itemWithError in indexManyAsyncResponse.ItemsWithErrors)
-            //    {
-            //        Console.WriteLine("Failed to index document {0}: {1}", itemWithError.Id, itemWithError.Error);
-            //    }
-            //}
-        }
-
-
-        public void UpdateJobPosting(JobPosting jobPosting)
-        {
-            //try
-            //{ 
-            //    var job = SetUp().Update<JobPosting,object>(jobPosting.Id.ToString(), 
-            //        u => u.Doc(jobPosting));
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e);
-            //}
-           
-        }
-        //public async Task<DeleteResponse> DeleteJobPosting(JobPosting jobPosting)
-        //{
-        //    try
-        //    {
-        //        var getResponse = SetUp().Get<JobPosting>(jobPosting.Id.ToString());
-
-        //        var job = getResponse.Source;
-
-        //        var updateResponse = await SetUp().DeleteAsync<JobPosting>(job);
-        //        return updateResponse;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        return null;
-        //    }
-
-        //}
+       
 
         public async Task<List<JobPosting>> GetRandomSetOfJobPosting()
         {
             var client = new HttpClient();
            
-            var response = await client.GetAsync("http://a-main-elastic.experimentsinthedeep.com/jobpostings/_search?"+"&from=" + new Random().Next(1,12) + "&size=" + 12);
+            var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12);
 
             var result = response.Content.ReadAsStringAsync().Result;
 
@@ -138,8 +101,21 @@ namespace AJobBoard.Services
             }
             catch (Exception ex)
             {
-                return null;
+                Console.WriteLine(ex.InnerException);
+                return new List<JobPosting>();
             }
+
+        }
+
+        public async Task CreateJobPostingBulk(List<JobPosting> jobPostings)
+        {
+
+        }
+
+
+        public void UpdateJobPosting(JobPosting jobPosting)
+        {
+
 
         }
     }
