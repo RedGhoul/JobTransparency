@@ -10,9 +10,8 @@
                         <p>Find your dream jobs in our powerful career website.</p>
                     </div>
 
-                    @using (Html.BeginForm("Index", "JobPostings", FormMethod.Post))
+                    @using (Html.BeginForm("IndexPost", "JobPostings", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken()
                         <div class="row mb-5">
                             <div class="col-12">
                                 <h6 style="color:white">Key Words</h6>

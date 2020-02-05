@@ -24,6 +24,7 @@ namespace AJobBoard.Controllers.Views
             _logger = logger;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             _logger.LogInformation("Home called");

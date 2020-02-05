@@ -23,7 +23,8 @@ namespace AJobBoard.Utils
         {
             var message = logEvent.RenderMessage(_formatProvider);
             string password = Secrets.getAppSettingsValue(_configurationProvider, "JankAuthPassword");
-            var json = JsonConvert.SerializeObject(new { msg = message, KEYAUTH = password }, Formatting.None,
+            var json = JsonConvert.SerializeObject(new { msg = message, KEYAUTH = password, time= DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                }, Formatting.None,
                 new JsonSerializerSettings()
                 {
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore

@@ -100,8 +100,8 @@ namespace AJobBoard
                 options.SlidingExpiration = true;
             });
 
-
-
+            services.AddResponseCaching();
+            services.AddSession();
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -153,6 +153,7 @@ namespace AJobBoard
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

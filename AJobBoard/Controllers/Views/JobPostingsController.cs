@@ -9,8 +9,10 @@ using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nest;
+using Newtonsoft.Json;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -20,7 +22,7 @@ namespace AJobBoard.Controllers.Views
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _NLTKService;
         private readonly IKeyPharseRepository _KeyPharseRepository;
-
+        private readonly string SearchVMCacheKey = "SearchVMCacheKey";
         public JobPostingsController(
             IJobPostingRepository jobPostingRepository,
             INLTKService NLTKService,
@@ -32,13 +34,15 @@ namespace AJobBoard.Controllers.Views
         }
 
 
-
-        
-
-        public async Task<IActionResult> Index(HomeIndexViewModel homeIndexVm)
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
-            
+            var value = HttpContext.Session.GetString(SearchVMCacheKey);
+
+            HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ? 
+                JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) : 
+                JsonConvert.DeserializeObject<HomeIndexViewModel>(value);
+
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
 
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
@@ -49,6 +53,19 @@ namespace AJobBoard.Controllers.Views
             ViewBag.Page = homeIndexVm.FindModel.Page;
             homeIndexVm.jobPostings = result;
             return View(homeIndexVm);
+        }
+
+        [HttpPost]
+        public IActionResult IndexPost(HomeIndexViewModel homeIndexVm)
+        {
+            homeIndexVm = JobPostingHelper.SetDefaultFindModel(homeIndexVm);
+
+            JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
+
+            var vmData = JsonConvert.SerializeObject(homeIndexVm);
+                HttpContext.Session.SetString(SearchVMCacheKey, vmData);
+
+            return RedirectToAction("Index");
         }
 
 
