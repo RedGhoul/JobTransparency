@@ -18,7 +18,7 @@ namespace AJobBoard.Tests.Controller.Tests
     public class JobPostingsControllerTests
     {
         [Fact]
-        public async Task Index_ReturnsAViewResult_WithAListOfJobPostings_AndTimeSpan()
+        public async Task Index_ReturnsAViewResult_WithAListOfJobPostings()
         {
             // Arrange
             HomeIndexViewModel homeIndexVm = new HomeIndexViewModel();
@@ -40,10 +40,9 @@ namespace AJobBoard.Tests.Controller.Tests
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom <IEnumerable<JobPosting>>(
-                viewResult.ViewData.Model);
-            Assert.Equal(10, model.Count());
-            Assert.True(viewResult.ViewData.ContainsKey("SecsToQuery"));
+            var model = Assert.IsAssignableFrom <HomeIndexViewModel>(
+                viewResult.Model);
+            Assert.Equal(10, model.jobPostings.Count());
         }
 
 
@@ -300,7 +299,7 @@ namespace AJobBoard.Tests.Controller.Tests
             return null;
         }
 
-        private (List<JobPosting>, TimeSpan) ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        private List<JobPosting> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             List<JobPosting> jobs = new List<JobPosting>();
 
@@ -312,7 +311,7 @@ namespace AJobBoard.Tests.Controller.Tests
                 });
             }
 
-            return (jobs, new TimeSpan());
+            return jobs;
         }
         private string GetTotalJobs()
         {

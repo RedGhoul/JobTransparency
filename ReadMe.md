@@ -14,12 +14,13 @@ A Job Hunting CMS, designed to make finding a job a lot easier, by centralizing 
 #### Lanagues
 
 - C# .Net Core 3.0 - ASP.NET MVC
-- Python - Flask
+- Python - Flask - Azure Function (To Scrap Indeed)
 - JavaScript - JQuery
 
 #### Data Stores
 
-- MYSQL
-- Redis
+- MYSQL - Main Data Store
+- Redis - For Reads of job Posts
+- Elastic Search - For Search (Data returned as JSON)
 
-### Hosted on Azure
+### Hosted on Digital Ocean Using Docker & CapRover
