@@ -60,5 +60,11 @@ namespace AJobBoard.Data
         {
             return _ctx.Applies.Any(e => e.Id == id);
         }
+
+        public async Task<Apply> GetApplyAsync(int id)
+        {
+            var apply = await _ctx.Applies.Where(x => x.Id == id).Include(x => x.JobPosting).FirstOrDefaultAsync();
+            return apply;
+        }
     }
 }

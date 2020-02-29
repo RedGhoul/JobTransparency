@@ -1,4 +1,4 @@
-
+@import url("https://fonts.googleapis.com/css?family=Nunito:200,300,400,700");
 
 .site-navbar {
     margin-bottom: 0px;
@@ -621,11 +621,10 @@ body {
 
 h1, h2, h3, h4 {
     color: #000;
-    font-family: 'Nunito', sans-serif;
 }
 
 .site-section {
-    padding-top: 7rem;
+    padding-top: 9rem;
     padding-bottom: 7rem;
     position: relative;
     z-index: 2;
@@ -2319,8 +2318,3 @@ h1, h2, h3, h4 {
     .job-item .meta strong {
         color: #3c3c3c;
     }
-
-.JobPostingList {
-    background-color: currentColor;
-    padding-top: 200px;
-}
