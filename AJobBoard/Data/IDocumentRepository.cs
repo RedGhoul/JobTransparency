@@ -13,7 +13,7 @@ namespace AJobBoard.Data
         Task<Document> GetDocumentByIdAsync(int? id);
         Task<MemoryStream> DownLoadDocument(int documentId, ApplicationUser user);
         List<Document> GetDocumentsOfCurrentUser(string userId);
-        void RemoveDocumentFromUser(int documentId, ApplicationUser user);
+        Task RemoveDocumentFromUser(int documentId, ApplicationUser user);
         Task<bool> SaveDocumentToUser(DocumentViewModel document, ApplicationUser user);
         Task<bool> UpdateDocument(Document document);
     }

@@ -54,7 +54,7 @@ namespace AJobBoard
             //   options.UseMySql(
             //       Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD")));
             
-            services.AddDbContextPool<ApplicationDbContext>(options => options
+            services.AddDbContext<ApplicationDbContext>(options => options
                 // replace with your connection string
                 .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD"), mySqlOptions => mySqlOptions
                     // replace with your Server Version and Type
@@ -117,13 +117,13 @@ namespace AJobBoard
 
             services.AddSingleton<IConfiguration>(Configuration);
 
-            services.AddScoped<UserManager<ApplicationUser>>();
+            services.AddTransient<UserManager<ApplicationUser>>();
             
-            services.AddScoped<IJobPostingRepository, JobPostingRepository>();
-            services.AddScoped<IKeyPharseRepository,KeyPharseRepository>();
-            services.AddScoped<IAppliesRepository, AppliesRepository>();
-            services.AddScoped<IDocumentRepository, DocumentRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient<IJobPostingRepository, JobPostingRepository>();
+            services.AddTransient<IKeyPharseRepository,KeyPharseRepository>();
+            services.AddTransient<IAppliesRepository, AppliesRepository>();
+            services.AddTransient<IDocumentRepository, DocumentRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();

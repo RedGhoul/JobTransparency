@@ -144,7 +144,7 @@ namespace AJobBoard.Controllers.Views
             var User = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
 
-            _documentRepository.RemoveDocumentFromUser(id, User);
+            await _documentRepository.RemoveDocumentFromUser(id, User);
            
             return RedirectToAction(nameof(Index));
         }

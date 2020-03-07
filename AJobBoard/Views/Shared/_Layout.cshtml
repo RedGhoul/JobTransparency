@@ -35,7 +35,8 @@
                     <nav class="mx-auto site-navigation">
                         <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0" style="font-size: x-large;">
                             <li>
-                                <a href="/">Home</a></li>
+                                <a href="/">Home</a>
+                            </li>
                             <li><a asp-action="Index" asp-controller="JobPostings">Job Listings</a></li>
 
                             @if (SignInManager.IsSignedIn(User))
@@ -73,6 +74,7 @@
         </header>
         @RenderBody()
         <footer class="site-footer">
+
             <div class="container">
                 <div class="row mb-5">
                     <div class="col-4 col-md-4 mb-4 mb-md-0">
@@ -111,12 +113,23 @@
                     </div>
                 </div>
             </div>
+            <div class="container" style="color:aliceblue;">
+                <p>Created by Avaneesa Basappa</p>
+                <p>Check me out at <a href="https://www.avaneesa.me/">avaneesa.me</a></p>
+            </div>
         </footer>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"
                 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
                 crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/alertify.min.js" integrity="sha256-TmZbMuBl7X3riNkZNRGGFWfpltDc50OK5Kzj4UrtvuE=" crossorigin="anonymous"></script>
-
+        <script>
+            var notificationMadeBy = alertify.message('Created by Avaneesa Basappa', 10000);
+             notificationMadeBy.ondismiss = function(){ return false; };
+            var notificationCheckMeOut = alertify.message('Check me out at <a href="https://www.avaneesa.me/">avaneesa.me</a>', 10000);
+             notificationCheckMeOut.ondismiss = function(){ return false; };
+            var notificationUser = alertify.notify('Hi if you want to see what the rest of site you looks like. You can use the following UserName:= TestUser1@gmail.com & Password:= dietForCoke123', 'success', 10000);
+            notificationUser.ondismiss = function(){ return false; };
+        </script>
         @RenderSection("Scripts", required: false)
 
     </div>

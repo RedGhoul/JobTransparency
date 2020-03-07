@@ -72,15 +72,16 @@ namespace AJobBoard.Data
             return false;
         }
 
-        public async void RemoveDocumentFromUser(int documentId, ApplicationUser user)
+        public async Task RemoveDocumentFromUser(int documentId, ApplicationUser user)
         {
-
             var document = await _ctx.Document.FindAsync(documentId);
-
             user.Documents.Remove(document);
-            await _AWSService.DeleteFile(document.URL, "ajobboard");
-            _ctx.Document.Remove(document);
             await _ctx.SaveChangesAsync();
+            _ctx.Document.Remove(document);
+            _ctx.Entry(document).State = EntityState.Deleted;
+            await _ctx.SaveChangesAsync();
+
+            await _AWSService.DeleteFile(document.URL, "ajobboard");
         }
 
         public async Task<MemoryStream> DownLoadDocument(int documentId,ApplicationUser user)
