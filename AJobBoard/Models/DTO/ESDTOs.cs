@@ -10,10 +10,10 @@ namespace AJobBoard.Models.DTO
     }
     public class Shards
     {
-        public int total { get; set; }
-        public int successful { get; set; }
-        public int skipped { get; set; }
-        public int failed { get; set; }
+        public string total { get; set; }
+        public string successful { get; set; }
+        public string skipped { get; set; }
+        public string failed { get; set; }
     }
 
     public class KeyPhras
@@ -49,14 +49,14 @@ namespace AJobBoard.Models.DTO
         public string _index { get; set; }
         public string _type { get; set; }
         public string _id { get; set; }
-        public double _score { get; set; }
+        public string _score { get; set; }
         public JobPosting _source { get; set; }
     }
 
     public class Hits
     {
         public int total { get; set; }
-        public double max_score { get; set; }
+        public string max_score { get; set; }
         public List<Hit> hits { get; set; }
     }
 

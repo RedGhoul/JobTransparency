@@ -32,11 +32,11 @@ namespace AJobBoard.Services
             string finalQueryString = "";
             if (string.IsNullOrEmpty(keywords))
             {
-                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12;
+                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
             }
             else
             {
-                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12;
+                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
             }
             response = await client.GetAsync(finalQueryString);
 
@@ -83,7 +83,7 @@ namespace AJobBoard.Services
         {
             var client = new HttpClient();
            
-            var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12);
+            var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12 + "&sort=DateAdded:desc");
 
             var result = response.Content.ReadAsStringAsync().Result;
 
