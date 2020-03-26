@@ -99,7 +99,26 @@ namespace AJobBoard
                 options.AccessDeniedPath = "/Account/AccessDenied"; 
                 options.SlidingExpiration = true;
             });
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings().UseStorage(
+                    new MySqlStorage(
+                        Secrets.getConnectionString(Configuration, "HangfireConnectionDigitalOceanPROD"),
+                        new MySqlStorageOptions
+                        {
+                            QueuePollInterval = TimeSpan.FromSeconds(15),
+                            JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                            CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                            PrepareSchemaIfNecessary = true,
+                            DashboardJobListLimit = 50000,
+                            TransactionTimeout = TimeSpan.FromMinutes(1),
+                            TablePrefix = "Hangfire"
+                        })));
+            
 
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
             services.AddResponseCaching();
             services.AddSession();
             services.AddMvc()
@@ -124,7 +143,8 @@ namespace AJobBoard
             services.AddTransient<IAppliesRepository, AppliesRepository>();
             services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            
+            services.AddScoped<IMyJob, MyJob>();
+
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
             services.AddSingleton<INLTKService ,NLTKService>();
@@ -149,11 +169,20 @@ namespace AJobBoard
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new [] {new HangFireAuthorizationFilter()}
+            });
+            app.UseHangfireServer(new BackgroundJobServerOptions
+            {
+                WorkerCount = 2,
+            });
+
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
@@ -165,7 +194,7 @@ namespace AJobBoard
             });
 
 
-
+            HangFireJobScheduler.ScheduleRecurringJobs();
             //await CreateUserRoles(app);
 
         }

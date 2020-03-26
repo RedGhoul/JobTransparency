@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AJobBoard", "AJobBoard\AJobBoard.csproj", "{A352C213-198A-4D7C-8660-3B67C2D5AF50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AJobBoard.Tests", "AJobBoard.Tests\AJobBoard.Tests.csproj", "{1411C90A-4C39-4794-BDA0-45C440C5449C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AJobBoard.Tests", "AJobBoard.Tests\AJobBoard.Tests.csproj", "{1411C90A-4C39-4794-BDA0-45C440C5449C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

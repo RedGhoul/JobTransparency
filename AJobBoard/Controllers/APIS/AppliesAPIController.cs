@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AJobBoard.Controllers
+namespace AJobBoard.Controllers.API
 {
     [Authorize]
     [Route("api/[controller]")]

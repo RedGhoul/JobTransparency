@@ -16,7 +16,6 @@ namespace AJobBoard.Data
         public DbSet<Apply> Applies { get; set; }
         public DbSet<KeyPhrase> KeyPhrase { get; set; }
         public DbSet<Document> Document { get; set; }
-        public DbSet<ETLStatus> ETLStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
