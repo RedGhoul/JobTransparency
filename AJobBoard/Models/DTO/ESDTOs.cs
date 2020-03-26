@@ -50,8 +50,10 @@ namespace AJobBoard.Models.DTO
         public string _type { get; set; }
         public string _id { get; set; }
         public string _score { get; set; }
-        public JobPosting _source { get; set; }
+        public JobPostingDTO _source { get; set; }
     }
+
+
 
     public class Hits
     {

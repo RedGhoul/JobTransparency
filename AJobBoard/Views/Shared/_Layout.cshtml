@@ -41,6 +41,13 @@
 
                             @if (SignInManager.IsSignedIn(User))
                             {
+
+                                if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a asp-action="Index" asp-controller="ETLStatus">ETL Jobs</a>
+                                    </li>
+                                }
                                 <li>
                                     <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
                                 </li>
@@ -50,6 +57,7 @@
                                         <button type="submit" class="nav-link btn btn-link" style="color: red;font-size: x-large;">Logout</button>
                                     </form>
                                 </li>
+
 
                             }
                             else

@@ -7,6 +7,6 @@ namespace AJobBoard.Models.DTO
 {
     public class KeyPhrasesWrapperDTO
     {
-        public List<KeyPhrasesDTO> rank_list { get; set; }
+        public List<KeyPhraseDTO> rank_list { get; set; }
     }
 }

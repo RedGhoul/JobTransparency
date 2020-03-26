@@ -24,7 +24,7 @@ namespace AJobBoard.Services
             baseUrlsearch = Secrets.getConnectionString(configuration,"ElasticIndexBaseUrl");
         }
 
-        public async Task<List<JobPosting>> QueryJobPosting(int fromNumber, string keywords)
+        public async Task<List<JobPostingDTO>> QueryJobPosting(int fromNumber, string keywords)
         {
             var client = new HttpClient();
             
@@ -46,7 +46,7 @@ namespace AJobBoard.Services
             {
                 RootObject list = JsonConvert
                     .DeserializeObject<RootObject>(result);
-                List<JobPosting> listsJobPostings = new List<JobPosting>();
+                List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
                 foreach (var item in list.hits.hits)
                 {
                     
@@ -57,7 +57,7 @@ namespace AJobBoard.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.InnerException);
-                return new List<JobPosting>();
+                return new List<JobPostingDTO>();
             }
 
 
@@ -79,7 +79,7 @@ namespace AJobBoard.Services
 
        
 
-        public async Task<List<JobPosting>> GetRandomSetOfJobPosting()
+        public async Task<List<JobPostingDTO>> GetRandomSetOfJobPosting()
         {
             var client = new HttpClient();
            
@@ -91,7 +91,7 @@ namespace AJobBoard.Services
             {
                 RootObject list = JsonConvert
                     .DeserializeObject<RootObject>(result);
-                List<JobPosting> listsJobPostings = new List<JobPosting>();
+                List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
                 foreach (var item in list.hits.hits)
                 {
 
@@ -102,7 +102,7 @@ namespace AJobBoard.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.InnerException);
-                return new List<JobPosting>();
+                return new List<JobPostingDTO>();
             }
 
         }

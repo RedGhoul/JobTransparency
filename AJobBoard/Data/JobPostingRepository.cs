@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
 using Nest;
@@ -198,13 +199,13 @@ namespace AJobBoard.Data
             }
             return jobPosting;
         }
-        public async Task<List<JobPosting>> GetRandomSetOfJobPostings()
+        public async Task<List<JobPostingDTO>> GetRandomSetOfJobPostings()
         {
           
             return await _es.GetRandomSetOfJobPosting();
         }
 
-        public async Task<List<JobPosting>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<List<JobPostingDTO>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
             var fromNumber = 0;
             if (homeIndexVm.FindModel.Page > 1)
@@ -222,6 +223,28 @@ namespace AJobBoard.Data
                 .Include(x => x.KeyPhrases)
                 .FirstOrDefault();
             return jobPosting;
+        }
+
+        public async Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id)
+        {
+            var job = await _ctx.JobPostings.Include(x => x.KeyPhrases).Where(x => x.Id == 2663)
+                .FirstOrDefaultAsync();
+            List<KeyPhraseDTO> items = new List<KeyPhraseDTO>();
+            if (job != null)
+            {
+                
+                foreach (KeyPhrase phrase in job.KeyPhrases.Take(10))
+                {
+                    items.Add(new KeyPhraseDTO
+                    {
+                        Affinty = phrase.Affinty,
+                        Id = phrase.Id,
+                        Text = phrase.Text
+                    });
+                }
+                
+            }
+            return items;
         }
     }
 }

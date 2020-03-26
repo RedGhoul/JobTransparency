@@ -124,6 +124,10 @@
                                 <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
                             }
                             <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                            @*@foreach (var phrase in item.KeyPhrases)
+                            {
+                                <p>@phrase.Text</p>
+                            }*@
                             <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong> In: <strong style="color: beige">Design</strong></p>
                         </div>
                         <div class="col-md-3 text-left">

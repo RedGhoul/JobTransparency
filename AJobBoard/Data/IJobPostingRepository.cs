@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AJobBoard.Models;
+using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
 
 namespace AJobBoard.Data
@@ -20,9 +21,10 @@ namespace AJobBoard.Data
         Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting);
         Task<JobPosting> DeleteJobPostingAsync(int id);
         Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting);
-        Task<List<JobPosting>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm);
+        Task<List<JobPostingDTO>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm);
+        Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id);
         Task<bool> JobPostingExists(TestCheckDTO tcDto);
-        Task<List<JobPosting>> GetRandomSetOfJobPostings();
+        Task<List<JobPostingDTO>> GetRandomSetOfJobPostings();
 
     }
 }

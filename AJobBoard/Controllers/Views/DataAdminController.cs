@@ -11,82 +11,104 @@ using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Nest;
 using Newtonsoft.Json;
 
 namespace AJobBoard.Controllers.Views
 {
     [Authorize(Roles="Admin")]
+    //[ApiController]
     public class DataAdminController : Controller
     {
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _NLTKService;
         private readonly IKeyPharseRepository _KeyPharseRepository;
         private readonly ElasticService _es;
+        private readonly ApplicationDbContext _ctx;
 
         public DataAdminController(
             IJobPostingRepository jobPostingRepository,
             INLTKService NLTKService,
             IKeyPharseRepository KeyPharseRepository,
-            ElasticService es)
+            ElasticService es,
+            ApplicationDbContext ctx)
         {
             _jobPostingRepository = jobPostingRepository;
             _NLTKService = NLTKService;
             _KeyPharseRepository = KeyPharseRepository;
             _es = es;
+            _ctx = ctx;
         }
 
-       
+
+
         public async Task<IActionResult> Ingest()
         {
-            IEnumerable<JobPosting> things = await _jobPostingRepository.GetJobPostingsWithKeyPhraseAsync(5000);
+            var status = await _ctx.ETLStatus.OrderByDescending(x => x.Started)
+                .Where(x => x.Finished == false)
+                .FirstOrDefaultAsync();
 
-            foreach (var JobPosting in things)
+            if (status != null)
             {
-                bool change = false;
+                IEnumerable<JobPosting> things = await _jobPostingRepository.GetJobPostingsWithKeyPhraseAsync(10000);
 
-                if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
+                foreach (var JobPosting in things)
                 {
-                    var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
-                    if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
-                    {
-                        var ListKeyPhrase = new List<KeyPhrase>();
+                    bool change = false;
 
-                        foreach (var item in wrapper.rank_list)
+                    if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
+                    {
+                        var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
+                        if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                         {
-                            ListKeyPhrase.Add(new KeyPhrase
+                            var ListKeyPhrase = new List<KeyPhrase>();
+
+                            foreach (var item in wrapper.rank_list)
                             {
-                                Affinty = item.Affinty,
-                                Text = item.Text,
-                                JobPosting = JobPosting
-                            });
+                                if (double.Parse(item.Affinty) > 20)
+                                {
+                                    ListKeyPhrase.Add(new KeyPhrase
+                                    {
+                                        Affinty = item.Affinty,
+                                        Text = item.Text,
+                                        JobPosting = JobPosting
+                                    });
+                                }
+
+                            }
+
+                            await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
+
+                            JobPosting.KeyPhrases = ListKeyPhrase;
+                            change = true;
                         }
 
-                        await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
 
-                        JobPosting.KeyPhrases = ListKeyPhrase;
+                    }
+
+                    if (string.IsNullOrEmpty(JobPosting.Summary))
+                    {
+                        var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
+
+                        JobPosting.Summary = NLTKSummary.SummaryText;
                         change = true;
                     }
 
-
+                    if (change == true)
+                    {
+                        await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+                        change = false;
+                    }
                 }
 
-                if (string.IsNullOrEmpty(JobPosting.Summary))
-                {
-                    var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
+                status.Finished = true;
+                status.Ended = DateTime.Now;
+                await _ctx.SaveChangesAsync();
 
-                    JobPosting.Summary = NLTKSummary.SummaryText;
-                    change = true;
-                }
-
-                if (change == true)
-                {
-                    await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
-                    change = false;
-                }
             }
 
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "ETLStatus");
         }
 
 

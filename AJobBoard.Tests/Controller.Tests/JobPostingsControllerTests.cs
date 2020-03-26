@@ -23,17 +23,17 @@ namespace AJobBoard.Tests.Controller.Tests
             // Arrange
             HomeIndexViewModel homeIndexVm = new HomeIndexViewModel();
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
-                .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
-            mockRepoJob.Setup(repo => repo.GetTotalJobs())
-               .ReturnsAsync(GetTotalJobs());
+            //mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
+            //    .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
+            //mockRepoJob.Setup(repo => repo.GetTotalJobs())
+            //   .ReturnsAsync(GetTotalJobs());
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            //var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+            //var mockNLTKService = new Mock<INLTKService>();
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
-                mockNLTKService.Object, mockRepoKeyPharse.Object);
+            //var controller = new JobPostingsController(mockRepoJob.Object,
+            //    mockNLTKService.Object, mockRepoKeyPharse.Object);
 
             // Act
             //var result = await controller.Index(homeIndexVm);
@@ -269,11 +269,11 @@ namespace AJobBoard.Tests.Controller.Tests
         private KeyPhrasesWrapperDTO GetNLTKKeyPhrases(string des)
         {
             KeyPhrasesWrapperDTO temp = new KeyPhrasesWrapperDTO();
-            var KeyPhrasesDTOs = new List<KeyPhrasesDTO>();
+            var KeyPhrasesDTOs = new List<KeyPhraseDTO>();
             for (int i = 0; i < 20; i++)
             {
                 
-                KeyPhrasesDTOs.Add(new KeyPhrasesDTO
+                KeyPhrasesDTOs.Add(new KeyPhraseDTO
                 {
                     Affinty = 1.ToString(),
                     Text = i.ToString()
