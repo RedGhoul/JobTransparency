@@ -13,8 +13,9 @@ A Job Hunting CMS, designed to make finding a job a lot easier, by centralizing 
 
 #### Lanagues
 
-- C# .Net Core 3.0 - ASP.NET MVC
-- Python - Flask - Azure Function (To Scrap Indeed)
+- C# .Net Core 3.1 - ASP.NET MVC
+- Python - Azure Function (To Scrap Indeed)
+- Python - Flask Text Summarization API Server [Jobtransparency.NLP](https://github.com/RedGhoul/Jobtransparency.NLP)
 - JavaScript - JQuery
 
 #### Data Stores
@@ -23,4 +24,4 @@ A Job Hunting CMS, designed to make finding a job a lot easier, by centralizing 
 - Redis - For Reads of job Posts
 - Elastic Search - For Search (Data returned as JSON)
 
-### Hosted on Digital Ocean Using Docker & CapRover
+### Hosted on Digital Ocean Using Docker & Docker Swarm
