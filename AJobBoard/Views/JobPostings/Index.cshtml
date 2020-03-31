@@ -1,4 +1,4 @@
-﻿@model HomeIndexViewModel
+﻿@model AJobBoard.Models.View.HomeIndexViewModel
 
 <section class="site-section JobPostingList" style="background-color: #343a40;">
     <div class="container">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="mb-5">
-            @if (Model.jobPostings.Count() > 0)
+            @if (Model.JobPostings.Count() > 0)
             {
                 <div class="row">
                     <div class="col-4">
@@ -108,7 +108,7 @@
                 <div class="border-top pb-3 mb-3 pt-3" style="margin-top: 20px;">
                 </div>
 
-                @foreach (var item in Model.jobPostings)
+                @foreach (var item in Model.JobPostings)
                 {
                     <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
                         <div class="col-md-2">

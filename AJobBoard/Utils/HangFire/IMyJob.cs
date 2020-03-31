@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 
-namespace AJobBoard.Utils
+namespace AJobBoard.Utils.HangFire
 {
     public interface IMyJob
     {

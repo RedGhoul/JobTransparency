@@ -31,10 +31,10 @@ namespace AJobBoard.Controllers.Views
         {
             var currentUser = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
-            List<Document> Documents = _documentRepository
+            List<Document> documents = _documentRepository
                 .GetDocumentsOfCurrentUser(currentUser.Id);
 
-            return View(Documents);
+            return View(documents);
         }
 
         // GET: Documents/Details/5

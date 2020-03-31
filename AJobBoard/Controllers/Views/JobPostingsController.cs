@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
+using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
@@ -20,24 +21,24 @@ namespace AJobBoard.Controllers.Views
     public class JobPostingsController : Controller
     {
         private readonly IJobPostingRepository _jobPostingRepository;
-        private readonly INLTKService _NLTKService;
-        private readonly IKeyPharseRepository _KeyPharseRepository;
-        private readonly string SearchVMCacheKey = "SearchVMCacheKey";
+        private readonly INLTKService _nltkService;
+        private readonly IKeyPharseRepository _keyPharseRepository;
+        private readonly string _searchVmCacheKey = "SearchVMCacheKey";
         public JobPostingsController(
             IJobPostingRepository jobPostingRepository,
-            INLTKService NLTKService,
-            IKeyPharseRepository KeyPharseRepository)
+            INLTKService nltkService,
+            IKeyPharseRepository keyPharseRepository)
         {
             _jobPostingRepository = jobPostingRepository;
-            _NLTKService = NLTKService;
-            _KeyPharseRepository = KeyPharseRepository;
+            _nltkService = nltkService;
+            _keyPharseRepository = keyPharseRepository;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var value = HttpContext.Session.GetString(SearchVMCacheKey);
+            var value = HttpContext.Session.GetString(_searchVmCacheKey);
 
             HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ? 
                 JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) : 
@@ -55,7 +56,7 @@ namespace AJobBoard.Controllers.Views
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
 
             ViewBag.Page = homeIndexVm.FindModel.Page;
-            homeIndexVm.jobPostings = result;
+            homeIndexVm.JobPostings = result;
             return View(homeIndexVm);
         }
 
@@ -67,7 +68,7 @@ namespace AJobBoard.Controllers.Views
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
             var vmData = JsonConvert.SerializeObject(homeIndexVm);
-                HttpContext.Session.SetString(SearchVMCacheKey, vmData);
+                HttpContext.Session.SetString(_searchVmCacheKey, vmData);
 
             return RedirectToAction("Index");
         }
@@ -105,7 +106,7 @@ namespace AJobBoard.Controllers.Views
             {
                 JobPosting newPosting = await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
 
-                var wrapper = await _NLTKService.GetNLTKKeyPhrases(jobPosting.Description);
+                var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
 
                 if (newPosting.KeyPhrases == null)
                 {
@@ -121,9 +122,9 @@ namespace AJobBoard.Controllers.Views
                     });
                 }
 
-                var NLTKSummary = await _NLTKService.GetNLTKSummary(jobPosting.Description);
+                var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
-                newPosting.Summary = NLTKSummary.SummaryText;
+                newPosting.Summary = nltkSummary.SummaryText;
 
                 await _jobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
 

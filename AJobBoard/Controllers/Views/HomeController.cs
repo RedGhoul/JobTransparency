@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
+using AJobBoard.Models.View;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -29,16 +30,12 @@ namespace AJobBoard.Controllers.Views
         {
             _logger.LogInformation("Home called");
             ViewBag.TotalJobs = await _jobPostingRepository.GetTotalJobs();
-
-            HomeIndexViewModel homeIndexViewModel = new HomeIndexViewModel();
-            homeIndexViewModel.FindModel = new FindModel();
-
-            homeIndexViewModel.jobPostings = await _jobPostingRepository.GetRandomSetOfJobPostings();
-
-            homeIndexViewModel.ImageName = "https://staticassetsforsites.s3-us-west-2.amazonaws.com/tech" + new Random().Next(1, 10) + "-min.jpg";
-
-            homeIndexViewModel.TimeToCache = 10;
-            return View(homeIndexViewModel);
+            return View(
+                new HomeIndexViewModel(
+                    await _jobPostingRepository.GetRandomSetOfJobPostings(),
+                    new FindModel(),
+                    10)
+                );
         }
 
         public IActionResult About()
