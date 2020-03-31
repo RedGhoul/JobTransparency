@@ -12,7 +12,6 @@ using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Nest;
 using Newtonsoft.Json;
 
 namespace AJobBoard.Controllers.Views

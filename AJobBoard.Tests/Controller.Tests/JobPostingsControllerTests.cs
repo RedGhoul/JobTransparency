@@ -24,26 +24,26 @@ namespace AJobBoard.Tests.Controller.Tests
             // Arrange
             HomeIndexViewModel homeIndexVm = new HomeIndexViewModel();
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            //mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
-            //    .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
-            //mockRepoJob.Setup(repo => repo.GetTotalJobs())
-            //   .ReturnsAsync(GetTotalJobs());
+            mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
+                .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
+            mockRepoJob.Setup(repo => repo.GetTotalJobs())
+               .ReturnsAsync(GetTotalJobs());
 
-            //var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            //var mockNLTKService = new Mock<INLTKService>();
+            var mockNLTKService = new Mock<INLTKService>();
 
-            //var controller = new JobPostingsController(mockRepoJob.Object,
-            //    mockNLTKService.Object, mockRepoKeyPharse.Object);
+            var controller = new JobPostingsController(mockRepoJob.Object,
+                mockNLTKService.Object, mockRepoKeyPharse.Object); 
+            
+            //Act
+           var result = await controller.Index();
 
-            // Act
-            //var result = await controller.Index(homeIndexVm);
-
-            // Assert
-            //var viewResult = Assert.IsType<ViewResult>(result);
-            //var model = Assert.IsAssignableFrom <HomeIndexViewModel>(
-            //    viewResult.Model);
-            //Assert.Equal(10, model.jobPostings.Count());
+            //Assert
+           var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
+                viewResult.Model);
+            Assert.Equal(10, model.JobPostings.Count());
         }
 
 
@@ -226,41 +226,41 @@ namespace AJobBoard.Tests.Controller.Tests
 
         }
 
-        [Fact]
-        public async Task Edit_Get_Returns_NotFoundViewResult_WhenOutOfRangeId()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Edit_Get_Returns_NotFoundViewResult_WhenOutOfRangeId()
+        //{
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public async Task Edit_Get_Returns_ValidViewResult_WhenInRangeId()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Edit_Get_Returns_ValidViewResult_WhenInRangeId()
+        //{
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public async Task Edit_Post_Returns_NotFoundViewResult_WhenOutOfRangeId()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Edit_Post_Returns_NotFoundViewResult_WhenOutOfRangeId()
+        //{
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public async Task Edit_Post_Returns_ValidViewResult_WhenInvalidModel()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Edit_Post_Returns_ValidViewResult_WhenInvalidModel()
+        //{
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public async Task Delete_Get_Returns_ValidViewResult_WhenIdIsInRange()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Delete_Get_Returns_ValidViewResult_WhenIdIsInRange()
+        //{
+        //    Assert.True(true);
+        //}
 
-        [Fact]
-        public async Task Delete_Post_Returns_RedirectActionResult()
-        {
-            Assert.True(true);
-        }
+        //[Fact]
+        //public async Task Delete_Post_Returns_RedirectActionResult()
+        //{
+        //    Assert.True(true);
+        //}
 
         private SummaryDTO GetNLTKSummary(string des)
         {
@@ -300,13 +300,13 @@ namespace AJobBoard.Tests.Controller.Tests
             return null;
         }
 
-        private List<JobPosting> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        private List<JobPostingDTO> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
         {
-            List<JobPosting> jobs = new List<JobPosting>();
+            List<JobPostingDTO> jobs = new List<JobPostingDTO>();
 
             for (int i = 0; i < 10; i++)
             {
-                jobs.Add(new JobPosting
+                jobs.Add(new JobPostingDTO
                 {
                     Title = "Car Mart Sales" + i
                 });

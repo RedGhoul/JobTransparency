@@ -171,53 +171,53 @@ namespace AJobBoard.Tests.Controller.Tests
 
         }
 
-        [Fact]
-        public async Task Edit_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Edit_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Edit_Get_ReturnsViewResult_When_ValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Edit_Get_ReturnsViewResult_When_ValidIDIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Edit_Post_ReturnsViewResult_When_ValidModelIsGiven()
-        {
+        //[Fact]
+        //public async Task Edit_Post_ReturnsViewResult_When_ValidModelIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Edit_Post_ReturnsViewResult_When_InValidModelIsGiven()
-        {
+        //[Fact]
+        //public async Task Edit_Post_ReturnsViewResult_When_InValidModelIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Edit_Post_ReturnsNotFoundResult_When_InValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Edit_Post_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Delete_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Delete_Get_ReturnsNotFoundResult_When_InValidIDIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Delete_Get_ReturnsViewResult_When_ValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Delete_Get_ReturnsViewResult_When_ValidIDIsGiven()
+        //{
 
-        }
+        //}
 
-        [Fact]
-        public async Task Delete_Post_ReturnsRedirectResult_When_ValidIDIsGiven()
-        {
+        //[Fact]
+        //public async Task Delete_Post_ReturnsRedirectResult_When_ValidIDIsGiven()
+        //{
 
-        }
+        //}
 
         public List<Document> GetDocumentsOfCurrentUser()
         {
