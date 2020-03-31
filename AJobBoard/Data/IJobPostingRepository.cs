@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
+using AJobBoard.Models.View;
 
 namespace AJobBoard.Data
 {

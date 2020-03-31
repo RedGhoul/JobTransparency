@@ -1,4 +1,4 @@
-﻿@model HomeIndexViewModel
+﻿@model AJobBoard.Models.View.HomeIndexViewModel
 <cache expires-sliding="TimeSpan.FromMinutes(@Model.TimeToCache)">
     <section class="home-section section-hero overlay bg-image" style="background-image: url(@Model.ImageName);" id="home-section">
         <div class="container">
@@ -83,9 +83,9 @@
 
             @Html.AntiForgeryToken()
         <div class="mb-5">
-            @if (Model.jobPostings != null)
+            @if (Model.JobPostings != null)
             {
-                @foreach (var item in Model.jobPostings)
+                @foreach (var item in Model.JobPostings)
                 {
                     <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
 

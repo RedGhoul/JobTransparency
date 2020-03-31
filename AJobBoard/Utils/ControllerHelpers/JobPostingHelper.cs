@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AJobBoard.Models.View;
 
 namespace AJobBoard.Utils.ControllerHelpers
 {
@@ -49,8 +50,8 @@ namespace AJobBoard.Utils.ControllerHelpers
 
         private static HomeIndexViewModel FillFindModel(HomeIndexViewModel homeIndexVM)
         {
-            homeIndexVM.FindModel.KeyWords = homeIndexVM.FindModel.KeyWords ?? "";
-            homeIndexVM.FindModel.Location = homeIndexVM.FindModel.Location ?? "";
+            homeIndexVM.FindModel.KeyWords ??= "";
+            homeIndexVM.FindModel.Location ??= "";
             if (homeIndexVM.FindModel.MaxResults == 0)
             {
                 homeIndexVM.FindModel.MaxResults = 100;

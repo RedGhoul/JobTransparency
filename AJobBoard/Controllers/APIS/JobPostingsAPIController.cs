@@ -88,30 +88,32 @@ namespace AJobBoard.Controllers.API
             try
             {
                 var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
-                if (wrapper != null && wrapper.rank_list != null)
+                if (wrapper?.rank_list != null)
                 {
-                    var ListKeyPhrase = new List<KeyPhrase>();
+                    var listKeyPhrase = new List<KeyPhrase>();
 
                     foreach (var item in wrapper.rank_list)
                     {
-                        ListKeyPhrase.Add(new KeyPhrase
+                        listKeyPhrase.Add(new KeyPhrase
                         {
                             Affinty = item.Affinty,
                             Text = item.Text,
                             JobPosting = newPosting
                         });
                     }
-                    newPosting.KeyPhrases = ListKeyPhrase;
+                    newPosting.KeyPhrases = listKeyPhrase;
                 }
                 else
                 {
-                    newPosting.KeyPhrases = new List<KeyPhrase>();
-                    newPosting.KeyPhrases.Add(new KeyPhrase
+                    newPosting.KeyPhrases = new List<KeyPhrase>
                     {
-                        Affinty = "Affinty",
-                        Text = "item.Text",
-                        JobPosting = newPosting
-                    });
+                        new KeyPhrase
+                        {
+                            Affinty = "Affinty",
+                            Text = "item.Text",
+                            JobPosting = newPosting
+                        }
+                    };
                     await _keyPharseRepository.CreateKeyPhrasesAsync(newPosting.KeyPhrases);
                 }
 

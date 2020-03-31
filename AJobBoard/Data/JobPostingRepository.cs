@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AJobBoard.Models.Data;
+using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
-using Nest;
 
 namespace AJobBoard.Data
 {

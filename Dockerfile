@@ -17,4 +17,4 @@ RUN dotnet publish "AJobBoard.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "AJobBoard.dll"]
+ENTRYPOINT ["dotnet", "Jobtransparency.dll"]

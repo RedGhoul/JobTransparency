@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Transactions;
+using AJobBoard.Utils.HangFire;
 using Hangfire;
 using Hangfire.MySql.Core;
 using Hangfire.Dashboard;
@@ -29,6 +30,7 @@ namespace AJobBoard
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -45,15 +47,12 @@ namespace AJobBoard
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = Secrets.getConnectionString(Configuration,"RedisConnection");
+                option.Configuration = Secrets.getConnectionString(Configuration, "RedisConnection");
             });
 
-            //services.AddDbContext<ApplicationDbContext>(options => 
-            //   options.UseMySql(
-            //       Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD")));
-            
             services.AddDbContext<ApplicationDbContext>(options => options
                 // replace with your connection string
                 .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD"), mySqlOptions => mySqlOptions
@@ -99,6 +98,7 @@ namespace AJobBoard
                 options.AccessDeniedPath = "/Account/AccessDenied"; 
                 options.SlidingExpiration = true;
             });
+
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -143,7 +143,9 @@ namespace AJobBoard
             services.AddTransient<IAppliesRepository, AppliesRepository>();
             services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddScoped<IMyJob, MyJob>();
+            
+            services.AddScoped<IMyJob, KeyPhraseGeneratorJob>();
+            services.AddScoped<IMyJob, SummaryGeneratorJob>();
 
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
@@ -153,7 +155,7 @@ namespace AJobBoard
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
             if (env.IsDevelopment())
@@ -195,58 +197,6 @@ namespace AJobBoard
 
 
             HangFireJobScheduler.ScheduleRecurringJobs();
-            //await CreateUserRoles(app);
-
-        }
-
-
-
-        private async Task CreateUserRoles(IApplicationBuilder app)
-        {
-            using (IServiceScope scope = app.ApplicationServices.CreateScope())
-            {
-                var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                //var JobsRepo = scope.ServiceProvider.GetRequiredService<IJobPostingRepository>();
-                //await JobsRepo.BuildCache();
-                var content = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-                IdentityResult roleResult;
-
-                //Adding Admin Role
-                var roleCheck = await RoleManager.RoleExistsAsync("Admin");
-                if (!roleCheck)
-                {
-                    //create the roles and seed them to the database
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole("Admin"));
-                }
-
-                //Assign Admin role to the main User here we have given our newly registered 
-                //login id for Admin management
-                // Also Assigning them Claims to perform CUD operations
-                ApplicationUser user = await UserManager.FindByEmailAsync("avaneesab5@gmail.com");
-                if (user != null)
-                {
-                    var currentUserRoles = await UserManager.GetRolesAsync(user);
-                    if (!currentUserRoles.Contains("Admin"))
-                    {
-                        await UserManager.AddToRoleAsync(user, "Admin");
-                    }
-
-                    var currentClaims = await UserManager.GetClaimsAsync(user);
-                    if(currentClaims.Count() == 0)
-                    {
-                        var CanCreatePostingClaim = new Claim("CanCreatePosting", "True");
-                        await UserManager.AddClaimAsync(user, CanCreatePostingClaim);
-
-                        var CanEditPostingClaim = new Claim("CanEditPosting", "True");
-                        await UserManager.AddClaimAsync(user, CanEditPostingClaim);
-
-                        var CanDeletePostingClaim = new Claim("CanDeletePosting", "True");
-                        await UserManager.AddClaimAsync(user, CanDeletePostingClaim);
-                    }
-                }
-            }
 
         }
     }

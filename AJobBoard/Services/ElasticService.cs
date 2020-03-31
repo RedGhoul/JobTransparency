@@ -9,7 +9,6 @@ using AJobBoard.Models;
 using AJobBoard.Models.DTO;
 using AJobBoard.Utils;
 using Microsoft.Extensions.Configuration;
-using Nest;
 using Newtonsoft.Json;
 
 namespace AJobBoard.Services

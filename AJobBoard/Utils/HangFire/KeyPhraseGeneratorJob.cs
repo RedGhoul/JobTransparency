@@ -12,18 +12,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ILogger = Amazon.Runtime.Internal.Util.ILogger;
 
-namespace AJobBoard.Utils
+namespace AJobBoard.Utils.HangFire
 {
-    public class MyJob : IMyJob
+    public class KeyPhraseGeneratorJob : IMyJob
     {
-        private readonly ILogger<MyJob> _logger;
+        private readonly ILogger<KeyPhraseGeneratorJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _NLTKService;
         private readonly IKeyPharseRepository _KeyPharseRepository;
-        private readonly ElasticService _es;
         private readonly ApplicationDbContext _ctx;
 
-        public MyJob(ILogger<MyJob> logger, 
+        public KeyPhraseGeneratorJob(ILogger<KeyPhraseGeneratorJob> logger, 
             IJobPostingRepository jobPostingRepository,
             INLTKService NLTKService,
             IKeyPharseRepository KeyPharseRepository,
@@ -82,13 +81,6 @@ namespace AJobBoard.Utils
 
                     }
 
-                    if (string.IsNullOrEmpty(JobPosting.Summary))
-                    {
-                        var NLTKSummary = await _NLTKService.GetNLTKSummary(JobPosting.Description);
-
-                        JobPosting.Summary = NLTKSummary.SummaryText;
-                        change = true;
-                    }
 
                     if (change == true)
                     {
