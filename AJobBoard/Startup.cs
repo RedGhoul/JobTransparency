@@ -22,6 +22,7 @@ using AJobBoard.Utils.HangFire;
 using Hangfire;
 using Hangfire.MySql.Core;
 using Hangfire.Dashboard;
+using Jobtransparency.Utils.HangFire;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
