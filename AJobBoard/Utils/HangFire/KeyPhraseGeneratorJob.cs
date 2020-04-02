@@ -82,10 +82,9 @@ namespace AJobBoard.Utils.HangFire
                     }
 
 
-                    if (change == true)
+                    if (change)
                     {
                         await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
-                        change = false;
                     }
                 }
 

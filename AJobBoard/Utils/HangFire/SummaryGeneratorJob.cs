@@ -39,13 +39,14 @@ namespace AJobBoard.Utils.HangFire
 
             foreach (var jobPosting in things)
             {
+                if (string.IsNullOrEmpty(jobPosting.Summary))
+                {
+                    var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
-                var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                    jobPosting.Summary = nltkSummary.SummaryText;
 
-                jobPosting.Summary = nltkSummary.SummaryText;
-                
-                await _jobPostingRepository.PutJobPostingAsync(jobPosting.Id, jobPosting);
-
+                    await _jobPostingRepository.PutJobPostingAsync(jobPosting.Id, jobPosting);
+                }
             }
 
             _logger.LogInformation("My Job Ends... ");
