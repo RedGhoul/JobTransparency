@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
-namespace AJobBoard.Utils
+namespace AJobBoard.Utils.Config
 {
     public static class Secrets
     {
@@ -22,6 +22,8 @@ namespace AJobBoard.Utils
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                Console.WriteLine("Could not find it in the Configuration");
+                Console.WriteLine("using the following value instead: " + Environment.GetEnvironmentVariable(name));
             }
            
             return Environment.GetEnvironmentVariable(name);
@@ -40,6 +42,8 @@ namespace AJobBoard.Utils
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                Console.WriteLine("Could not find it in the Configuration");
+                Console.WriteLine("using the following value instead: " + Environment.GetEnvironmentVariable(name));
             }
 
             return Environment.GetEnvironmentVariable(name);

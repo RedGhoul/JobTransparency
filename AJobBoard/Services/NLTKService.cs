@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
 using AJobBoard.Utils;
+using AJobBoard.Utils.Config;
 
 namespace AJobBoard.Services
 {

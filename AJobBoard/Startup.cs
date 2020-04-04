@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Transactions;
+using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using Hangfire;
 using Hangfire.MySql.Core;

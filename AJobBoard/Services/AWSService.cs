@@ -12,6 +12,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using AJobBoard.Utils;
+using AJobBoard.Utils.Config;
 
 namespace AJobBoard.Services
 {

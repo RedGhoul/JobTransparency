@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AJobBoard.Models;
 using AJobBoard.Models.DTO;
 using AJobBoard.Utils;
+using AJobBoard.Utils.Config;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 

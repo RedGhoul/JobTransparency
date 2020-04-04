@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Text;
+using AJobBoard.Utils.Config;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Serilog.Core;
