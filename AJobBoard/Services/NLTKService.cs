@@ -22,12 +22,18 @@ namespace AJobBoard.Services
 {
     public class NLTKService : INLTKService
     {
-        private string NLTKSecretKey = "";
-        private string URLFLASK = "";
+        private readonly string _nltkSecretKey;
+        private readonly string _urlflask;
+        private readonly string _GetNLTKKeyPhrases;
+        private readonly string _GetNLTKSummary;
+        private readonly string applicationJson = "application/json";
+
         public NLTKService(IConfiguration configuration)
         {
-            NLTKSecretKey = Secrets.getAppSettingsValue(configuration, "Auth-FlaskNLTK");
-            URLFLASK = Secrets.getAppSettingsValue(configuration, "FlaskNLTK-Prod");
+            _nltkSecretKey = Secrets.getAppSettingsValue(configuration, "Auth-FlaskNLTK");
+            _urlflask = Secrets.getAppSettingsValue(configuration, "FlaskNLTK-Prod");
+            _GetNLTKKeyPhrases = Secrets.getAppSettingsValue(configuration, "_GetNLTKKeyPhrases");
+            _GetNLTKSummary = Secrets.getAppSettingsValue(configuration, "_GetNLTKSummary");
         }
 
         public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
@@ -35,13 +41,14 @@ namespace AJobBoard.Services
             var json = JsonConvert.SerializeObject(new
             {
                 textIn = Description,
-                authKey = NLTKSecretKey
+                authKey = _nltkSecretKey
             });
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            var data = new StringContent(json, Encoding.UTF8, applicationJson);
 
             var client = new HttpClient();
 
-            var response = await client.PostAsync(URLFLASK + "/extract_keyphrases_from_text", data);
+            var response = await client.PostAsync(_urlflask + _GetNLTKKeyPhrases, data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
@@ -57,18 +64,18 @@ namespace AJobBoard.Services
             }
         }
 
-        public async Task<SummaryDTO> GetNLTKSummary(string Description)
+        public async Task<SummaryDTO> GetNLTKSummary(string description)
         {
             var json = JsonConvert.SerializeObject(new
             {
-                textIn = Description,
-                authKey = NLTKSecretKey
+                textIn = description,
+                authKey = _nltkSecretKey
             });
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var data = new StringContent(json, Encoding.UTF8, applicationJson);
 
             var client = new HttpClient();
 
-            var response = await client.PostAsync(URLFLASK + "/extract_summary_from_text", data);
+            var response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
 
             string result = response.Content.ReadAsStringAsync().Result;
 
