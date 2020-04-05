@@ -44,6 +44,7 @@ namespace AJobBoard.Utils.HangFire
             {
                 if (string.IsNullOrEmpty(jobPosting.Summary))
                 {
+                    
                     var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
                     jobPosting.Summary = nltkSummary.SummaryText;

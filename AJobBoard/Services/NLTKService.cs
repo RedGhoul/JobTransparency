@@ -67,19 +67,20 @@ namespace AJobBoard.Services
 
         public async Task<SummaryDTO> GetNLTKSummary(string description)
         {
+            description = description.Replace("\"", @"");
             var json = JsonConvert.SerializeObject(new
             {
                 textIn = description,
                 authKey = _nltkSecretKey
             });
             var data = new StringContent(json, Encoding.UTF8, applicationJson);
-
+            Console.WriteLine(data);
             var client = new HttpClient();
 
             var response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
 
             string result = response.Content.ReadAsStringAsync().Result;
-
+            Console.WriteLine(result);
             try
             {
                 SummaryDTO list = JsonConvert
