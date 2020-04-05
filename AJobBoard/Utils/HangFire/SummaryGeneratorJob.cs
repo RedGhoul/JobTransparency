@@ -7,6 +7,7 @@ using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AJobBoard.Utils.HangFire
@@ -16,14 +17,17 @@ namespace AJobBoard.Utils.HangFire
         private readonly ILogger<KeyPhraseGeneratorJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _nltkService;
+        private readonly ApplicationDbContext _ctx;
 
         public SummaryGeneratorJob(ILogger<KeyPhraseGeneratorJob> logger,
             IJobPostingRepository jobPostingRepository,
-            INLTKService nltkService)
+            INLTKService nltkService,
+            ApplicationDbContext ctx)
         {
             _jobPostingRepository = jobPostingRepository;
             _nltkService = nltkService;
             _logger = logger;
+            _ctx = ctx;
         }
 
         public async Task Run(IJobCancellationToken token)
@@ -35,8 +39,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("My Job Starts... ");
-            IEnumerable<JobPosting> things = await _jobPostingRepository.GetAllJobPostings();
-
+            List<JobPosting> things = await _ctx.JobPostings.ToListAsync();
             foreach (var jobPosting in things)
             {
                 if (string.IsNullOrEmpty(jobPosting.Summary))
