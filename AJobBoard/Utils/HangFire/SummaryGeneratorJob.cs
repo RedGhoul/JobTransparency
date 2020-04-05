@@ -35,7 +35,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("My Job Starts... ");
-            IEnumerable<JobPosting> things = await _jobPostingRepository.GetJobPostingsWithKeyPhraseAsync(10000);
+            IEnumerable<JobPosting> things = await _jobPostingRepository.GetAllJobPostings();
 
             foreach (var jobPosting in things)
             {

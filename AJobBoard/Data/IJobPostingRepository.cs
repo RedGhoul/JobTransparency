@@ -12,6 +12,7 @@ namespace AJobBoard.Data
     {
         Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount);
         Task<List<JobPosting>> GetAllJobPostingsWithKeyPhrase();
+        Task<List<JobPosting>> GetAllJobPostings();
         Task<string> GetTotalJobs();
         Task<JobPosting> GetJobPostingById(int id);
         JobPosting GetJobPostingByIdWithKeyPhrase(int id);

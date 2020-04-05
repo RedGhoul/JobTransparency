@@ -246,5 +246,11 @@ namespace AJobBoard.Data
             }
             return items;
         }
+
+        public async Task<List<JobPosting>> GetAllJobPostings()
+        {
+            var jobs = await _ctx.JobPostings.ToListAsync();
+            return jobs;
+        }
     }
 }
