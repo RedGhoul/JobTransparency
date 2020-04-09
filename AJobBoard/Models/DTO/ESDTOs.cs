@@ -15,6 +15,12 @@ namespace AJobBoard.Models.DTO
         public string skipped { get; set; }
         public string failed { get; set; }
     }
+    public class Total
+    {
+        public int value { get; set; }
+        public string relation { get; set; }
+    }
+
 
     public class KeyPhras
     {
@@ -51,13 +57,14 @@ namespace AJobBoard.Models.DTO
         public string _id { get; set; }
         public string _score { get; set; }
         public JobPostingDTO _source { get; set; }
+        public List<object> sort { get; set; }
     }
 
 
 
     public class Hits
     {
-        public int total { get; set; }
+        public Total total { get; set; }
         public string max_score { get; set; }
         public List<Hit> hits { get; set; }
     }

@@ -37,17 +37,17 @@ namespace AJobBoard.Controllers.API
             return jobPostings.ToList();
         }
 
-        [HttpPost("IngestBoats")]
-        public async Task<ActionResult<IEnumerable<JobPosting>>> IngestBoats()
-        {
-            var jobPostings = await _JobPostingRepository.GetAllJobPostingsWithKeyPhrase();
+        //[HttpPost("IngestBoats")]
+        //public async Task<ActionResult<IEnumerable<JobPosting>>> IngestBoats()
+        //{
+        //    var jobPostings = await _JobPostingRepository.GetAllJobPostingsWithKeyPhrase();
 
-            foreach (var item in jobPostings)
-            {
-                await _es.CreateJobPostingAsync(item);
-            }
-            return Ok();
-        }
+        //    foreach (var item in jobPostings)
+        //    {
+        //        await _es.CreateJobPostingAsync(item);
+        //    }
+        //    return Ok();
+        //}
 
 
         // GET: api/JobPostingsAPI/5
