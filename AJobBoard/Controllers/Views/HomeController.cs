@@ -43,6 +43,11 @@ namespace AJobBoard.Controllers.Views
             return View();
         }
 
+        public IActionResult DataIngest()
+        {
+            return View();
+        }
+
         public IActionResult RegisterType()
         {
             return View();
