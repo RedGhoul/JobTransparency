@@ -123,8 +123,8 @@ namespace AJobBoard
             services.AddHangfireServer();
             services.AddResponseCaching();
             services.AddSession();
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddMvc();
+            //services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddAuthorization(options =>
             {
@@ -154,6 +154,8 @@ namespace AJobBoard
             services.AddSingleton<INLTKService ,NLTKService>();
 
             services.AddResponseCompression();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

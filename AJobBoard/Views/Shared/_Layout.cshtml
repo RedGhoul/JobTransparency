@@ -9,7 +9,7 @@
     <title>Job Transparency</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/alertify.min.css" integrity="sha256-HyknUQX006D7lC1CzL2BQqMMjX7cQV7unnkuNrYUDgM=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/themes/bootstrap.min.css" integrity="sha256-tWRKenfvuraOz4u9wNIkJVrUFbRN712r9WtYhGUPirg=" crossorigin="anonymous" />
 
@@ -129,14 +129,19 @@
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"
                 integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
                 crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/alertify.min.js" integrity="sha256-TmZbMuBl7X3riNkZNRGGFWfpltDc50OK5Kzj4UrtvuE=" crossorigin="anonymous"></script>
         <script>
+            var notificationHoverEffect = alertify.notify('Hover Over the Title to get more Info', 10000);
+            notificationHoverEffect.ondismiss = function () { return false; };
             var notificationMadeBy = alertify.message('Created by Avaneesa Basappa', 10000);
-             notificationMadeBy.ondismiss = function(){ return false; };
+            notificationMadeBy.ondismiss = function () { return false; };
             var notificationCheckMeOut = alertify.message('Check me out at <a href="https://www.avaneesa.me/">avaneesa.me</a>', 10000);
-             notificationCheckMeOut.ondismiss = function(){ return false; };
-            var notificationUser = alertify.notify('Hi if you want to see what the rest of site you looks like. You can use the following UserName:= TestUser1@gmail.com & Password:= dietForCoke123', 'success', 10000);
-            notificationUser.ondismiss = function(){ return false; };
+            notificationCheckMeOut.ondismiss = function () { return false; };
+            var notificationUser = alertify.notify('Hi if you want to see what the rest of site you looks like. You can use the following UserName:= TestUser1@gmail.com & Password:= dietForCoke123',10000);
+            notificationUser.ondismiss = function () { return false; };
+
         </script>
         @RenderSection("Scripts", required: false)
 

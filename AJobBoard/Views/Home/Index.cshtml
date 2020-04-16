@@ -102,7 +102,7 @@
                             {
                                 <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
                             }
-                            <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                            <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
                             <p style="color: black;">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
                         </div>
                         <div class="col-md-3 text-left">
@@ -159,27 +159,31 @@
 
 @section Scripts{
     <script>
-        var randomPicIndex = Math.floor(Math.random() * 10);
-        $(".home-section section-hero overlay bg-image").css('background-image', 'url(' + 'images/tech' + randomPicIndex + '.jpg' + ')');
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            var randomPicIndex = Math.floor(Math.random() * 10);
+            $(".home-section section-hero overlay bg-image").css('background-image', 'url(' + 'images/tech' + randomPicIndex + '.jpg' + ')');
 
 
-        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
-        $('.AddToApplies').click(function () {
-            var d = $(this).data('id');
-            $.ajax({
-                method: "POST",
-                contentType: 'application/json',
-                headers: { "RequestVerificationToken": antiForgeryToken },
-                url: "/api/AppliesAPI",
-                data: JSON.stringify({ Id: parseInt(d) }),
-                success: function (data) {
-                    alertify.success("Added to Applies");
-                },
-                error: function (xhr) { // if error occured
-                    alertify.error("Could Not Add this Job to your Applies");
-                }
-            })
+            var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+            $('.AddToApplies').click(function () {
+                var d = $(this).data('id');
+                $.ajax({
+                    method: "POST",
+                    contentType: 'application/json',
+                    headers: { "RequestVerificationToken": antiForgeryToken },
+                    url: "/api/AppliesAPI",
+                    data: JSON.stringify({ Id: parseInt(d) }),
+                    success: function (data) {
+                        alertify.success("Added to Applies");
+                    },
+                    error: function (xhr) { // if error occured
+                        alertify.error("Could Not Add this Job to your Applies");
+                    }
+                })
+            });
         });
+       
 
     </script>
 
