@@ -88,7 +88,7 @@ namespace AJobBoard.Data
             {
                 jobPosting = await _ctx.JobPostings.FindAsync(id);
                 var options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMinutes(40));
+                options.SetSlidingExpiration(TimeSpan.FromDays(30));
                 await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPosting), options);
             }
             else
