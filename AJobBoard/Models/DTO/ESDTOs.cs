@@ -64,7 +64,7 @@ namespace AJobBoard.Models.DTO
 
     public class Hits
     {
-        public Total total { get; set; }
+        public double total { get; set; }
         public string max_score { get; set; }
         public List<Hit> hits { get; set; }
     }
