@@ -1,10 +1,12 @@
 ﻿using System;
 using AJobBoard.Utils;
+using AJobBoard.Utils.Config;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Configuration;
+using Serilog.Sinks.Elasticsearch;
 
 namespace AJobBoard
 {
@@ -27,7 +29,12 @@ namespace AJobBoard
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.MySink(configuration)
+                 .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri($"{Secrets.getConnectionString(configuration, "Log_ElasticIndexBaseUrl")}http://db-es-logger.experimentsinthedeep2.com"))
+                 {
+                     AutoRegisterTemplate = true,
+                     AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                     IndexFormat = $"{Secrets.getAppSettingsValue(configuration, "AppName")}" + "-{0:yyyy.MM}"
+                 })
                 .CreateLogger();
 
             try

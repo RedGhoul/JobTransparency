@@ -59,7 +59,7 @@ namespace AJobBoard.Services
                 .DeserializeObject<KeyPhrasesWrapperDTO>(result);
                 return list;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
