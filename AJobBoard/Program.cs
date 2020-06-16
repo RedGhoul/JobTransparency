@@ -28,11 +28,11 @@ namespace AJobBoard
             
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .WriteTo.Console()
                  .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri($"{Secrets.getConnectionString(configuration, "Log_ElasticIndexBaseUrl")}"))
                  {
                      AutoRegisterTemplate = true,
-                     AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv6,
+                     ModifyConnectionSettings = x => x.BasicAuthentication(Secrets.getAppSettingsValue(configuration, "elastic_name"), Secrets.getAppSettingsValue(configuration, "elastic_pasword")),
+                     AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
                      IndexFormat = $"{Secrets.getAppSettingsValue(configuration, "AppName")}" + "-{0:yyyy.MM}"
                  })
                 .CreateLogger();
