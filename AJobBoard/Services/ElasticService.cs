@@ -59,8 +59,11 @@ namespace AJobBoard.Services
                 Console.WriteLine(ex.InnerException);
                 return new List<JobPostingDTO>();
             }
+        }
 
-
+        public async Task DeleteJobPostingIndexAsync()
+        {
+            var response = await new HttpClient().DeleteAsync(baseUrlsearch + "/jobpostings");
         }
 
         public async Task CreateJobPostingAsync(JobPosting jobPosting)

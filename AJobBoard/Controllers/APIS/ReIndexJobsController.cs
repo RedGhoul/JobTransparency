@@ -25,6 +25,7 @@ namespace Jobtransparency.Controllers.APIS
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
+            await _es.DeleteJobPostingIndexAsync();
             var jobs = await _jobPostingRepository.GetAllJobPostingsWithKeyPhrase();
             foreach (var item in jobs)
             {
