@@ -51,7 +51,8 @@ namespace AJobBoard.Utils.HangFire
                 {
 
                     bool change = false;
-
+                    if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
+                    {
                         var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
                         if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                         {
@@ -76,7 +77,7 @@ namespace AJobBoard.Utils.HangFire
                             JobPosting.KeyPhrases = ListKeyPhrase;
                             change = true;
                         }
-
+                    }
                     if (change)
                     {
                         await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
