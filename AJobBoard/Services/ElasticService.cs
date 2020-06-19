@@ -9,7 +9,9 @@ using AJobBoard.Models;
 using AJobBoard.Models.DTO;
 using AJobBoard.Utils;
 using AJobBoard.Utils.Config;
+using Elasticsearch.Net;
 using Microsoft.Extensions.Configuration;
+using Nest;
 using Newtonsoft.Json;
 
 namespace AJobBoard.Services
@@ -18,47 +20,69 @@ namespace AJobBoard.Services
     {
 
         private static string baseUrlsearch;
+        private static ElasticClient elasticClient;
 
         public ElasticService(IConfiguration configuration)
         {
-            baseUrlsearch = Secrets.getConnectionString(configuration,"ElasticIndexBaseUrl");
+            baseUrlsearch = Secrets.getConnectionString(configuration, "ElasticIndexBaseUrl");
+            var settings = new ConnectionSettings(new Uri(baseUrlsearch))
+                .DefaultIndex("jobpostings")
+                .BasicAuthentication(
+                    Secrets.getAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"), 
+                    Secrets.getAppSettingsValue(configuration, "ELASTIC_PASSWORD_Search"))
+                .RequestTimeout(TimeSpan.FromMinutes(2));
+            elasticClient = new ElasticClient(settings);
+
         }
 
         public async Task<List<JobPostingDTO>> QueryJobPosting(int fromNumber, string keywords)
         {
-            var client = new HttpClient();
-            
-            HttpResponseMessage response = null;
-            string finalQueryString = "";
-            if (string.IsNullOrEmpty(keywords))
-            {
-                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
-            }
-            else
-            {
-                finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
-            }
-            response = await client.GetAsync(finalQueryString);
+            var searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
+                .From(fromNumber)
+                .Size(12)
+                .Query(q => q
+                     .Match(m => m
+                        .Field(f => f.Description)
+                        .Query(keywords)
+                     )
+                ).Sort(q => q.Descending(u => u.DateAdded))
+            );
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            var JobPosting = searchResponse.Documents;
+            return (List<JobPostingDTO>)JobPosting;
+
+            //var client = new HttpClient();
+
+            //string finalQueryString = "";
+            //if (string.IsNullOrEmpty(keywords))
+            //{
+            //    finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
+            //}
+            //else
+            //{
+            //    finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
+            //}
+            //response = await client.GetAsync(finalQueryString);
+
+            //var result = response.Content.ReadAsStringAsync().Result;
             
-            try
-            {
-                RootObject list = JsonConvert
-                    .DeserializeObject<RootObject>(result);
-                List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
-                foreach (var item in list.hits.hits)
-                {
+            //try
+            //{
+            //    RootObject list = JsonConvert
+            //        .DeserializeObject<RootObject>(result);
+            //    List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
+            //    foreach (var item in list.hits.hits)
+            //    {
                     
-                    listsJobPostings.Add(item._source);
-                }
-                return listsJobPostings;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException);
-                return new List<JobPostingDTO>();
-            }
+            //        listsJobPostings.Add(item._source);
+            //    }
+            //    return listsJobPostings;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.InnerException);
+            //    return new List<JobPostingDTO>();
+            //}
         }
 
         public async Task<bool> DeleteJobPostingIndexAsync()
@@ -69,45 +93,56 @@ namespace AJobBoard.Services
 
         public async Task CreateJobPostingAsync(JobPosting jobPosting)
         {
-            var json = JsonConvert.SerializeObject(jobPosting, Formatting.None,
-                new JsonSerializerSettings()
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                });
-            var data = new StringContent(json, Encoding.UTF8, "application/json");
+            var things = await elasticClient.IndexDocumentAsync(jobPosting);
+            
+            //var json = JsonConvert.SerializeObject(jobPosting, Formatting.None,
+            //    new JsonSerializerSettings()
+            //    {
+            //        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //    });
+            //var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var client = new HttpClient();
+            //var client = new HttpClient();
 
-            var response = await client.PutAsync(baseUrlsearch + "/jobpostings/_doc/" + jobPosting.Id, data);
+            //var response = await client.PutAsync(baseUrlsearch + "/jobpostings/_doc/" + jobPosting.Id, data);
         }
 
        
 
         public async Task<List<JobPostingDTO>> GetRandomSetOfJobPosting()
         {
-            var client = new HttpClient();
+            var searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(
+                s => s.Size(12)
+                .Sort(q => q.Descending(u => u.DateAdded)
+                ));
+
+            var JobPosting = searchResponse.Documents;
+            return (List<JobPostingDTO>)JobPosting;
+
+
+            //var client = new HttpClient();
            
-            var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12 + "&sort=DateAdded:desc");
+            //var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12 + "&sort=DateAdded:desc");
 
-            var result = response.Content.ReadAsStringAsync().Result;
+            //var result = response.Content.ReadAsStringAsync().Result;
 
-            try
-            {
-                RootObject list = JsonConvert
-                    .DeserializeObject<RootObject>(result);
-                List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
-                foreach (var item in list.hits.hits)
-                {
+            //try
+            //{
+            //    RootObject list = JsonConvert
+            //        .DeserializeObject<RootObject>(result);
+            //    List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
+            //    foreach (var item in list.hits.hits)
+            //    {
 
-                    listsJobPostings.Add(item._source);
-                }
-                return listsJobPostings;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.InnerException);
-                return new List<JobPostingDTO>();
-            }
+            //        listsJobPostings.Add(item._source);
+            //    }
+            //    return listsJobPostings;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.InnerException);
+            //    return new List<JobPostingDTO>();
+            //}
 
         }
 

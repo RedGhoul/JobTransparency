@@ -39,14 +39,14 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
-            if (await _es.DeleteJobPostingIndexAsync())
-            {
+            //if (await _es.DeleteJobPostingIndexAsync())
+            //{
                 var jobs = await _jobPostingRepository.GetAllJobPostingsWithKeyPhrase();
                 foreach (var item in jobs)
                 {
                     await _es.CreateJobPostingAsync(item);
                 }
-            }
+            //}
 
             _logger.LogInformation("ReIndexJobPostingsJob Ends... ");
         }

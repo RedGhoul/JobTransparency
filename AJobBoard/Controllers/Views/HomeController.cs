@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.View;
+using AJobBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
@@ -18,11 +19,13 @@ namespace AJobBoard.Controllers.Views
     {
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly ILogger<HomeController> _logger;
+        private readonly ElasticService _es;
 
-        public HomeController(IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger)
+        public HomeController(IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger, ElasticService elasticService)
         {
             _jobPostingRepository = jobPostingRepository;
             _logger = logger;
+            _es = elasticService;
         }
 
         [HttpGet]

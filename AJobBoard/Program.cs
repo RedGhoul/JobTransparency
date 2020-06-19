@@ -31,7 +31,7 @@ namespace AJobBoard
                  .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri($"{Secrets.getConnectionString(configuration, "Log_ElasticIndexBaseUrl")}"))
                  {
                      AutoRegisterTemplate = true,
-                     ModifyConnectionSettings = x => x.BasicAuthentication(Secrets.getAppSettingsValue(configuration, "elastic_name"), Secrets.getAppSettingsValue(configuration, "elastic_pasword")),
+                     ModifyConnectionSettings = x => x.BasicAuthentication(Secrets.getAppSettingsValue(configuration, "ELASTIC_USERNAME_Log"), Secrets.getAppSettingsValue(configuration, "ELASTIC_PASSWORD_Log")),
                      AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
                      IndexFormat = $"{Secrets.getAppSettingsValue(configuration, "AppName")}" + "-{0:yyyy.MM}"
                  })
