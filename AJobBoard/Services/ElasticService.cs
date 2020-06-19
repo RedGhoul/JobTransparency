@@ -61,9 +61,10 @@ namespace AJobBoard.Services
             }
         }
 
-        public async Task DeleteJobPostingIndexAsync()
+        public async Task<bool> DeleteJobPostingIndexAsync()
         {
             var response = await new HttpClient().DeleteAsync(baseUrlsearch + "/jobpostings");
+            return response.IsSuccessStatusCode;
         }
 
         public async Task CreateJobPostingAsync(JobPosting jobPosting)

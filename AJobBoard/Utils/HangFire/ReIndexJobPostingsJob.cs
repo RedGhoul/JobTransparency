@@ -12,21 +12,21 @@ using Microsoft.Extensions.Logging;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public class SummaryGeneratorJob : IMyJob
+    public class ReIndexJobPostingsJob : IMyJob
     {
-        private readonly ILogger<KeyPhraseGeneratorJob> _logger;
+        private readonly ILogger<ReIndexJobPostingsJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
-        private readonly INLTKService _nltkService;
+        private readonly ElasticService _es;
         private readonly ApplicationDbContext _ctx;
 
-        public SummaryGeneratorJob(ILogger<KeyPhraseGeneratorJob> logger,
+        public ReIndexJobPostingsJob(ILogger<ReIndexJobPostingsJob> logger,
             IJobPostingRepository jobPostingRepository,
-            INLTKService nltkService,
-            ApplicationDbContext ctx)
+            ApplicationDbContext ctx,
+            ElasticService elasticService)
         {
             _jobPostingRepository = jobPostingRepository;
-            _nltkService = nltkService;
             _logger = logger;
+            _es = elasticService;
             _ctx = ctx;
         }
 
@@ -38,22 +38,17 @@ namespace AJobBoard.Utils.HangFire
 
         public async Task RunAtTimeOf(DateTime now)
         {
-            _logger.LogInformation("SummaryGeneratorJob Starts... ");
-            List<JobPosting> things = await _ctx.JobPostings.ToListAsync();
-            foreach (var jobPosting in things)
+            _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
+            if (await _es.DeleteJobPostingIndexAsync())
             {
-                if (string.IsNullOrEmpty(jobPosting.Summary))
+                var jobs = await _jobPostingRepository.GetAllJobPostingsWithKeyPhrase();
+                foreach (var item in jobs)
                 {
-                    
-                    var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
-
-                    jobPosting.Summary = nltkSummary.SummaryText;
-
-                    await _jobPostingRepository.PutJobPostingAsync(jobPosting.Id, jobPosting);
+                    await _es.CreateJobPostingAsync(item);
                 }
             }
 
-            _logger.LogInformation("SummaryGeneratorJob Ends... ");
+            _logger.LogInformation("ReIndexJobPostingsJob Ends... ");
         }
     }
 }
