@@ -49,6 +49,7 @@ namespace AJobBoard.Utils.HangFire
 
                 foreach (var JobPosting in things)
                 {
+
                     bool change = false;
 
                         var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
