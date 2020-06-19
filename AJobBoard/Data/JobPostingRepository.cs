@@ -75,7 +75,7 @@ namespace AJobBoard.Data
 
         public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
         {
-            return await _ctx.JobPostings.Where(x => x.KeyPhrases != null).ToListAsync();
+            return await _ctx.JobPostings.Where(x => x.KeyPhrases == null || x.KeyPhrases.Count == 0).ToListAsync();
         }
 
         public async Task<JobPosting> GetJobPostingById(int id)
