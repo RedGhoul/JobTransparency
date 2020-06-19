@@ -18,33 +18,33 @@ namespace AJobBoard.Tests.Controller.Tests
 {
     public class JobPostingsControllerTests
     {
-        [Fact]
-        public async Task Index_ReturnsAViewResult_WithAListOfJobPostings()
-        {
-            // Arrange
-            HomeIndexViewModel homeIndexVm = new HomeIndexViewModel();
-            var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
-                .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
-            mockRepoJob.Setup(repo => repo.GetTotalJobs())
-               .ReturnsAsync(GetTotalJobs());
+        //[Fact]
+        //public async Task Index_ReturnsAViewResult_WithAListOfJobPostings()
+        //{
+        //    // Arrange
+        //    HomeIndexViewModel homeIndexVm = new HomeIndexViewModel();
+        //    var mockRepoJob = new Mock<IJobPostingRepository>();
+        //    mockRepoJob.Setup(repo => repo.ConfigureSearchAsync(homeIndexVm))
+        //        .ReturnsAsync(ConfigureSearchAsync(homeIndexVm));
+        //    mockRepoJob.Setup(repo => repo.GetTotalJobs())
+        //       .ReturnsAsync(GetTotalJobs());
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+        //    var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+        //    var mockNLTKService = new Mock<INLTKService>();
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
-                mockNLTKService.Object, mockRepoKeyPharse.Object); 
+        //    var controller = new JobPostingsController(mockRepoJob.Object,
+        //        mockNLTKService.Object, mockRepoKeyPharse.Object); 
             
-            //Act
-           var result = await controller.Index();
+        //    //Act
+        //   var result = await controller.Index();
 
-            //Assert
-           var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
-                viewResult.Model);
-            Assert.Equal(10, model.JobPostings.Count());
-        }
+        //    //Assert
+        //   var viewResult = Assert.IsType<ViewResult>(result);
+        //    var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
+        //        viewResult.Model);
+        //    Assert.Equal(10, model.JobPostings.Count());
+        //}
 
 
         [Fact]
