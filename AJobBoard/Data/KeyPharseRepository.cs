@@ -1,4 +1,5 @@
 ﻿using AJobBoard.Models.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,12 @@ namespace AJobBoard.Data
             {
                 Console.WriteLine(ex.StackTrace);
             }
+        }
+
+        public List<KeyPhrase> GetKeyPhrasesAsync(int JobId)
+        {
+            var things = _ctx.KeyPhrase.Include(x => x.JobPosting).Where(x => x.JobPosting.Id == JobId);
+            return things.ToList();
         }
     }
 }

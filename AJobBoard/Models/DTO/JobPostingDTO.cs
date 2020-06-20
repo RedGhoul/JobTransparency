@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace AJobBoard.Models.DTO
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
         public DateTime DateAdded { get; set; }
+        [Nested]
         public List<KeyPhraseDTO> KeyPhrases { get; set; }
         public string Summary { get; set; }
     }

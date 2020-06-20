@@ -91,7 +91,7 @@ namespace AJobBoard.Services
             return response.IsSuccessStatusCode;
         }
 
-        public async Task CreateJobPostingAsync(JobPosting jobPosting)
+        public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)
         {
             var things = await elasticClient.IndexDocumentAsync(jobPosting);
             

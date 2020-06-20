@@ -3,6 +3,7 @@ using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
 using AJobBoard.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,13 +21,15 @@ namespace AJobBoard.Controllers.API
         private readonly INLTKService _nltkService;
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly ElasticService _es;
-        public JobPostingsAPIController(IJobPostingRepository JobPostingRepository,
+        private readonly IMapper _mapper;
+        public JobPostingsAPIController(IMapper mapper,IJobPostingRepository JobPostingRepository,
             INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService)
         {
             _JobPostingRepository = JobPostingRepository;
             _nltkService = NLTKService;
             _keyPharseRepository = KeyPharseRepository;
             _es = elasticService;
+            _mapper = mapper;
         }
 
 
@@ -153,7 +156,8 @@ namespace AJobBoard.Controllers.API
                 Console.WriteLine(ex);
             }
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
-            await _es.CreateJobPostingAsync(newPosting);
+            var JP = _mapper.Map<JobPostingDTO>(newPosting);
+            await _es.CreateJobPostingAsync(JP);
             return Ok();
         }
 

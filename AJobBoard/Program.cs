@@ -56,6 +56,7 @@ namespace AJobBoard
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .ConfigureKestrel(o => { o.Limits.KeepAliveTimeout = TimeSpan.FromHours(10); });
     }
 }

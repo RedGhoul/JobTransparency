@@ -1,4 +1,5 @@
 ﻿using AJobBoard.Models.Data;
+using Nest;
 using System;
 using System.Collections.Generic;
 

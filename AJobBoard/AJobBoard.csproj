@@ -13,6 +13,8 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.11" />
     <PackageReference Include="Elasticsearch.Net" Version="7.7.1" />
     <PackageReference Include="Gelf.Extensions.Logging" Version="2.0.0" />

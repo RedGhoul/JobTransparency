@@ -27,6 +27,7 @@ using Jobtransparency.Utils.HangFire;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
+using AutoMapper;
 
 namespace AJobBoard
 {
@@ -43,6 +44,7 @@ namespace AJobBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -155,7 +157,7 @@ namespace AJobBoard
 
             services.AddResponseCompression();
 
-            
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
