@@ -46,10 +46,7 @@ namespace AJobBoard.Controllers.Views
             JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
 
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
-            foreach (var job in result)
-            {
-                job.KeyPhrases = await _jobPostingRepository.GetJobPostingKeyPhrases(job.Id);
-            }
+
             var count = await _jobPostingRepository.GetTotalJobs();
             
             ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;

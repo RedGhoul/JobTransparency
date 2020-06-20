@@ -11,6 +11,7 @@ using AJobBoard.Models.Data;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
+using AutoMapper;
 
 namespace AJobBoard.Data
 {
@@ -19,12 +20,13 @@ namespace AJobBoard.Data
         private readonly ApplicationDbContext _ctx;
         private readonly IDistributedCache _cache;
         private readonly ElasticService _es;
-
-        public JobPostingRepository(ApplicationDbContext ctx, IDistributedCache cache, ElasticService es)
+        private readonly IMapper _mapper;
+        public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx, IDistributedCache cache, ElasticService es)
         {
             _ctx = ctx;
             _cache = cache;
             _es = es;
+            _mapper = mapper;
         }
 
         public async Task<List<JobPosting>> GetAllJobPostingsWithKeyPhrase()
@@ -227,24 +229,11 @@ namespace AJobBoard.Data
 
         public async Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id)
         {
-            var job = await _ctx.JobPostings.Include(x => x.KeyPhrases).Where(x => x.Id == 2663)
-                .FirstOrDefaultAsync();
-            List<KeyPhraseDTO> items = new List<KeyPhraseDTO>();
-            if (job != null)
-            {
-                
-                foreach (KeyPhrase phrase in job.KeyPhrases.Take(10))
-                {
-                    items.Add(new KeyPhraseDTO
-                    {
-                        Affinty = phrase.Affinty,
-                        Id = phrase.Id,
-                        Text = phrase.Text
-                    });
-                }
-                
-            }
-            return items;
+            var keyPhrases = await _ctx.KeyPhrase.Include(x => x.JobPosting)
+                .Where(x => x.JobPosting.Id == id)
+                .Take(10)
+                .ToListAsync();
+            return _mapper.Map<List<KeyPhraseDTO>>(keyPhrases);
         }
 
         public async Task<List<JobPosting>> GetAllJobPostings()
