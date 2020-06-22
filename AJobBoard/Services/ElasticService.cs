@@ -45,6 +45,11 @@ namespace AJobBoard.Services
                         .Field(f => f.Description)
                         .Query(keywords)
                      )
+                ).Query(q => q
+                     .Match(m => m
+                        .Field(f => f.Title)
+                        .Query(keywords)
+                     )
                 ).Sort(q => q.Descending(u => u.DateAdded))
             );
 
