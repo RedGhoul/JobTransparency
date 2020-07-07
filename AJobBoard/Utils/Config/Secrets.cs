@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 
 namespace AJobBoard.Utils.Config
 {
@@ -25,7 +22,7 @@ namespace AJobBoard.Utils.Config
                 Console.WriteLine("Could not find it in the Configuration");
                 Console.WriteLine("using the following value instead: " + Environment.GetEnvironmentVariable(name));
             }
-           
+
             return Environment.GetEnvironmentVariable(name);
         }
 

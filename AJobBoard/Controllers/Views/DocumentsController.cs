@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.View;
-using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -78,7 +73,7 @@ namespace AJobBoard.Controllers.Views
                 return RedirectToAction(nameof(Index));
             }
 
-            
+
             return View(document);
         }
 
@@ -145,7 +140,7 @@ namespace AJobBoard.Controllers.Views
                 .getUserFromHttpContextAsync(HttpContext);
 
             await _documentRepository.RemoveDocumentFromUser(id, User);
-           
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -162,7 +157,7 @@ namespace AJobBoard.Controllers.Views
                 return File(file, contentType, fileName);
             }
 
-            return RedirectToAction("Details",new{id = id});
+            return RedirectToAction("Details", new { id = id });
 
         }
 

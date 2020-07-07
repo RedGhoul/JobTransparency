@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AJobBoard.Models.DTO;
+using System;
 using System.Collections.Generic;
-using AJobBoard.Models.DTO;
 
 namespace AJobBoard.Models.View
 {
@@ -8,14 +8,14 @@ namespace AJobBoard.Models.View
     {
         public HomeIndexViewModel()
         {
-            
+
         }
         public HomeIndexViewModel(IEnumerable<JobPostingDTO> jobPostings, FindModel findModel, int timeToCache)
         {
-          this.JobPostings = jobPostings;
-          this.FindModel = findModel;
-          this.TimeToCache = timeToCache;
-          this.ImageName = GenerateRandomFrontImage();
+            this.JobPostings = jobPostings;
+            this.FindModel = findModel;
+            this.TimeToCache = timeToCache;
+            this.ImageName = GenerateRandomFrontImage();
         }
         public IEnumerable<JobPostingDTO> JobPostings { get; set; }
         public FindModel FindModel { get; set; }

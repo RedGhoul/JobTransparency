@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AJobBoard.Models.Data
+﻿namespace AJobBoard.Models.Data
 {
     public class KeyPhrase // Need to Make a DTO model of this
     {

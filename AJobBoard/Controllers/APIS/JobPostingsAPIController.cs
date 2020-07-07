@@ -4,7 +4,6 @@ using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
 using AJobBoard.Services;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace AJobBoard.Controllers.API
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        public JobPostingsAPIController(IMapper mapper,IJobPostingRepository JobPostingRepository,
+        public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
             INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService)
         {
             _JobPostingRepository = JobPostingRepository;
@@ -65,11 +64,12 @@ namespace AJobBoard.Controllers.API
         [HttpPost("Check")]
         public async Task<ActionResult<JobPosting>> CheckJobPostingAsync(TestCheckDTO tcDTO)
         {
-            if(tcDTO.url != null)
+            if (tcDTO.url != null)
             {
                 bool jobPostingCount = await _JobPostingRepository.JobPostingExists(tcDTO);
                 return Ok(jobPostingCount);
-            }else
+            }
+            else
             {
                 return BadRequest(false);
             }
@@ -87,7 +87,7 @@ namespace AJobBoard.Controllers.API
 
             JobPosting returnedJobPosting = await _JobPostingRepository.PutJobPostingAsync(id, jobPosting);
 
-            if(returnedJobPosting != null)
+            if (returnedJobPosting != null)
             {
                 return Ok();
             }
@@ -166,7 +166,7 @@ namespace AJobBoard.Controllers.API
         public async Task<ActionResult<JobPosting>> DeleteJobPosting(int id)
         {
             JobPosting jobPosting = await _JobPostingRepository.DeleteJobPostingAsync(id);
-  
+
             if (jobPosting == null)
             {
                 return NotFound();

@@ -1,14 +1,9 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
 using AJobBoard.Models.DTO;
 using AJobBoard.Models.View;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -64,7 +59,7 @@ namespace AJobBoard.Controllers.Views
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteTrue(int id)
-        { 
+        {
             var deletedApply = await _appliesRepository.DeleteAppliesAsync(id);
 
             return Redirect(nameof(Index));

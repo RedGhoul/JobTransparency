@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Hangfire.Dashboard;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Hangfire.Dashboard;
 
 namespace AJobBoard.Utils.HangFire
 {

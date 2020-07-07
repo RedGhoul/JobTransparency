@@ -1,7 +1,6 @@
 ﻿using AJobBoard.Models;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,11 +28,11 @@ namespace AJobBoard.Data
             return document;
         }
 
-        public async Task<bool> SaveDocumentToUser(DocumentViewModel document,  ApplicationUser user)
+        public async Task<bool> SaveDocumentToUser(DocumentViewModel document, ApplicationUser user)
         {
 
             List<string> errors = _AWSService.validateFile(document.Resume);
-            
+
 
             string resumeKEY = "";
             if (user != null && errors.Count == 0)
@@ -84,7 +83,7 @@ namespace AJobBoard.Data
             await _AWSService.DeleteFile(document.URL, "ajobboard");
         }
 
-        public async Task<MemoryStream> DownLoadDocument(int documentId,ApplicationUser user)
+        public async Task<MemoryStream> DownLoadDocument(int documentId, ApplicationUser user)
         {
 
             var document = await _ctx.Document.FindAsync(documentId);

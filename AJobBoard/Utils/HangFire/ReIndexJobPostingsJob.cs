@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
-using AJobBoard.Models;
-using AJobBoard.Models.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models.DTO;
 using AJobBoard.Services;
 using AutoMapper;
 using Hangfire;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {

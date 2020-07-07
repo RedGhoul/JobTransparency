@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models;
-using AJobBoard.Models.DTO;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -24,7 +17,7 @@ namespace AJobBoard.Controllers.Views
         private readonly ILogger<HomeController> _logger;
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        public HomeController(IMapper mapper,IKeyPharseRepository keyPharseRepository,IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger, ElasticService elasticService)
+        public HomeController(IMapper mapper, IKeyPharseRepository keyPharseRepository, IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger, ElasticService elasticService)
         {
             _jobPostingRepository = jobPostingRepository;
             _logger = logger;

@@ -1,8 +1,4 @@
 ﻿using AJobBoard.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AJobBoard.Models.View;
 
 namespace AJobBoard.Utils.ControllerHelpers

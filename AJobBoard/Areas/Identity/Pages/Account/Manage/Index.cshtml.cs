@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Areas.Identity.Pages.Account.Manage
@@ -143,7 +142,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-          
+
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();

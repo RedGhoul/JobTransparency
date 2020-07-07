@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
-using AJobBoard.Models;
+﻿using AJobBoard.Models;
 using AJobBoard.Models.DTO;
-using AJobBoard.Utils;
 using AJobBoard.Utils.Config;
-using Elasticsearch.Net;
 using Microsoft.Extensions.Configuration;
 using Nest;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Services
 {
@@ -28,7 +22,7 @@ namespace AJobBoard.Services
             var settings = new ConnectionSettings(new Uri(baseUrlsearch))
                 .DefaultIndex("jobpostings")
                 .BasicAuthentication(
-                    Secrets.getAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"), 
+                    Secrets.getAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"),
                     Secrets.getAppSettingsValue(configuration, "ELASTIC_PASSWORD_Search"))
                 .RequestTimeout(TimeSpan.FromMinutes(2));
             elasticClient = new ElasticClient(settings);
@@ -70,7 +64,7 @@ namespace AJobBoard.Services
             //response = await client.GetAsync(finalQueryString);
 
             //var result = response.Content.ReadAsStringAsync().Result;
-            
+
             //try
             //{
             //    RootObject list = JsonConvert
@@ -78,7 +72,7 @@ namespace AJobBoard.Services
             //    List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
             //    foreach (var item in list.hits.hits)
             //    {
-                    
+
             //        listsJobPostings.Add(item._source);
             //    }
             //    return listsJobPostings;
@@ -99,7 +93,7 @@ namespace AJobBoard.Services
         public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)
         {
             var things = await elasticClient.IndexDocumentAsync(jobPosting);
-            
+
             //var json = JsonConvert.SerializeObject(jobPosting, Formatting.None,
             //    new JsonSerializerSettings()
             //    {
@@ -112,7 +106,7 @@ namespace AJobBoard.Services
             //var response = await client.PutAsync(baseUrlsearch + "/jobpostings/_doc/" + jobPosting.Id, data);
         }
 
-       
+
 
         public async Task<List<JobPostingDTO>> GetRandomSetOfJobPosting()
         {
@@ -126,7 +120,7 @@ namespace AJobBoard.Services
 
 
             //var client = new HttpClient();
-           
+
             //var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12 + "&sort=DateAdded:desc");
 
             //var result = response.Content.ReadAsStringAsync().Result;

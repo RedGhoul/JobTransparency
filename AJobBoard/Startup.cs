@@ -1,33 +1,23 @@
 using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Services;
-using AJobBoard.Utils;
-using AJobBoard.Utils.AuthorizationHandler;
+using AJobBoard.Utils.Config;
+using AJobBoard.Utils.HangFire;
+using AutoMapper;
+using Hangfire;
+using Hangfire.MySql.Core;
+using Jobtransparency.Utils.HangFire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Transactions;
-using AJobBoard.Utils.Config;
-using AJobBoard.Utils.HangFire;
-using Hangfire;
-using Hangfire.MySql.Core;
-using Hangfire.Dashboard;
-using Jobtransparency.Utils.HangFire;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
-using AutoMapper;
+using System;
 
 namespace AJobBoard
 {
@@ -99,7 +89,7 @@ namespace AJobBoard
                 // ASP.NET Core will default to /Account/Login
                 options.LogoutPath = "/Account/Logout"; // If the LogoutPath is not set here,
                 // ASP.NET Core will default to /Account/Logout
-                options.AccessDeniedPath = "/Account/AccessDenied"; 
+                options.AccessDeniedPath = "/Account/AccessDenied";
                 options.SlidingExpiration = true;
             });
 
@@ -119,7 +109,7 @@ namespace AJobBoard
                             TransactionTimeout = TimeSpan.FromMinutes(1),
                             TablePrefix = "Hangfire"
                         })));
-            
+
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
@@ -141,23 +131,23 @@ namespace AJobBoard
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddTransient<UserManager<ApplicationUser>>();
-            
+
             services.AddTransient<IJobPostingRepository, JobPostingRepository>();
-            services.AddTransient<IKeyPharseRepository,KeyPharseRepository>();
+            services.AddTransient<IKeyPharseRepository, KeyPharseRepository>();
             services.AddTransient<IAppliesRepository, AppliesRepository>();
             services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
-            
+
             services.AddScoped<IMyJob, KeyPhraseGeneratorJob>();
             services.AddScoped<IMyJob, SummaryGeneratorJob>();
 
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
-            services.AddSingleton<INLTKService ,NLTKService>();
+            services.AddSingleton<INLTKService, NLTKService>();
 
             services.AddResponseCompression();
 
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -177,14 +167,14 @@ namespace AJobBoard
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
+
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new [] {new HangFireAuthorizationFilter()}
+                Authorization = new[] { new HangFireAuthorizationFilter() }
             });
             app.UseHangfireServer(new BackgroundJobServerOptions
             {

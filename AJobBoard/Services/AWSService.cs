@@ -1,8 +1,8 @@
 ﻿using AJobBoard.Areas.Identity.Pages.Account;
+using AJobBoard.Utils.Config;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,6 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using AJobBoard.Utils;
-using AJobBoard.Utils.Config;
 
 namespace AJobBoard.Services
 {
@@ -54,7 +52,7 @@ namespace AJobBoard.Services
                 formFile.ContentType.ToLower() != "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                 && formFile.ContentType.ToLower() != "application/pdf")
             {
-                
+
                 errors.Add($"The {fieldDisplayName}file ({fileName}) must be a text file.");
             }
 

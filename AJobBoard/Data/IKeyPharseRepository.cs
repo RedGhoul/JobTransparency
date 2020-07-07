@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using AJobBoard.Models.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using AJobBoard.Models.Data;
 
 namespace AJobBoard.Data
 {

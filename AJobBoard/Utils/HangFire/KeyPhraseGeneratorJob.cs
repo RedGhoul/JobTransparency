@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Services;
-using Amazon.Runtime.Internal.Util;
 using Hangfire;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ILogger = Amazon.Runtime.Internal.Util.ILogger;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
@@ -22,7 +18,7 @@ namespace AJobBoard.Utils.HangFire
         private readonly IKeyPharseRepository _KeyPharseRepository;
         private readonly ApplicationDbContext _ctx;
 
-        public KeyPhraseGeneratorJob(ILogger<KeyPhraseGeneratorJob> logger, 
+        public KeyPhraseGeneratorJob(ILogger<KeyPhraseGeneratorJob> logger,
             IJobPostingRepository jobPostingRepository,
             INLTKService NLTKService,
             IKeyPharseRepository KeyPharseRepository,
@@ -47,45 +43,45 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("KeyPhraseGeneratorJob Job Starts... ");
             IEnumerable<JobPosting> things = await _jobPostingRepository.GetAllNoneKeywordsJobPostings();
 
-                foreach (var JobPosting in things)
+            foreach (var JobPosting in things)
+            {
+
+                bool change = false;
+                if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
                 {
-
-                    bool change = false;
-                    if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
+                    var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
+                    if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                     {
-                        var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
-                        if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
+                        var ListKeyPhrase = new List<KeyPhrase>();
+
+                        foreach (var item in wrapper.rank_list)
                         {
-                            var ListKeyPhrase = new List<KeyPhrase>();
-
-                            foreach (var item in wrapper.rank_list)
+                            if (double.Parse(item.Affinty) > 20)
                             {
-                                if (double.Parse(item.Affinty) > 20)
+                                ListKeyPhrase.Add(new KeyPhrase
                                 {
-                                    ListKeyPhrase.Add(new KeyPhrase
-                                    {
-                                        Affinty = item.Affinty,
-                                        Text = item.Text,
-                                        JobPosting = JobPosting
-                                    });
-                                }
-
+                                    Affinty = item.Affinty,
+                                    Text = item.Text,
+                                    JobPosting = JobPosting
+                                });
                             }
 
-                            await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
-
-                            JobPosting.KeyPhrases = ListKeyPhrase;
-                            change = true;
                         }
-                    }
-                    if (change)
-                    {
-                        await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+
+                        await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
+
+                        JobPosting.KeyPhrases = ListKeyPhrase;
+                        change = true;
                     }
                 }
+                if (change)
+                {
+                    await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+                }
+            }
 
-                await _ctx.SaveChangesAsync();
-                _logger.LogInformation("My Job Ends... ");
+            await _ctx.SaveChangesAsync();
+            _logger.LogInformation("My Job Ends... ");
         }
     }
 }

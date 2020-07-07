@@ -1,12 +1,10 @@
-﻿using System;
-using AJobBoard.Utils;
-using AJobBoard.Utils.Config;
+﻿using AJobBoard.Utils.Config;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using Serilog.Configuration;
 using Serilog.Sinks.Elasticsearch;
+using System;
 
 namespace AJobBoard
 {
@@ -25,7 +23,7 @@ namespace AJobBoard
             {
                 Console.WriteLine(e);
             }
-            
+
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                  .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri($"{Secrets.getConnectionString(configuration, "Log_ElasticIndexBaseUrl")}"))

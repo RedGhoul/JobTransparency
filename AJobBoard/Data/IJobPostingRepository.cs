@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AJobBoard.Models;
-using AJobBoard.Models.Data;
+﻿using AJobBoard.Models;
 using AJobBoard.Models.DTO;
 using AJobBoard.Models.View;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Data
 {

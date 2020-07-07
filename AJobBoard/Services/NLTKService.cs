@@ -1,23 +1,11 @@
-﻿using AJobBoard.Areas.Identity.Pages.Account;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Net.Http;
-using Newtonsoft.Json;
-using System.Text;
-using System.Collections.Generic;
-using AJobBoard.Models.Data;
-using AJobBoard.Models.DTO;
-using AJobBoard.Utils;
+﻿using AJobBoard.Models.DTO;
 using AJobBoard.Utils.Config;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Services
 {
@@ -44,7 +32,7 @@ namespace AJobBoard.Services
                 textIn = Description,
                 authKey = _nltkSecretKey
             });
-            
+
             var data = new StringContent(json, Encoding.UTF8, applicationJson);
 
             var client = new HttpClient();

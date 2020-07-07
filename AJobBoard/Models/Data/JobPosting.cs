@@ -1,5 +1,4 @@
 ﻿using AJobBoard.Models.Data;
-using Nest;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +27,6 @@ namespace AJobBoard.Models
         public ApplicationUser Poster { get; set; }
         public DateTime DateAdded { get; set; }
         public List<KeyPhrase> KeyPhrases { get; set; }
-        public string Summary  { get; set; }
+        public string Summary { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.View;
@@ -13,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.Views
 {
@@ -39,17 +36,17 @@ namespace AJobBoard.Controllers.Views
         {
             var value = HttpContext.Session.GetString(_searchVmCacheKey);
 
-            HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ? 
-                JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) : 
+            HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ?
+                JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) :
                 JsonConvert.DeserializeObject<HomeIndexViewModel>(value);
 
-            JobPostingHelper.SetupViewBag(homeIndexVm,ViewBag);
+            JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
             var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
 
             var count = await _jobPostingRepository.GetTotalJobs();
-            
-            ViewBag.MaxPage = int.Parse(count)/ homeIndexVm.FindModel.Page;
+
+            ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
             ViewBag.Page = homeIndexVm.FindModel.Page;
             homeIndexVm.JobPostings = result;
@@ -64,7 +61,7 @@ namespace AJobBoard.Controllers.Views
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
             var vmData = JsonConvert.SerializeObject(homeIndexVm);
-                HttpContext.Session.SetString(_searchVmCacheKey, vmData);
+            HttpContext.Session.SetString(_searchVmCacheKey, vmData);
 
             return RedirectToAction("Index");
         }

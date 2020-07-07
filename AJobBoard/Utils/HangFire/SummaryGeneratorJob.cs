@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AJobBoard.Data;
+﻿using AJobBoard.Data;
 using AJobBoard.Models;
-using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
@@ -44,7 +42,7 @@ namespace AJobBoard.Utils.HangFire
             {
                 if (string.IsNullOrEmpty(jobPosting.Summary))
                 {
-                    
+
                     var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
                     jobPosting.Summary = nltkSummary.SummaryText;

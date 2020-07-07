@@ -1,6 +1,6 @@
-﻿using System;
-using AJobBoard.Utils.HangFire;
+﻿using AJobBoard.Utils.HangFire;
 using Hangfire;
+using System;
 
 namespace Jobtransparency.Utils.HangFire
 {
@@ -11,7 +11,7 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.RemoveIfExists(nameof(KeyPhraseGeneratorJob));
             RecurringJob.AddOrUpdate<KeyPhraseGeneratorJob>(nameof(KeyPhraseGeneratorJob),
                 job => job.Run(JobCancellationToken.Null),
-                Cron.Weekly(DayOfWeek.Monday,5,33), TimeZoneInfo.Local);
+                Cron.Weekly(DayOfWeek.Monday, 5, 33), TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(SummaryGeneratorJob));
             RecurringJob.AddOrUpdate<SummaryGeneratorJob>(nameof(SummaryGeneratorJob),

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using AJobBoard.Models;
+using AJobBoard.Models.View;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using AJobBoard.Models;
-using AJobBoard.Models.View;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace AJobBoard.Data
 {

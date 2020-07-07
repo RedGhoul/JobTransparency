@@ -1,5 +1,8 @@
 ﻿using AJobBoard.Models;
 using AJobBoard.Models.DTO;
+using AJobBoard.Models.View;
+using AJobBoard.Services;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
@@ -7,11 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AJobBoard.Models.Data;
-using AJobBoard.Models.View;
-using AJobBoard.Services;
-using AJobBoard.Utils.ControllerHelpers;
-using AutoMapper;
 
 namespace AJobBoard.Data
 {
@@ -42,7 +40,7 @@ namespace AJobBoard.Data
                 Console.WriteLine(e);
                 return new List<JobPosting>();
             }
-          
+
         }
 
         public async Task<string> GetTotalJobs()
@@ -203,7 +201,7 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSetOfJobPostings()
         {
-          
+
             return await _es.GetRandomSetOfJobPosting();
         }
 
@@ -215,7 +213,7 @@ namespace AJobBoard.Data
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
             var jobsCollection = await _es.QueryJobPosting(fromNumber, homeIndexVm.FindModel.KeyWords);
-            
+
             return jobsCollection;
         }
 

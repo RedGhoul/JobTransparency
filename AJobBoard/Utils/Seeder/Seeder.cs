@@ -1,11 +1,11 @@
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using AJobBoard.Data;
 using AJobBoard.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.Seeder
 {
@@ -48,7 +48,7 @@ namespace AJobBoard.Utils.Seeder
                     }
 
                     var currentClaims = await UserManager.GetClaimsAsync(user);
-                    if(!currentClaims.Any())
+                    if (!currentClaims.Any())
                     {
                         var CanCreatePostingClaim = new Claim("CanCreatePosting", "True");
                         await UserManager.AddClaimAsync(user, CanCreatePostingClaim);

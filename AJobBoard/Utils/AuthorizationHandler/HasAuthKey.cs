@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using AJobBoard.Utils.Config;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using AJobBoard.Utils.Config;
 
 namespace AJobBoard.Utils.AuthorizationHandler
 {
@@ -23,10 +18,10 @@ namespace AJobBoard.Utils.AuthorizationHandler
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasAuthKey requirment)
         {
             var authContext = (AuthorizationFilterContext)context.Resource;
-            if(authContext.HttpContext.Request.Headers.ContainsKey("Auth") == true)
+            if (authContext.HttpContext.Request.Headers.ContainsKey("Auth") == true)
             {
                 string Key = authContext.HttpContext.Request.Headers["Auth"];
-                if (Key.Equals(Secrets.getAppSettingsValue(_configuration,"Auth-AzureFunction")));
+                if (Key.Equals(Secrets.getAppSettingsValue(_configuration, "Auth-AzureFunction"))) ;
                 {
                     context.Succeed(requirment);
                 }

@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.DTO;
+using System.Threading.Tasks;
 
 namespace AJobBoard.Services
 {
