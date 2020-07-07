@@ -22,7 +22,6 @@ namespace AJobBoard.Utils.HangFire
             IJobPostingRepository jobPostingRepository,
             INLTKService NLTKService,
             IKeyPharseRepository KeyPharseRepository,
-            ElasticService es,
             ApplicationDbContext ctx)
         {
             _jobPostingRepository = jobPostingRepository;
@@ -45,10 +44,7 @@ namespace AJobBoard.Utils.HangFire
 
             foreach (var JobPosting in things)
             {
-
-                bool change = false;
-                if (JobPosting.KeyPhrases == null || JobPosting.KeyPhrases.Count == 0)
-                {
+                
                     var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
                     if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                     {
@@ -56,31 +52,24 @@ namespace AJobBoard.Utils.HangFire
 
                         foreach (var item in wrapper.rank_list)
                         {
-                            if (double.Parse(item.Affinty) > 20)
-                            {
+                           
                                 ListKeyPhrase.Add(new KeyPhrase
                                 {
                                     Affinty = item.Affinty,
                                     Text = item.Text,
                                     JobPosting = JobPosting
                                 });
-                            }
 
                         }
 
                         await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
 
                         JobPosting.KeyPhrases = ListKeyPhrase;
-                        change = true;
                     }
-                }
-                if (change)
-                {
+                
                     await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
-                }
             }
 
-            await _ctx.SaveChangesAsync();
             _logger.LogInformation("My Job Ends... ");
         }
     }
