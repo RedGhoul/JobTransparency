@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
 using AJobBoard.Models;
+using Jobtransparency.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -19,38 +20,30 @@ namespace AJobBoard.Controllers.API
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public AppliesAPIController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IAppliesRepository _appliesRepository;
+        private readonly IJobPostingRepository _jobPostingRepository;
+        private readonly IUserRepository _userRepository;
+        public AppliesAPIController(IUserRepository userRepository,
+            IJobPostingRepository jobPostingRepository, 
+            IAppliesRepository appliesRepository, ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _appliesRepository = appliesRepository;
+            _jobPostingRepository = jobPostingRepository;
+            _userRepository = userRepository;
         }
 
         // GET: api/AppliesAPI
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Apply>>> GetApplies()
+        public async Task<IActionResult> GetApplies()
         {
             var User = await _userManager.GetUserAsync(HttpContext.User);
-
-            var applications = await _context.Applies.Include(x => x.JobPosting)
-                .Where(x => x.Applier.Id == User.Id).ToListAsync();
-
-            var apps = applications.Select(x => new
+            var Applies = await _appliesRepository.GetUsersAppliesAsync(User);
+            if (Applies != null)
             {
-                Id = x.Id,
-                JobId = x.JobPosting.Id,
-                Title = x.JobPosting.Title,
-                Company = x.JobPosting.Company,
-                Location = x.JobPosting.Location,
-                JobSource = x.JobPosting.JobSource,
-                Applicates = x.JobPosting.NumberOfApplies,
-                Views = x.JobPosting.NumberOfViews,
-                URL = x.JobPosting.URL,
-                PostDate = x.JobPosting.PostDate
-            }).ToList();
-            if (apps != null)
-            {
-                return Ok(new { data = apps });
+                return Ok(new { data = Applies });
             }
             return Ok(new { data = "" });
         }
@@ -59,7 +52,7 @@ namespace AJobBoard.Controllers.API
         [HttpGet("{id}")]
         public async Task<ActionResult<Apply>> GetApply(int id)
         {
-            var apply = await _context.Applies.FindAsync(id);
+            var apply = await _appliesRepository.GetApplyByIdAsync(id);
 
             if (apply == null)
             {
@@ -77,32 +70,15 @@ namespace AJobBoard.Controllers.API
             {
                 return BadRequest();
             }
+            var result = await _appliesRepository.PutApplyAsync(id, apply);
 
-            _context.Entry(apply).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ApplyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return result != null ? Ok(result) : (IActionResult)BadRequest();
         }
 
         // POST: api/AppliesAPI
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult<Apply>> PostApply(Apply apply)
+        public async Task<IActionResult> PostApply(Apply apply, int JobPostingId)
         {
 
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -110,67 +86,18 @@ namespace AJobBoard.Controllers.API
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
-            // Have to seprate this stuff out in the future
-            var job = _context.JobPostings.Where(x => x.Id == apply.Id).FirstOrDefault();
-            job.NumberOfApplies++;
-
-            try
-            {
-                _context.Update(job);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                return NotFound(ex);
-            }
-
-            if (job != null)
-            {
-                if (currentUser.Applies != null)
-                {
-                    currentUser.Applies.Add(new Apply
-                    {
-                        DateAddedToApplies = DateTime.Now,
-                        JobPosting = job
-                    });
-                }
-                else
-                {
-                    currentUser.Applies = new List<Apply>();
-                    currentUser.Applies.Add(new Apply
-                    {
-                        DateAddedToApplies = DateTime.Now,
-                        JobPosting = job
-                    });
-                }
-
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok();
-
-            //return CreatedAtAction("GetApply", new { id = apply.Id }, apply);
+            await _jobPostingRepository.TickNumberOfApplies(JobPostingId, currentUser);
+            var curJob = await _jobPostingRepository.GetJobPostingById(JobPostingId);
+            var result = await _userRepository.AddApplyToUser(currentUser, curJob, apply);
+            return result == true ? Ok() : (IActionResult)BadRequest();
         }
 
         // DELETE: api/AppliesAPI/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Apply>> DeleteApply(int id)
+        public async Task<IActionResult> DeleteApply(int id)
         {
-            var apply = await _context.Applies.FindAsync(id);
-            if (apply == null)
-            {
-                return NotFound();
-            }
-
-            _context.Applies.Remove(apply);
-            await _context.SaveChangesAsync();
-
-            return apply;
-        }
-
-        private bool ApplyExists(int id)
-        {
-            return _context.Applies.Any(e => e.Id == id);
+            return await _appliesRepository.DeleteAppliesAsync(id) == true ? 
+                Ok(): (IActionResult)BadRequest();
         }
     }
 }

@@ -25,6 +25,7 @@ namespace AJobBoard.Data
         Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id);
         Task<bool> JobPostingExists(TestCheckDTO tcDto);
         Task<List<JobPostingDTO>> GetRandomSetOfJobPostings();
+        Task<bool> TickNumberOfApplies(int JobPostingId, ApplicationUser User);
 
     }
 }

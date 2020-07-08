@@ -14,6 +14,8 @@ namespace Jobtransparency.AutoMapper
 
             CreateMap<KeyPhraseDTO, KeyPhrase>();
             CreateMap<KeyPhrase, KeyPhraseDTO>();
+
+
         }
     }
 }

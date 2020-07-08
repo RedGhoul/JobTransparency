@@ -201,6 +201,24 @@ namespace AJobBoard.Data
             }
             return jobPosting;
         }
+
+        public async Task<bool> TickNumberOfApplies(int JobPostingId, ApplicationUser User)
+        {
+            var job = _ctx.JobPostings.Where(x => x.Id == JobPostingId).FirstOrDefault();
+            job.NumberOfApplies++;
+
+            try
+            {
+                _ctx.Update(job);
+                await _ctx.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                Console.WriteLine($"Error occured: ${ex.InnerException}");
+                return false;
+            }
+        }
         public async Task<List<JobPostingDTO>> GetRandomSetOfJobPostings()
         {
 

@@ -9,6 +9,9 @@ namespace AJobBoard.Models
         public ApplicationUser()
         {
             this.DateCreated = DateTime.UtcNow;
+            Documents = new List<Document>();
+            JobPostings = new List<JobPosting>();
+            Applies = new List<Apply>();
         }
 
         public string FirstName { get; set; }

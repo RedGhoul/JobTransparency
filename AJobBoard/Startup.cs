@@ -115,7 +115,7 @@ namespace AJobBoard
             services.AddResponseCaching();
             services.AddSession();
             services.AddMvc();
-            services.AddRazorPages(); //.AddRazorRuntimeCompilation();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddAuthorization(options =>
             {
