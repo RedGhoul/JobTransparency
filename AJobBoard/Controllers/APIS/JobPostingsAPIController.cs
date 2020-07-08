@@ -39,18 +39,6 @@ namespace AJobBoard.Controllers.API
             return jobPostings.ToList();
         }
 
-        //[HttpPost("IngestBoats")]
-        //public async Task<ActionResult<IEnumerable<JobPosting>>> IngestBoats()
-        //{
-        //    var jobPostings = await _JobPostingRepository.GetAllJobPostingsWithKeyPhrase();
-
-        //    foreach (var item in jobPostings)
-        //    {
-        //        await _es.CreateJobPostingAsync(item);
-        //    }
-        //    return Ok();
-        //}
-
 
         // GET: api/JobPostingsAPI/5
         [HttpGet("{id}")]
@@ -118,19 +106,6 @@ namespace AJobBoard.Controllers.API
                     }
                     newPosting.KeyPhrases = listKeyPhrase;
                 }
-                else
-                {
-                    newPosting.KeyPhrases = new List<KeyPhrase>
-                    {
-                        new KeyPhrase
-                        {
-                            Affinty = "Affinty",
-                            Text = "item.Text",
-                            JobPosting = newPosting
-                        }
-                    };
-                    await _keyPharseRepository.CreateKeyPhrasesAsync(newPosting.KeyPhrases);
-                }
 
             }
             catch (Exception ex)
@@ -156,8 +131,7 @@ namespace AJobBoard.Controllers.API
                 Console.WriteLine(ex);
             }
             await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
-            var JP = _mapper.Map<JobPostingDTO>(newPosting);
-            await _es.CreateJobPostingAsync(JP);
+            await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }
 

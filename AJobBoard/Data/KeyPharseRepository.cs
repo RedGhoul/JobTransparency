@@ -26,8 +26,8 @@ namespace AJobBoard.Data
                 foreach (var item in KeyPhrases)
                 {
                     await _ctx.KeyPhrase.AddAsync(item);
+                    await _ctx.SaveChangesAsync();
                 }
-                await _ctx.SaveChangesAsync();
             }
             catch (Exception ex)
             {

@@ -48,9 +48,7 @@ namespace AJobBoard
             });
 
             services.AddDbContext<ApplicationDbContext>(options => options
-                // replace with your connection string
                 .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD"), mySqlOptions => mySqlOptions
-                    // replace with your Server Version and Type
                     .ServerVersion(new ServerVersion(new Version(5, 7, 29), ServerType.MySql))
                     .CommandTimeout(300)
                 ));
@@ -112,6 +110,7 @@ namespace AJobBoard
 
 
             // Add the processing server as IHostedService
+            services.AddHttpClient("NLTK");
             services.AddHangfireServer();
             services.AddResponseCaching();
             services.AddSession();
