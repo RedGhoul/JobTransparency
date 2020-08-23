@@ -42,9 +42,9 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            var result = await _jobPostingRepository.ConfigureSearchAsync(homeIndexVm);
+            var result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            var count = await _jobPostingRepository.GetTotalJobs();
+            var count = await _jobPostingRepository.GetTotal();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
@@ -70,13 +70,13 @@ namespace AJobBoard.Controllers.Views
         // GET: JobPostings/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetById(id);
             if (jobPosting == null)
             {
                 return NotFound();
             }
 
-            jobPosting = await _jobPostingRepository.TickNumberOfViewAsync(jobPosting);
+            jobPosting = await _jobPostingRepository.AddView(jobPosting);
 
             return View(jobPosting);
         }
@@ -97,7 +97,7 @@ namespace AJobBoard.Controllers.Views
         {
             if (ModelState.IsValid)
             {
-                JobPosting newPosting = await _jobPostingRepository.CreateJobPostingAsync(jobPosting);
+                JobPosting newPosting = await _jobPostingRepository.Create(jobPosting);
 
                 var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
 
@@ -119,7 +119,7 @@ namespace AJobBoard.Controllers.Views
 
                 newPosting.Summary = nltkSummary.SummaryText;
 
-                await _jobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
+                await _jobPostingRepository.Put(newPosting.Id, newPosting);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -130,7 +130,7 @@ namespace AJobBoard.Controllers.Views
         [Authorize(Policy = "CanEditPosting")]
         public async Task<IActionResult> Edit(int id)
         {
-            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetById(id);
             if (jobPosting == null)
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace AJobBoard.Controllers.Views
 
             if (ModelState.IsValid)
             {
-                await _jobPostingRepository.PutJobPostingAsync(id, jobPosting);
+                await _jobPostingRepository.Put(id, jobPosting);
             }
             return View(jobPosting);
         }
@@ -161,7 +161,7 @@ namespace AJobBoard.Controllers.Views
         [Authorize(Policy = "CanDeletePosting")]
         public async Task<IActionResult> Delete(int id)
         {
-            JobPosting jobPosting = await _jobPostingRepository.GetJobPostingById(id);
+            JobPosting jobPosting = await _jobPostingRepository.GetById(id);
             if (jobPosting == null)
             {
                 return NotFound();
@@ -176,7 +176,7 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _jobPostingRepository.DeleteJobPostingAsync(id);
+            await _jobPostingRepository.DeleteById(id);
             return RedirectToAction(nameof(Index));
         }
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public class ReIndexJobPostingsJob : IMyJob
+    public class ReIndexJobPostingsJob : ICustomJob
     {
         private readonly ILogger<ReIndexJobPostingsJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
@@ -42,7 +42,7 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
             if (await _es.DeleteJobPostingIndexAsync())
             {
-                var jobs = await _jobPostingRepository.GetAllJobPostings();
+                var jobs = await _jobPostingRepository.GetAll();
                 foreach (var item in jobs)
                 {
                     var DTO = _mapper.Map<JobPostingDTO>(item);

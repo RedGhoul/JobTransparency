@@ -3,14 +3,16 @@ using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using Hangfire;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public class KeyPhraseGeneratorJob : IMyJob
+    public class KeyPhraseGeneratorJob : ICustomJob
     {
         private readonly ILogger<KeyPhraseGeneratorJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
@@ -40,37 +42,38 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("KeyPhraseGeneratorJob Job Starts... ");
-            IEnumerable<JobPosting> things = await _jobPostingRepository.GetAllNoneKeywordsJobPostings();
+            IEnumerable<JobPosting> JobPostingsWithoutKeyPharses = await _jobPostingRepository.GetAllNoneKeywords();
 
-            foreach (var JobPosting in things)
+            foreach (var JobPosting in JobPostingsWithoutKeyPharses)
             {
-                
-                    var wrapper = await _NLTKService.GetNLTKKeyPhrases(JobPosting.Description);
-                    if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
+                if (JobPosting.Description.Length <= 5) continue;
+                string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  "," ");
+                var wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
+                if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
+                {
+                    var ListKeyPhrase = new List<KeyPhrase>();
+
+                    foreach (var item in wrapper.rank_list)
                     {
-                        var ListKeyPhrase = new List<KeyPhrase>();
 
-                        foreach (var item in wrapper.rank_list)
+                        ListKeyPhrase.Add(new KeyPhrase
                         {
-                           
-                                ListKeyPhrase.Add(new KeyPhrase
-                                {
-                                    Affinty = item.Affinty,
-                                    Text = item.Text,
-                                    JobPosting = JobPosting
-                                });
+                            Affinty = item.Affinty,
+                            Text = item.Text,
+                            JobPosting = JobPosting
+                        });
 
-                        }
-
-                        await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
-
-                        JobPosting.KeyPhrases = ListKeyPhrase;
                     }
-                
-                    await _jobPostingRepository.PutJobPostingAsync(JobPosting.Id, JobPosting);
+
+                    await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
+
+                    JobPosting.KeyPhrases = ListKeyPhrase;
+                }
+
+                await _jobPostingRepository.Put(JobPosting.Id, JobPosting);
             }
 
-            _logger.LogInformation("My Job Ends... ");
+            _logger.LogInformation("KeyPhraseGeneratorJob Ends... ");
         }
     }
 }

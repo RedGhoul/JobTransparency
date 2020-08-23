@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public class SummaryGeneratorJob : IMyJob
+    public class SummaryGeneratorJob : ICustomJob
     {
         private readonly ILogger<KeyPhraseGeneratorJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
@@ -37,18 +38,16 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("SummaryGeneratorJob Starts... ");
-            List<JobPosting> things = await _ctx.JobPostings.ToListAsync();
-            foreach (var jobPosting in things)
+            List<JobPosting> jobpostingsWithoutSummaries = await _jobPostingRepository.GetAllWithOutSummary();
+
+            foreach (var jobPosting in jobpostingsWithoutSummaries)
             {
-                if (string.IsNullOrEmpty(jobPosting.Summary))
-                {
+                string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
+                var nltkSummary = await _nltkService.GetNLTKSummary(rawText);
 
-                    var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                jobPosting.Summary = nltkSummary.SummaryText;
 
-                    jobPosting.Summary = nltkSummary.SummaryText;
-
-                    await _jobPostingRepository.PutJobPostingAsync(jobPosting.Id, jobPosting);
-                }
+                await _jobPostingRepository.Put(jobPosting.Id, jobPosting);
             }
 
             _logger.LogInformation("SummaryGeneratorJob Ends... ");

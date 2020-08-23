@@ -27,7 +27,7 @@ namespace AJobBoard.Data
             _mapper = mapper;
         }
 
-        public async Task<List<JobPosting>> GetAllJobPostingsWithKeyPhrase()
+        public async Task<List<JobPosting>> GetAllWithKeyPhrase()
         {
             try
             {
@@ -43,14 +43,14 @@ namespace AJobBoard.Data
 
         }
 
-        public async Task<string> GetTotalJobs()
+        public async Task<string> GetTotal()
         {
             int totalJobs = await _ctx.JobPostings.CountAsync();
 
             return totalJobs.ToString();
         }
 
-        public async Task<bool> JobPostingExists(TestCheckDTO tcDTO)
+        public async Task<bool> Exists(TestCheckDTO tcDTO)
         {
             var jobPostingCount = await _ctx.JobPostings
                 .Where(x => x.URL.Equals(tcDTO.url) == true ||
@@ -65,7 +65,7 @@ namespace AJobBoard.Data
             return false;
         }
 
-        public async Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount)
+        public async Task<IEnumerable<JobPosting>> GetWithKeyPhrase(int amount)
         {
             var jobs = await _ctx.JobPostings.Take(amount)
                 .Include(x => x.KeyPhrases).ToListAsync();
@@ -73,14 +73,14 @@ namespace AJobBoard.Data
         }
 
 
-        public async Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings()
+        public async Task<IEnumerable<JobPosting>> GetAllNoneKeywords()
         {
             return await _ctx.JobPostings.Include(x => x.KeyPhrases)
                 .Where(x => x.KeyPhrases == null ||
                 x.KeyPhrases.Count == 0 || x.KeyPhrases.Count == 1).ToListAsync();
         }
 
-        public async Task<JobPosting> GetJobPostingById(int id)
+        public async Task<JobPosting> GetById(int id)
         {
             string cacheKey = "JobSingle" + id;
             string jobPostingString = await _cache.GetStringAsync(cacheKey);
@@ -102,7 +102,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<bool> JobPostingExistsByUrl(string url)
+        public async Task<bool> ExistsByUrl(string url)
         {
             var jobPostingCount = await _ctx.JobPostings
                 .Where(x => x.URL.Equals(url))
@@ -115,7 +115,7 @@ namespace AJobBoard.Data
             return false;
         }
 
-        public async Task<bool> JobPostingExistsByDescription(string Summary)
+        public async Task<bool> DoesExistByDescription(string Summary)
         {
             var jobPostingCount = await _ctx.JobPostings
                 .Where(x => x.Description.Equals(Summary))
@@ -128,7 +128,7 @@ namespace AJobBoard.Data
             return false;
         }
 
-        public async Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting)
+        public async Task<JobPosting> Put(int id, JobPosting jobPosting)
         {
 
             _ctx.Entry(jobPosting).State = EntityState.Modified;
@@ -139,13 +139,13 @@ namespace AJobBoard.Data
             }
             catch (DbUpdateConcurrencyException)
             {
-                return !JobPostingExistsById(id) ? null : jobPosting;
+                return !ExistsById(id) ? null : jobPosting;
             }
 
             return jobPosting;
         }
 
-        public async Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting)
+        public async Task<JobPosting> Create(JobPosting jobPosting)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<JobPosting> DeleteJobPostingAsync(int id)
+        public async Task<JobPosting> DeleteById(int id)
         {
             var jobPosting = await _ctx.JobPostings.FindAsync(id);
             if (jobPosting == null)
@@ -174,12 +174,12 @@ namespace AJobBoard.Data
         }
 
 
-        private bool JobPostingExistsById(int id)
+        private bool ExistsById(int id)
         {
             return _ctx.JobPostings.Any(e => e.Id == id);
         }
 
-        public async Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting)
+        public async Task<JobPosting> AddView(JobPosting jobPosting)
         {
             jobPosting.NumberOfViews++;
 
@@ -190,7 +190,7 @@ namespace AJobBoard.Data
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                if (!JobPostingExistsById(jobPosting.Id))
+                if (!ExistsById(jobPosting.Id))
                 {
                     Console.WriteLine("JobPosting does not exist");
                 }
@@ -202,7 +202,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<bool> TickNumberOfApplies(int JobPostingId, ApplicationUser User)
+        public async Task<bool> AddApply(int JobPostingId, ApplicationUser User)
         {
             var job = _ctx.JobPostings.Where(x => x.Id == JobPostingId).FirstOrDefault();
             job.NumberOfApplies++;
@@ -219,13 +219,13 @@ namespace AJobBoard.Data
                 return false;
             }
         }
-        public async Task<List<JobPostingDTO>> GetRandomSetOfJobPostings()
+        public async Task<List<JobPostingDTO>> GetRandomSet()
         {
 
             return await _es.GetRandomSetOfJobPosting();
         }
 
-        public async Task<List<JobPostingDTO>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm)
+        public async Task<List<JobPostingDTO>> ConfigureSearch(HomeIndexViewModel homeIndexVm)
         {
             var fromNumber = 0;
             if (homeIndexVm.FindModel.Page > 1)
@@ -237,7 +237,7 @@ namespace AJobBoard.Data
             return jobsCollection;
         }
 
-        public JobPosting GetJobPostingByIdWithKeyPhrase(int id)
+        public JobPosting GetByIdWithKeyPhrases(int id)
         {
             var jobPosting = _ctx.JobPostings.Where(x => x.Id == id)
                 .Include(x => x.KeyPhrases)
@@ -245,7 +245,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id)
+        public async Task<List<KeyPhraseDTO>> GetByKeyPhrases(int id)
         {
             var keyPhrases = await _ctx.KeyPhrase.Include(x => x.JobPosting)
                 .Where(x => x.JobPosting.Id == id)
@@ -254,9 +254,16 @@ namespace AJobBoard.Data
             return _mapper.Map<List<KeyPhraseDTO>>(keyPhrases);
         }
 
-        public async Task<List<JobPosting>> GetAllJobPostings()
+        public async Task<List<JobPosting>> GetAll()
         {
             var jobs = await _ctx.JobPostings.ToListAsync();
+            return jobs;
+        }
+
+        public async Task<List<JobPosting>> GetAllWithOutSummary()
+        {
+            var jobs = await _ctx.JobPostings
+                .Where(x => x.Summary.Length <=4 && !x.Summary.Contains("NULL")).ToListAsync();
             return jobs;
         }
     }

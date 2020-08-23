@@ -86,8 +86,8 @@ namespace AJobBoard.Controllers.API
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
-            await _jobPostingRepository.TickNumberOfApplies(JobPostingId, currentUser);
-            var curJob = await _jobPostingRepository.GetJobPostingById(JobPostingId);
+            await _jobPostingRepository.AddApply(JobPostingId, currentUser);
+            var curJob = await _jobPostingRepository.GetById(JobPostingId);
             var result = await _userRepository.AddApplyToUser(currentUser, curJob, apply);
             return result == true ? Ok() : (IActionResult)BadRequest();
         }

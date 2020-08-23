@@ -31,10 +31,10 @@ namespace AJobBoard.Controllers.Views
         {
             _logger.LogInformation("Home called");
 
-            ViewBag.TotalJobs = await _jobPostingRepository.GetTotalJobs();
+            ViewBag.TotalJobs = await _jobPostingRepository.GetTotal();
             return View(
                 new HomeIndexViewModel(
-                    await _jobPostingRepository.GetRandomSetOfJobPostings(),
+                    await _jobPostingRepository.GetRandomSet(),
                     new FindModel(),
                     10)
                 );

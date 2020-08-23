@@ -35,25 +35,26 @@ namespace AJobBoard.Controllers.Views
                 vm.Applies.Add(new AppliesIndexDTO
                 {
                     Id = applies.Id,
-                    JobId = applies.JobPosting.Id,
-                    Title = applies.JobPosting.Title,
-                    Company = applies.JobPosting.Company,
-                    Location = applies.JobPosting.Location,
-                    JobSource = applies.JobPosting.JobSource,
-                    Applicates = applies.JobPosting.NumberOfApplies,
-                    Views = applies.JobPosting.NumberOfViews,
-                    URL = applies.JobPosting.URL,
-                    PostDate = applies.JobPosting.PostDate
+                    JobId = applies.JobId,
+                    Title = applies.Title,
+                    Company = applies.Company,
+                    Location = applies.Location,
+                    JobSource = applies.JobSource,
+                    Applicates = applies.Applicates,
+                    Views = applies.Views,
+                    URL = applies.URL,
+                    PostDate = applies.PostDate
                 });
             }
+
             return View(vm);
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var currentApply = await _appliesRepository.GetApplyAsync(id);
-            return View(currentApply);
+            //var currentApply = await _appliesRepository.GetApplyAsync(id);
+            return View();
         }
 
         [HttpPost]

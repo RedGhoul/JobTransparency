@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public interface IMyJob
+    public interface ICustomJob
     {
         public Task RunAtTimeOf(DateTime now);
         public Task Run(IJobCancellationToken token);

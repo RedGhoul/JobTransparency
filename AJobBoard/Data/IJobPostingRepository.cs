@@ -8,24 +8,25 @@ namespace AJobBoard.Data
 {
     public interface IJobPostingRepository
     {
-        Task<IEnumerable<JobPosting>> GetJobPostingsWithKeyPhraseAsync(int amount);
-        Task<List<JobPosting>> GetAllJobPostingsWithKeyPhrase();
-        Task<List<JobPosting>> GetAllJobPostings();
-        Task<string> GetTotalJobs();
-        Task<JobPosting> GetJobPostingById(int id);
-        JobPosting GetJobPostingByIdWithKeyPhrase(int id);
-        Task<IEnumerable<JobPosting>> GetAllNoneKeywordsJobPostings();
-        Task<bool> JobPostingExistsByUrl(string url);
-        Task<bool> JobPostingExistsByDescription(string Summary);
-        Task<JobPosting> PutJobPostingAsync(int id, JobPosting jobPosting);
-        Task<JobPosting> CreateJobPostingAsync(JobPosting jobPosting);
-        Task<JobPosting> DeleteJobPostingAsync(int id);
-        Task<JobPosting> TickNumberOfViewAsync(JobPosting jobPosting);
-        Task<List<JobPostingDTO>> ConfigureSearchAsync(HomeIndexViewModel homeIndexVm);
-        Task<List<KeyPhraseDTO>> GetJobPostingKeyPhrases(int id);
-        Task<bool> JobPostingExists(TestCheckDTO tcDto);
-        Task<List<JobPostingDTO>> GetRandomSetOfJobPostings();
-        Task<bool> TickNumberOfApplies(int JobPostingId, ApplicationUser User);
+        Task<List<JobPosting>> GetAllWithOutSummary();
+        Task<IEnumerable<JobPosting>> GetWithKeyPhrase(int amount);
+        Task<List<JobPosting>> GetAllWithKeyPhrase();
+        Task<List<JobPosting>> GetAll();
+        Task<string> GetTotal();
+        Task<JobPosting> GetById(int id);
+        JobPosting GetByIdWithKeyPhrases(int id);
+        Task<IEnumerable<JobPosting>> GetAllNoneKeywords();
+        Task<bool> ExistsByUrl(string url);
+        Task<bool> DoesExistByDescription(string Summary);
+        Task<JobPosting> Put(int id, JobPosting jobPosting);
+        Task<JobPosting> Create(JobPosting jobPosting);
+        Task<JobPosting> DeleteById(int id);
+        Task<JobPosting> AddView(JobPosting jobPosting);
+        Task<List<JobPostingDTO>> ConfigureSearch(HomeIndexViewModel homeIndexVm);
+        Task<List<KeyPhraseDTO>> GetByKeyPhrases(int id);
+        Task<bool> Exists(TestCheckDTO tcDto);
+        Task<List<JobPostingDTO>> GetRandomSet();
+        Task<bool> AddApply(int JobPostingId, ApplicationUser User);
 
     }
 }

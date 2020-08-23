@@ -60,10 +60,10 @@ namespace AJobBoard.Tests.Controller.Tests
                 NumberOfViews = 1
             };
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.GetJobPostingById(jobId))
+            mockRepoJob.Setup(repo => repo.GetById(jobId))
                 .ReturnsAsync(tempjob);
 
-            mockRepoJob.Setup(repo => repo.TickNumberOfViewAsync(tempjob))
+            mockRepoJob.Setup(repo => repo.AddView(tempjob))
                .ReturnsAsync(TickNumberOfViewAsync(tempjob));
 
             var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
@@ -90,7 +90,7 @@ namespace AJobBoard.Tests.Controller.Tests
             // Arrange
             int jobId = 1000;
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.GetJobPostingById(jobId))
+            mockRepoJob.Setup(repo => repo.GetById(jobId))
                 .ReturnsAsync(GetJobPostingById(jobId));
 
             var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
@@ -124,10 +124,10 @@ namespace AJobBoard.Tests.Controller.Tests
 
 
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.CreateJobPostingAsync(tempjob))
+            mockRepoJob.Setup(repo => repo.Create(tempjob))
                 .ReturnsAsync(tempjob);
 
-            mockRepoJob.Setup(repo => repo.PutJobPostingAsync(tempjob.Id, tempjob))
+            mockRepoJob.Setup(repo => repo.Put(tempjob.Id, tempjob))
                 .ReturnsAsync(tempjob);
 
             var temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);
@@ -183,10 +183,10 @@ namespace AJobBoard.Tests.Controller.Tests
 
 
             var mockRepoJob = new Mock<IJobPostingRepository>();
-            mockRepoJob.Setup(repo => repo.CreateJobPostingAsync(tempjob))
+            mockRepoJob.Setup(repo => repo.Create(tempjob))
                 .ReturnsAsync(tempjob);
 
-            mockRepoJob.Setup(repo => repo.PutJobPostingAsync(tempjob.Id, tempjob))
+            mockRepoJob.Setup(repo => repo.Put(tempjob.Id, tempjob))
                 .ReturnsAsync(tempjob);
 
             var temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);

@@ -35,7 +35,7 @@ namespace AJobBoard.Controllers.API
         [HttpPost("GetAllNoneKeywords")]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetAllNoneKeywordsJobPostings()
         {
-            var jobPostings = await _JobPostingRepository.GetAllNoneKeywordsJobPostings();
+            var jobPostings = await _JobPostingRepository.GetAllNoneKeywords();
             return jobPostings.ToList();
         }
 
@@ -44,7 +44,7 @@ namespace AJobBoard.Controllers.API
         [HttpGet("{id}")]
         public async Task<ActionResult<JobPosting>> GetJobPosting(int id)
         {
-            JobPosting jobposting = await _JobPostingRepository.GetJobPostingById(id);
+            JobPosting jobposting = await _JobPostingRepository.GetById(id);
             return jobposting;
         }
 
@@ -54,7 +54,7 @@ namespace AJobBoard.Controllers.API
         {
             if (tcDTO.url != null)
             {
-                bool jobPostingCount = await _JobPostingRepository.JobPostingExists(tcDTO);
+                bool jobPostingCount = await _JobPostingRepository.Exists(tcDTO);
                 return Ok(jobPostingCount);
             }
             else
@@ -73,7 +73,7 @@ namespace AJobBoard.Controllers.API
                 return BadRequest();
             }
 
-            JobPosting returnedJobPosting = await _JobPostingRepository.PutJobPostingAsync(id, jobPosting);
+            JobPosting returnedJobPosting = await _JobPostingRepository.Put(id, jobPosting);
 
             if (returnedJobPosting != null)
             {
@@ -87,7 +87,7 @@ namespace AJobBoard.Controllers.API
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            var newPosting = await _JobPostingRepository.CreateJobPostingAsync(jobPosting);
+            var newPosting = await _JobPostingRepository.Create(jobPosting);
             try
             {
                 var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
@@ -130,7 +130,7 @@ namespace AJobBoard.Controllers.API
             {
                 Console.WriteLine(ex);
             }
-            await _JobPostingRepository.PutJobPostingAsync(newPosting.Id, newPosting);
+            await _JobPostingRepository.Put(newPosting.Id, newPosting);
             await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }
@@ -139,7 +139,7 @@ namespace AJobBoard.Controllers.API
         [HttpDelete("{id}")]
         public async Task<ActionResult<JobPosting>> DeleteJobPosting(int id)
         {
-            JobPosting jobPosting = await _JobPostingRepository.DeleteJobPostingAsync(id);
+            JobPosting jobPosting = await _JobPostingRepository.DeleteById(id);
 
             if (jobPosting == null)
             {

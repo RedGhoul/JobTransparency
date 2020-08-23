@@ -42,7 +42,7 @@ namespace AJobBoard.Services
         public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
         {
             var request = new HttpRequestMessage(HttpMethod.Get,
-               _urlflask + _GetNLTKKeyPhrases);
+               _urlflask + _GetNLTKKeyPhrases); 
 
             var client = _clientFactory.CreateClient("NLTK");
 
@@ -65,9 +65,6 @@ namespace AJobBoard.Services
 
         public async Task<SummaryDTO> GetNLTKSummary(string description)
         {
-            description = description.Replace("\"", @"");
-           
-
             var client = _clientFactory.CreateClient("NLTK");
 
             return await _retryPolicySummary.ExecuteAsync(async () =>

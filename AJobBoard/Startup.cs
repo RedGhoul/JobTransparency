@@ -37,7 +37,6 @@ namespace AJobBoard
             services.AddAutoMapper(typeof(Startup));
             services.Configure<CookiePolicyOptions>(options =>
             {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
@@ -48,7 +47,7 @@ namespace AJobBoard
             });
 
             services.AddDbContext<ApplicationDbContext>(options => options
-                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncyDigitalOceanPROD"), mySqlOptions => mySqlOptions
+                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncy_DB_PROD"), mySqlOptions => mySqlOptions
                     .ServerVersion(new ServerVersion(new Version(5, 7, 29), ServerType.MySql))
                     .CommandTimeout(300)
                 ));
@@ -96,7 +95,7 @@ namespace AJobBoard
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings().UseStorage(
                     new MySqlStorage(
-                        Secrets.getConnectionString(Configuration, "HangfireConnectionDigitalOceanPROD"),
+                        Secrets.getConnectionString(Configuration, "Hangfire_DB_PROD"),
                         new MySqlStorageOptions
                         {
                             QueuePollInterval = TimeSpan.FromSeconds(15),
@@ -137,8 +136,8 @@ namespace AJobBoard
             services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
-            services.AddScoped<IMyJob, KeyPhraseGeneratorJob>();
-            services.AddScoped<IMyJob, SummaryGeneratorJob>();
+            services.AddScoped<ICustomJob, KeyPhraseGeneratorJob>();
+            services.AddScoped<ICustomJob, SummaryGeneratorJob>();
 
             services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
@@ -160,7 +159,6 @@ namespace AJobBoard
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 

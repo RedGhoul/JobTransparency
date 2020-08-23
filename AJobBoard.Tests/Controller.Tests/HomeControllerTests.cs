@@ -21,9 +21,9 @@ namespace AJobBoard.Tests.Controller.Tests
         {
             // Arrange
             var mockRepo = new Mock<IJobPostingRepository>();
-            mockRepo.Setup(repo => repo.GetRandomSetOfJobPostings())
+            mockRepo.Setup(repo => repo.GetRandomSet())
                 .ReturnsAsync(GetRandomSetOfJobPostings());
-            mockRepo.Setup(repo => repo.GetTotalJobs())
+            mockRepo.Setup(repo => repo.GetTotal())
                .ReturnsAsync(GetTotalJobs());
             var mockLogger = new Mock<ILogger<HomeController>>();
             var controller = new HomeController(mockRepo.Object, mockLogger.Object);
