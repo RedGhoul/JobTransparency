@@ -11,15 +11,24 @@ namespace AJobBoard.Areas.Identity.Pages.Account.Manage
 
         public static string PersonalData => "PersonalData";
 
-        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
+        public static string IndexNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, Index);
+        }
 
-        public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+        public static string ChangePasswordNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, ChangePassword);
+        }
 
-        public static string PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
+        public static string PersonalDataNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, PersonalData);
+        }
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {
-            var activePage = viewContext.ViewData["ActivePage"] as string
+            string activePage = viewContext.ViewData["ActivePage"] as string
                 ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
             return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "active" : null;
         }

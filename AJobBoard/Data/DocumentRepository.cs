@@ -22,7 +22,7 @@ namespace AJobBoard.Data
 
         public async Task<Document> GetDocumentByIdAsync(int? id)
         {
-            var document = await _ctx.Document
+            Document document = await _ctx.Document
                 .FirstOrDefaultAsync(m => m.DocumentId == id);
 
             return document;
@@ -41,7 +41,7 @@ namespace AJobBoard.Data
                     "Resumes/" + user.Id + document.Resume.FileName.Replace(" ", "").Replace("-", ""),
                     document.Resume.ContentType, document.Resume.OpenReadStream());
 
-                var tempDoc = new Document()
+                Document tempDoc = new Document()
                 {
                     DocumentName = document.DocumentName,
                     DateCreated = DateTime.Now,
@@ -73,7 +73,7 @@ namespace AJobBoard.Data
 
         public async Task RemoveDocumentFromUser(int documentId, ApplicationUser user)
         {
-            var document = await _ctx.Document.FindAsync(documentId);
+            Document document = await _ctx.Document.FindAsync(documentId);
             user.Documents.Remove(document);
             await _ctx.SaveChangesAsync();
             _ctx.Document.Remove(document);
@@ -86,11 +86,11 @@ namespace AJobBoard.Data
         public async Task<MemoryStream> DownLoadDocument(int documentId, ApplicationUser user)
         {
 
-            var document = await _ctx.Document.FindAsync(documentId);
-            var isValid = user.Documents.FirstOrDefault(x => x.DocumentId == documentId);
+            Document document = await _ctx.Document.FindAsync(documentId);
+            Document isValid = user.Documents.FirstOrDefault(x => x.DocumentId == documentId);
             if (isValid != null)
             {
-                var data = await _AWSService.GetFileInBytes(document.URL, "ajobboard");
+                byte[] data = await _AWSService.GetFileInBytes(document.URL, "ajobboard");
 
                 MemoryStream temp = new MemoryStream(data);
                 return temp;
@@ -130,7 +130,7 @@ namespace AJobBoard.Data
         public List<Document> GetDocumentsOfCurrentUser(string userId)
         {
             //var User = await _userManager.GetUserAsync(HttpContext.User);
-            var Documents = _ctx.Users.Include(x => x.Documents)
+            List<Document> Documents = _ctx.Users.Include(x => x.Documents)
                 .Where(x => x.Id.Equals(userId)).Select(x => x.Documents).FirstOrDefault();
             return Documents;
         }

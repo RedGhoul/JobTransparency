@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.API
@@ -24,7 +21,7 @@ namespace AJobBoard.Controllers.API
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly IUserRepository _userRepository;
         public AppliesAPIController(IUserRepository userRepository,
-            IJobPostingRepository jobPostingRepository, 
+            IJobPostingRepository jobPostingRepository,
             IAppliesRepository appliesRepository, ApplicationDbContext context,
             UserManager<ApplicationUser> userManager)
         {
@@ -39,8 +36,8 @@ namespace AJobBoard.Controllers.API
         [HttpGet]
         public async Task<IActionResult> GetApplies()
         {
-            var User = await _userManager.GetUserAsync(HttpContext.User);
-            var Applies = await _appliesRepository.GetUsersAppliesAsync(User);
+            ApplicationUser User = await _userManager.GetUserAsync(HttpContext.User);
+            List<AppliesDTO> Applies = await _appliesRepository.GetUsersAppliesAsync(User);
             if (Applies != null)
             {
                 return Ok(new { data = Applies });
@@ -52,7 +49,7 @@ namespace AJobBoard.Controllers.API
         [HttpGet("{id}")]
         public async Task<ActionResult<Apply>> GetApply(int id)
         {
-            var apply = await _appliesRepository.GetApplyByIdAsync(id);
+            Apply apply = await _appliesRepository.GetApplyByIdAsync(id);
 
             if (apply == null)
             {
@@ -70,7 +67,7 @@ namespace AJobBoard.Controllers.API
             {
                 return BadRequest();
             }
-            var result = await _appliesRepository.PutApplyAsync(id, apply);
+            Apply result = await _appliesRepository.PutApplyAsync(id, apply);
 
             return result != null ? Ok(result) : (IActionResult)BadRequest();
         }
@@ -81,14 +78,14 @@ namespace AJobBoard.Controllers.API
         public async Task<IActionResult> PostApply(Apply apply, int JobPostingId)
         {
 
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser == null)
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
             await _jobPostingRepository.AddApply(JobPostingId, currentUser);
-            var curJob = await _jobPostingRepository.GetById(JobPostingId);
-            var result = await _userRepository.AddApplyToUser(currentUser, curJob, apply);
+            JobPosting curJob = await _jobPostingRepository.GetById(JobPostingId);
+            bool result = await _userRepository.AddApplyToUser(currentUser, curJob, apply);
             return result == true ? Ok() : (IActionResult)BadRequest();
         }
 
@@ -96,8 +93,8 @@ namespace AJobBoard.Controllers.API
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteApply(int id)
         {
-            return await _appliesRepository.DeleteAppliesAsync(id) == true ? 
-                Ok(): (IActionResult)BadRequest();
+            return await _appliesRepository.DeleteAppliesAsync(id) == true ?
+                Ok() : (IActionResult)BadRequest();
         }
     }
 }

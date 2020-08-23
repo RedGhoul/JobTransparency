@@ -8,7 +8,7 @@ namespace AJobBoard.Models
     {
         public JobPosting()
         {
-            this.DateAdded = DateTime.UtcNow;
+            DateAdded = DateTime.UtcNow;
         }
 
         public int Id { get; set; }

@@ -6,7 +6,7 @@ namespace AJobBoard.Models
     {
         public Document()
         {
-            this.DateCreated = DateTime.UtcNow;
+            DateCreated = DateTime.UtcNow;
         }
         public string DocumentName { get; set; }
         public int DocumentId { get; set; }

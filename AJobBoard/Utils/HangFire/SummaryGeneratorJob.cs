@@ -2,7 +2,6 @@
 using AJobBoard.Models;
 using AJobBoard.Services;
 using Hangfire;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -40,10 +39,10 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("SummaryGeneratorJob Starts... ");
             List<JobPosting> jobpostingsWithoutSummaries = await _jobPostingRepository.GetAllWithOutSummary();
 
-            foreach (var jobPosting in jobpostingsWithoutSummaries)
+            foreach (JobPosting jobPosting in jobpostingsWithoutSummaries)
             {
                 string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                var nltkSummary = await _nltkService.GetNLTKSummary(rawText);
+                Models.DTO.SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(rawText);
 
                 jobPosting.Summary = nltkSummary.SummaryText;
 

@@ -52,13 +52,15 @@ namespace AJobBoard
                     Log.CloseAndFlush();
                 }
             }
-            
+
 
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .UseStartup<Startup>();
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
+.UseSerilog()
+.UseStartup<Startup>();
+        }
     }
 }

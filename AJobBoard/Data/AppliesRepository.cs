@@ -19,9 +19,9 @@ namespace AJobBoard.Data
 
         public async Task<List<AppliesDTO>> GetUsersAppliesAsync(ApplicationUser User)
         {
-            var applications = await _ctx.Applies.Include(x => x.JobPosting)
+            List<Apply> applications = await _ctx.Applies.Include(x => x.JobPosting)
                 .Where(x => x.Applier.Id == User.Id).ToListAsync();
-            var apps = applications.Select(x => new AppliesDTO()
+            List<AppliesDTO> apps = applications.Select(x => new AppliesDTO()
             {
                 Id = x.Id,
                 JobId = x.JobPosting.Id,
@@ -41,7 +41,7 @@ namespace AJobBoard.Data
 
         public async Task<bool> DeleteAppliesAsync(int id)
         {
-            var apply = await _ctx.Applies.FindAsync(id);
+            Apply apply = await _ctx.Applies.FindAsync(id);
             if (apply == null)
             {
                 return false;
@@ -76,7 +76,7 @@ namespace AJobBoard.Data
 
         public async Task<Apply> GetApplyByIdAsync(int id)
         {
-            var apply = await _ctx.Applies.Where(x => x.Id == id).Include(x => x.JobPosting).FirstOrDefaultAsync();
+            Apply apply = await _ctx.Applies.Where(x => x.Id == id).Include(x => x.JobPosting).FirstOrDefaultAsync();
             return apply;
         }
 

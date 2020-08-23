@@ -23,7 +23,7 @@ namespace AJobBoard.Data
         {
             try
             {
-                foreach (var item in KeyPhrases)
+                foreach (KeyPhrase item in KeyPhrases)
                 {
                     await _ctx.KeyPhrase.AddAsync(item);
                     await _ctx.SaveChangesAsync();
@@ -37,7 +37,7 @@ namespace AJobBoard.Data
 
         public List<KeyPhrase> GetKeyPhrasesAsync(int JobId)
         {
-            var things = _ctx.KeyPhrase.Include(x => x.JobPosting).Where(x => x.JobPosting.Id == JobId);
+            IQueryable<KeyPhrase> things = _ctx.KeyPhrase.Include(x => x.JobPosting).Where(x => x.JobPosting.Id == JobId);
             return things.ToList();
         }
     }

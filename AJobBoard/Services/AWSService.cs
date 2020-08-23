@@ -16,8 +16,8 @@ namespace AJobBoard.Services
 {
     public class AWSService : IAWSService
     {
-        private AmazonS3Client S3Client;
-        private long MAX_FILE_SIZE = 4048576;
+        private readonly AmazonS3Client S3Client;
+        private readonly long MAX_FILE_SIZE = 4048576;
 
         public AWSService(IConfiguration configuration)
         {
@@ -45,7 +45,7 @@ namespace AJobBoard.Services
 
         public List<string> validateFile(IFormFile formFile)
         {
-            var fieldDisplayName = string.Empty;
+            string fieldDisplayName = string.Empty;
             string fileName = GetFileName(formFile);
             List<string> errors = new List<string>();
             if (formFile.ContentType.ToLower() != "text/plain" &&
@@ -81,7 +81,7 @@ namespace AJobBoard.Services
                         as DisplayAttribute;
             }
 
-            var fileName = WebUtility.HtmlEncode(
+            string fileName = WebUtility.HtmlEncode(
                 Path.GetFileName(formFile.FileName));
             return fileName;
         }

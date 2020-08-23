@@ -8,7 +8,7 @@ namespace AJobBoard.Utils.AuthorizationHandler
 {
     public class HasAuthKey : AuthorizationHandler<HasAuthKey>, IAuthorizationRequirement
     {
-        IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         public HasAuthKey(IConfiguration configuration)
         {
@@ -17,11 +17,15 @@ namespace AJobBoard.Utils.AuthorizationHandler
 
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasAuthKey requirment)
         {
-            var authContext = (AuthorizationFilterContext)context.Resource;
+            AuthorizationFilterContext authContext = (AuthorizationFilterContext)context.Resource;
             if (authContext.HttpContext.Request.Headers.ContainsKey("Auth") == true)
             {
                 string Key = authContext.HttpContext.Request.Headers["Auth"];
-                if (Key.Equals(Secrets.getAppSettingsValue(_configuration, "Auth-AzureFunction"))) ;
+                if (Key.Equals(Secrets.getAppSettingsValue(_configuration, "Auth-AzureFunction")))
+                {
+                    ;
+                }
+
                 {
                     context.Succeed(requirment);
                 }

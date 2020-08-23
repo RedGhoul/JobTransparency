@@ -4,10 +4,7 @@ using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Jobtransparency.Controllers.Views
@@ -31,15 +28,15 @@ namespace Jobtransparency.Controllers.Views
         public async Task<IActionResult> IndexAsync()
         {
 
-            var JPItems = await _jobPostingRepository.GetAll();
-            foreach (var item in JPItems)
+            List<AJobBoard.Models.JobPosting> JPItems = await _jobPostingRepository.GetAll();
+            foreach (AJobBoard.Models.JobPosting item in JPItems)
             {
-                var jobs = _mapper.Map<JobPostingDTO>(item);
+                JobPostingDTO jobs = _mapper.Map<JobPostingDTO>(item);
                 await _elasticsService.CreateJobPostingAsync(jobs);
             }
             return Ok();
         }
 
-       
+
     }
 }

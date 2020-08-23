@@ -19,7 +19,7 @@ namespace AJobBoard.Services
         public ElasticService(IConfiguration configuration)
         {
             baseUrlsearch = Secrets.getConnectionString(configuration, "ElasticIndexBaseUrl");
-            var settings = new ConnectionSettings(new Uri(baseUrlsearch))
+            ConnectionSettings settings = new ConnectionSettings(new Uri(baseUrlsearch))
                 .DefaultIndex("jobpostings")
                 .BasicAuthentication(
                     Secrets.getAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"),
@@ -31,7 +31,7 @@ namespace AJobBoard.Services
 
         public async Task<List<JobPostingDTO>> QueryJobPosting(int fromNumber, string keywords)
         {
-            var searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
+            ISearchResponse<JobPostingDTO> searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
                 .From(fromNumber)
                 .Size(12)
                 .Query(q => q
@@ -47,31 +47,31 @@ namespace AJobBoard.Services
                 ).Sort(q => q.Descending(u => u.DateAdded))
             );
 
-            var JobPosting = searchResponse.Documents;
+            IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponse.Documents;
             return (List<JobPostingDTO>)JobPosting;
         }
 
         public async Task<bool> DeleteJobPostingIndexAsync()
         {
-            var response = await new HttpClient().DeleteAsync(baseUrlsearch + "/jobpostings");
+            HttpResponseMessage response = await new HttpClient().DeleteAsync(baseUrlsearch + "/jobpostings");
             return response.IsSuccessStatusCode;
         }
 
         public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)
         {
-            var things = await elasticClient.IndexDocumentAsync(jobPosting);
+            IndexResponse things = await elasticClient.IndexDocumentAsync(jobPosting);
         }
 
 
 
         public async Task<List<JobPostingDTO>> GetRandomSetOfJobPosting()
         {
-            var searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(
+            ISearchResponse<JobPostingDTO> searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(
                 s => s.Size(12)
                 .Sort(q => q.Descending(u => u.DateAdded)
                 ));
 
-            var JobPosting = searchResponse.Documents;
+            IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponse.Documents;
             return (List<JobPostingDTO>)JobPosting;
 
         }

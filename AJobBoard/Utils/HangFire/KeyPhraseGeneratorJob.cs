@@ -3,7 +3,6 @@ using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Services;
 using Hangfire;
-using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -44,16 +43,20 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("KeyPhraseGeneratorJob Job Starts... ");
             IEnumerable<JobPosting> JobPostingsWithoutKeyPharses = await _jobPostingRepository.GetAllNoneKeywords();
 
-            foreach (var JobPosting in JobPostingsWithoutKeyPharses)
+            foreach (JobPosting JobPosting in JobPostingsWithoutKeyPharses)
             {
-                if (JobPosting.Description.Length <= 5) continue;
-                string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  "," ");
-                var wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
+                if (JobPosting.Description.Length <= 5)
+                {
+                    continue;
+                }
+
+                string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
+                Models.DTO.KeyPhrasesWrapperDTO wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
                 if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                 {
-                    var ListKeyPhrase = new List<KeyPhrase>();
+                    List<KeyPhrase> ListKeyPhrase = new List<KeyPhrase>();
 
-                    foreach (var item in wrapper.rank_list)
+                    foreach (Models.DTO.KeyPhraseDTO item in wrapper.rank_list)
                     {
 
                         ListKeyPhrase.Add(new KeyPhrase

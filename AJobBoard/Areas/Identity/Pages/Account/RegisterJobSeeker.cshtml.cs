@@ -81,7 +81,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             if (ModelState.IsValid && errors.Count == 0)
             {
 
-                var user = new ApplicationUser
+                ApplicationUser user = new ApplicationUser
                 {
                     UserName = Input.Email,
                     Email = Input.Email,
@@ -91,7 +91,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     Documents = new List<Document> { }
                 };
 
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
@@ -114,7 +114,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
-                foreach (var error in result.Errors)
+                foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }

@@ -24,7 +24,7 @@ namespace AJobBoard.Controllers.Views
         // GET: Documents
         public async Task<IActionResult> Index()
         {
-            var currentUser = await _userRepository
+            ApplicationUser currentUser = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
             List<Document> documents = _documentRepository
                 .GetDocumentsOfCurrentUser(currentUser.Id);
@@ -40,7 +40,7 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _documentRepository.GetDocumentByIdAsync(id);
+            Document document = await _documentRepository.GetDocumentByIdAsync(id);
 
             if (document == null)
             {
@@ -61,11 +61,11 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(DocumentViewModel document)
         {
-            var currentUser = await _userRepository
+            ApplicationUser currentUser = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
 
 
-            var saveResult = await _documentRepository
+            bool saveResult = await _documentRepository
                 .SaveDocumentToUser(document, currentUser);
 
             if (saveResult)
@@ -85,7 +85,7 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _documentRepository.GetDocumentByIdAsync(id);
+            Document document = await _documentRepository.GetDocumentByIdAsync(id);
             if (document == null)
             {
                 return NotFound();
@@ -121,7 +121,7 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            var document = await _documentRepository.GetDocumentByIdAsync(id);
+            Document document = await _documentRepository.GetDocumentByIdAsync(id);
 
             if (document == null)
             {
@@ -136,7 +136,7 @@ namespace AJobBoard.Controllers.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var User = await _userRepository
+            ApplicationUser User = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
 
             await _documentRepository.RemoveDocumentFromUser(id, User);
@@ -146,13 +146,13 @@ namespace AJobBoard.Controllers.Views
 
         public async Task<IActionResult> Download(int id, string fileName)
         {
-            var currentUser = await _userRepository
+            ApplicationUser currentUser = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
-            var file = await _documentRepository.DownLoadDocument(id, currentUser);
+            System.IO.MemoryStream file = await _documentRepository.DownLoadDocument(id, currentUser);
 
             if (file != null)
             {
-                var contentType = "APPLICATION/octet-stream";
+                string contentType = "APPLICATION/octet-stream";
                 fileName = fileName + ".pdf";
                 return File(file, contentType, fileName);
             }

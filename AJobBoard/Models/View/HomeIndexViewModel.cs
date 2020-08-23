@@ -12,10 +12,10 @@ namespace AJobBoard.Models.View
         }
         public HomeIndexViewModel(IEnumerable<JobPostingDTO> jobPostings, FindModel findModel, int timeToCache)
         {
-            this.JobPostings = jobPostings;
-            this.FindModel = findModel;
-            this.TimeToCache = timeToCache;
-            this.ImageName = GenerateRandomFrontImage();
+            JobPostings = jobPostings;
+            FindModel = findModel;
+            TimeToCache = timeToCache;
+            ImageName = GenerateRandomFrontImage();
         }
         public IEnumerable<JobPostingDTO> JobPostings { get; set; }
         public FindModel FindModel { get; set; }

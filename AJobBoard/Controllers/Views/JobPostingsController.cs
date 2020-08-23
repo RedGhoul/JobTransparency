@@ -34,7 +34,7 @@ namespace AJobBoard.Controllers.Views
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var value = HttpContext.Session.GetString(_searchVmCacheKey);
+            string value = HttpContext.Session.GetString(_searchVmCacheKey);
 
             HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ?
                 JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) :
@@ -42,9 +42,9 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            var result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
+            List<Models.DTO.JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            var count = await _jobPostingRepository.GetTotal();
+            string count = await _jobPostingRepository.GetTotal();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
@@ -60,7 +60,7 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            var vmData = JsonConvert.SerializeObject(homeIndexVm);
+            string vmData = JsonConvert.SerializeObject(homeIndexVm);
             HttpContext.Session.SetString(_searchVmCacheKey, vmData);
 
             return RedirectToAction("Index");
@@ -99,14 +99,14 @@ namespace AJobBoard.Controllers.Views
             {
                 JobPosting newPosting = await _jobPostingRepository.Create(jobPosting);
 
-                var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
+                Models.DTO.KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
 
                 if (newPosting.KeyPhrases == null)
                 {
                     newPosting.KeyPhrases = new List<KeyPhrase>();
                 }
 
-                foreach (var item in wrapper.rank_list)
+                foreach (Models.DTO.KeyPhraseDTO item in wrapper.rank_list)
                 {
                     newPosting.KeyPhrases.Add(new KeyPhrase
                     {
@@ -115,7 +115,7 @@ namespace AJobBoard.Controllers.Views
                     });
                 }
 
-                var nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                Models.DTO.SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
                 newPosting.Summary = nltkSummary.SummaryText;
 

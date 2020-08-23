@@ -47,21 +47,21 @@ namespace AJobBoard.Services
         public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
         {
             _Logger.LogInformation($"Sending the following Description {Description} to NLTK Service GetNLTKKeyPhrases");
-            var request = new HttpRequestMessage(HttpMethod.Get,
-               _urlflask + _GetNLTKKeyPhrases); 
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get,
+               _urlflask + _GetNLTKKeyPhrases);
 
-            var client = _clientFactory.CreateClient("NLTK");
+            HttpClient client = _clientFactory.CreateClient("NLTK");
 
             return await _retryPolicyKeyPhrases.ExecuteAsync(async () =>
             {
-                var json = JsonConvert.SerializeObject(new
+                string json = JsonConvert.SerializeObject(new
                 {
                     textIn = Description,
                     authKey = _nltkSecretKey
                 });
                 _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKKeyPhrases");
 
-                var data = new StringContent(json, Encoding.UTF8, applicationJson);
+                StringContent data = new StringContent(json, Encoding.UTF8, applicationJson);
                 HttpResponseMessage response = null;
                 try
                 {
@@ -75,7 +75,7 @@ namespace AJobBoard.Services
 
                 }
 
-                var result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 try
                 {
@@ -100,18 +100,18 @@ namespace AJobBoard.Services
         {
             _Logger.LogInformation($"Sending the following Description {description} to NLTK Service GetNLTKSummary");
 
-            var client = _clientFactory.CreateClient("NLTK");
+            HttpClient client = _clientFactory.CreateClient("NLTK");
 
             return await _retryPolicySummary.ExecuteAsync(async () =>
             {
-                var json = JsonConvert.SerializeObject(new
+                string json = JsonConvert.SerializeObject(new
                 {
                     textIn = description,
                     authKey = _nltkSecretKey
                 });
                 _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKSummary");
 
-                var data = new StringContent(json, Encoding.UTF8, applicationJson);
+                StringContent data = new StringContent(json, Encoding.UTF8, applicationJson);
 
                 HttpResponseMessage response = null;
                 try
@@ -126,7 +126,7 @@ namespace AJobBoard.Services
 
                 }
 
-                var result = response.Content.ReadAsStringAsync().Result;
+                string result = response.Content.ReadAsStringAsync().Result;
 
                 try
                 {

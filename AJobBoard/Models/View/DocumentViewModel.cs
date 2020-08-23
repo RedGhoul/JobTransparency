@@ -6,7 +6,7 @@ namespace AJobBoard.Models.View
     {
         public DocumentViewModel()
         {
-            this.DateCreated = DateTime.UtcNow;
+            DateCreated = DateTime.UtcNow;
         }
         public string DocumentName { get; set; }
         public bool IsResume { get; set; }

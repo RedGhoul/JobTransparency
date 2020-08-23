@@ -10,7 +10,7 @@ namespace AJobBoard.Utils.Config
         {
             try
             {
-                var value = Configuration.GetSection("AppSettings")[name];
+                string value = Configuration.GetSection("AppSettings")[name];
                 if (!string.IsNullOrEmpty(value))
                 {
                     return value;
@@ -30,7 +30,7 @@ namespace AJobBoard.Utils.Config
         {
             try
             {
-                var value = Configuration.GetConnectionString(name);
+                string value = Configuration.GetConnectionString(name);
                 if (!string.IsNullOrEmpty(value))
                 {
                     return value;

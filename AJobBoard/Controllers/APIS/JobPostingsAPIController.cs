@@ -35,7 +35,7 @@ namespace AJobBoard.Controllers.API
         [HttpPost("GetAllNoneKeywords")]
         public async Task<ActionResult<IEnumerable<JobPosting>>> GetAllNoneKeywordsJobPostings()
         {
-            var jobPostings = await _JobPostingRepository.GetAllNoneKeywords();
+            IEnumerable<JobPosting> jobPostings = await _JobPostingRepository.GetAllNoneKeywords();
             return jobPostings.ToList();
         }
 
@@ -87,15 +87,15 @@ namespace AJobBoard.Controllers.API
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            var newPosting = await _JobPostingRepository.Create(jobPosting);
+            JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
             try
             {
-                var wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
+                KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
                 if (wrapper?.rank_list != null)
                 {
-                    var listKeyPhrase = new List<KeyPhrase>();
+                    List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
 
-                    foreach (var item in wrapper.rank_list)
+                    foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
                         listKeyPhrase.Add(new KeyPhrase
                         {
@@ -115,7 +115,7 @@ namespace AJobBoard.Controllers.API
 
             try
             {
-                var NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                SummaryDTO NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
                 if (NLTKSummary != null)
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;

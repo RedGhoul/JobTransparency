@@ -6,7 +6,7 @@ namespace AJobBoard.Models
     {
         public Apply()
         {
-            this.DateAddedToApplies = DateTime.UtcNow;
+            DateAddedToApplies = DateTime.UtcNow;
         }
         public int Id { get; set; }
         public JobPosting JobPosting { get; set; }

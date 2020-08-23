@@ -7,8 +7,8 @@ namespace AJobBoard.Utils.HangFire
     {
         public bool Authorize(DashboardContext context)
         {
-            var httpContext = context.GetHttpContext();
-            var useRole = httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            Microsoft.AspNetCore.Http.HttpContext httpContext = context.GetHttpContext();
+            string useRole = httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             return useRole == "Admin";
         }
     }

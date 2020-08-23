@@ -31,7 +31,7 @@ namespace AJobBoard.Data
 
         public async Task<ApplicationUser> getUserFromHttpContextAsync(HttpContext context)
         {
-            var User = await _userManager.GetUserAsync(context.User);
+            ApplicationUser User = await _userManager.GetUserAsync(context.User);
             return User;
         }
 
