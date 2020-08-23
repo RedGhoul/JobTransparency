@@ -16,27 +16,27 @@ namespace AJobBoard.Tests.Controller.Tests
 {
     public class HomeControllerTests
     {
-        [Fact]
-        public async Task Index_ReturnsAViewResult_WithAListOfJobPostings()
-        {
-            // Arrange
-            var mockRepo = new Mock<IJobPostingRepository>();
-            mockRepo.Setup(repo => repo.GetRandomSet())
-                .ReturnsAsync(GetRandomSetOfJobPostings());
-            mockRepo.Setup(repo => repo.GetTotal())
-               .ReturnsAsync(GetTotalJobs());
-            var mockLogger = new Mock<ILogger<HomeController>>();
-            var controller = new HomeController(mockRepo.Object, mockLogger.Object);
+        //[Fact]
+        //public async Task Index_ReturnsAViewResult_WithAListOfJobPostings()
+        //{
+        //    // Arrange
+        //    var mockRepo = new Mock<IJobPostingRepository>();
+        //    mockRepo.Setup(repo => repo.GetRandomSet())
+        //        .ReturnsAsync(GetRandomSetOfJobPostings());
+        //    mockRepo.Setup(repo => repo.GetTotal())
+        //       .ReturnsAsync(GetTotalJobs());
+        //    var mockLogger = new Mock<ILogger<HomeController>>();
+        //    var controller = new HomeController(mockRepo.Object, mockLogger.Object);
 
-            // Act
-            var result = await controller.Index();
+        //    // Act
+        //    var result = await controller.Index();
 
-            // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
-                viewResult.ViewData.Model);
-            Assert.Equal(10, model.JobPostings.Count());
-        }
+        //    // Assert
+        //    var viewResult = Assert.IsType<ViewResult>(result);
+        //    var model = Assert.IsAssignableFrom<HomeIndexViewModel>(
+        //        viewResult.ViewData.Model);
+        //    Assert.Equal(10, model.JobPostings.Count());
+        //}
 
         [Fact]
         public void RegisterType_ReturnsAViewResult_WithTheRightPage()
