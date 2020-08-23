@@ -49,39 +49,6 @@ namespace AJobBoard.Services
 
             var JobPosting = searchResponse.Documents;
             return (List<JobPostingDTO>)JobPosting;
-
-            //var client = new HttpClient();
-
-            //string finalQueryString = "";
-            //if (string.IsNullOrEmpty(keywords))
-            //{
-            //    finalQueryString = baseUrlsearch + "/jobpostings/_search?q=from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
-            //}
-            //else
-            //{
-            //    finalQueryString = baseUrlsearch + "/jobpostings/_search?q=Description:" + keywords + "&from=" + fromNumber + "&size=" + 12 + "&sort=DateAdded:desc";
-            //}
-            //response = await client.GetAsync(finalQueryString);
-
-            //var result = response.Content.ReadAsStringAsync().Result;
-
-            //try
-            //{
-            //    RootObject list = JsonConvert
-            //        .DeserializeObject<RootObject>(result);
-            //    List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
-            //    foreach (var item in list.hits.hits)
-            //    {
-
-            //        listsJobPostings.Add(item._source);
-            //    }
-            //    return listsJobPostings;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.InnerException);
-            //    return new List<JobPostingDTO>();
-            //}
         }
 
         public async Task<bool> DeleteJobPostingIndexAsync()
@@ -93,17 +60,6 @@ namespace AJobBoard.Services
         public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)
         {
             var things = await elasticClient.IndexDocumentAsync(jobPosting);
-
-            //var json = JsonConvert.SerializeObject(jobPosting, Formatting.None,
-            //    new JsonSerializerSettings()
-            //    {
-            //        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //    });
-            //var data = new StringContent(json, Encoding.UTF8, "application/json");
-
-            //var client = new HttpClient();
-
-            //var response = await client.PutAsync(baseUrlsearch + "/jobpostings/_doc/" + jobPosting.Id, data);
         }
 
 
@@ -117,31 +73,6 @@ namespace AJobBoard.Services
 
             var JobPosting = searchResponse.Documents;
             return (List<JobPostingDTO>)JobPosting;
-
-
-            //var client = new HttpClient();
-
-            //var response = await client.GetAsync(baseUrlsearch +"/jobpostings/_search?" +"&from=" + new Random().Next(1,12) + "&size=" + 12 + "&sort=DateAdded:desc");
-
-            //var result = response.Content.ReadAsStringAsync().Result;
-
-            //try
-            //{
-            //    RootObject list = JsonConvert
-            //        .DeserializeObject<RootObject>(result);
-            //    List<JobPostingDTO> listsJobPostings = new List<JobPostingDTO>();
-            //    foreach (var item in list.hits.hits)
-            //    {
-
-            //        listsJobPostings.Add(item._source);
-            //    }
-            //    return listsJobPostings;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex.InnerException);
-            //    return new List<JobPostingDTO>();
-            //}
 
         }
 
