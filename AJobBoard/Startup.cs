@@ -175,7 +175,7 @@ namespace AJobBoard
             });
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
-                WorkerCount = 2,
+                WorkerCount = 12,
             });
 
             app.UseSession();
