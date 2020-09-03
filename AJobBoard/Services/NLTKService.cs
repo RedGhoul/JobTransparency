@@ -56,7 +56,7 @@ namespace AJobBoard.Services
             {
                 string json = JsonConvert.SerializeObject(new
                 {
-                    textIn = Description,
+                    data = Description,
                     authKey = _nltkSecretKey
                 });
                 _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKKeyPhrases");
@@ -106,7 +106,7 @@ namespace AJobBoard.Services
             {
                 string json = JsonConvert.SerializeObject(new
                 {
-                    textIn = description,
+                    data = description,
                     authKey = _nltkSecretKey
                 });
                 _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKSummary");
