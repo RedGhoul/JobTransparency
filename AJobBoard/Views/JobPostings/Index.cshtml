@@ -110,45 +110,50 @@
 
                 @foreach (var item in Model.JobPostings)
                 {
-                    <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
-                        <div class="col-md-2">
-                            <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
-                        </div>
-                        <div class="col-md-4" style="color: beige">
-                            @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
-                            {
-                                <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
-                            }
-                            <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
-                            @*@foreach (var phrase in item.KeyPhrases)
-                            {
-                                <p>@phrase.Text</p>
-                            }*@
-                            <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong> In: <strong style="color: beige">Design</strong></p>
-                        </div>
-                        <div class="col-md-3 text-left">
-                            <h3 style="color: beige">@Html.DisplayNameFor(model => model.FindModel.Location):</h3>
-                            @if (string.IsNullOrEmpty(item.Location))
-                            {
-                                <h3 style="color: beige">Non - Found</h3>
+        <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+            <div class="col-md-2">
+                <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
+            </div>
+            <div class="col-md-4" style="color: beige">
+                @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
+                {
+                    <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
+                }
+                else
+                {
+                    <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
+                }
+                <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
+                @*@foreach (var phrase in item.KeyPhrases)
+            {
+                <p>@phrase.Text</p>
+            }*@
+                <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong></p>
+            </div>
+            <div class="col-md-2 text-left">
+                <h3 style="color: beige">@Html.DisplayNameFor(model => model.FindModel.Location):</h3>
+                @if (string.IsNullOrEmpty(item.Location))
+                {
+                    <h3 style="color: beige">Non - Found</h3>
 
-                            }
-                            else
-                            {
-                                <h3 style="color: beige">@Html.DisplayFor(modelItem => item.Location)</h3>
+                }
+                else
+                {
+                    <h3 style="color: beige">@Html.DisplayFor(modelItem => item.Location)</h3>
 
-                            }
-                        </div>
-                        <div class="col-md-3 text-md-right" style="color: beige">
-                            <h5>Company:</h5>
-                            <strong>@Html.DisplayFor(modelItem => item.Company)</strong>
+                }
+            </div>
+            <div class="col-md-2" style="color: beige">
+                <h5>Company :</h5>
+                <strong style="color: beige">@Html.DisplayFor(modelItem => item.Company)</strong>
 
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-2 text-md-right" style="color: beige">
+                <h5>Date Posted :</h5>
+                <strong style="color: beige">@item.DateAdded.ToShortDateString()</strong>
+
+            </div>
+        </div>
 
 
                 }

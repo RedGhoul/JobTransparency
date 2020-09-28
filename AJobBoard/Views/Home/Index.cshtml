@@ -15,7 +15,7 @@
                             <div class="col-12">
                                 <input style="height:47px;" type="text" name="FindModel.KeyWords" class="form-control form-control-lg" placeholder="Job title, keywords...">
                             </div>
-                           
+
                             <div class="col-12">
                                 <button style="margin-top:25px;" type="submit" class="btn btn-primary btn-lg btn-block text-white btn-search"><span class="icon-search icon mr-2"></span>Search Job</button>
                             </div>
@@ -82,55 +82,64 @@
             </div>
 
             @Html.AntiForgeryToken()
-        <div class="mb-5">
-            @if (Model.JobPostings != null)
-            {
-                @foreach (var item in Model.JobPostings)
+            <div class="mb-5">
+                @if (Model.JobPostings != null)
                 {
-                    <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
+                    @foreach (var item in Model.JobPostings)
+                    {
+                <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
 
-                        <div class="col-md-2">
-                            <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
-                        </div>
-
-                        <div class="col-md-4">
-                            @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
-                            {
-                                <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
-                            }
-                            <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
-                            <p style="color: black;">Publisher: <strong>Indeed</strong> In: <strong>Design</strong></p>
-                        </div>
-                        <div class="col-md-3 text-left">
-                            <h3>Location :</h3>
-                            @if (string.IsNullOrEmpty(item.Location))
-                            {
-                                <h3>Non - Found</h3>
-
-                            }
-                            else
-                            {
-                                <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
-
-                            }
-                        </div>
-                        <div class="col-md-3 text-md-right">
-                            <h5>Company :</h5>
-                            <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
-
-                        </div>
+                    <div class="col-md-2">
+                        <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
                     </div>
 
+                    <div class="col-md-4">
+                        @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Dev Ops</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
+                        }
+                        <h2>
+                            <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a>
+                        </h2>
+                        <p style="color: black;">Publisher: <strong>Indeed</strong> </p>
+                    </div>
+                    <div class="col-md-2 text-left">
+                        <h3>Location :</h3>
+                        @if (string.IsNullOrEmpty(item.Location))
+                        {
+                            <h3>Non - Found</h3>
+
+                        }
+                        else
+                        {
+                            <h3>@Html.DisplayFor(modelItem => item.Location)</h3>
+
+                        }
+                    </div>
+
+                    <div class="col-md-2">
+                        <h5>Company :</h5>
+                        <strong class="text-black">@Html.DisplayFor(modelItem => item.Company)</strong>
+
+                    </div>
+                    <div class="col-md-2 text-md-right">
+                        <h5>Date Posted :</h5>
+                        <strong class="text-black">@item.DateAdded.ToShortDateString()</strong>
+
+                    </div>
+
+                </div>
+
+                    }
                 }
-            }
 
 
 
-        </div>
+            </div>
 
             <div class="row pagination-wrap">
                 <div class="col-md-6 text-center text-md-left">
@@ -183,7 +192,7 @@
                 })
             });
         });
-       
+
 
     </script>
 
