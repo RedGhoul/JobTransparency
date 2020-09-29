@@ -32,11 +32,12 @@ namespace AJobBoard.Controllers.Views
 
 
         [HttpGet]
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(int? pageNumber, string? keywords)
         {
             HomeIndexViewModel homeIndexVm = JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel());
 
             homeIndexVm.FindModel.Page = pageNumber ?? 1;
+            homeIndexVm.FindModel.KeyWords = keywords ?? "";
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
@@ -58,7 +59,8 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            return RedirectToAction("Index",new { pageNumber = homeIndexVm.FindModel.Page });
+            return RedirectToAction("Index",new { pageNumber = homeIndexVm.FindModel.Page ,
+                keywords = homeIndexVm.FindModel.KeyWords});
         }
 
 

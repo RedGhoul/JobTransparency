@@ -9,6 +9,7 @@
     <title>Job Transparency</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/alertify.min.css" integrity="sha256-HyknUQX006D7lC1CzL2BQqMMjX7cQV7unnkuNrYUDgM=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/themes/bootstrap.min.css" integrity="sha256-tWRKenfvuraOz4u9wNIkJVrUFbRN712r9WtYhGUPirg=" crossorigin="anonymous" />
@@ -16,70 +17,61 @@
     <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body id="top">
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="/">Job Transparency</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="JobPostings">Job Listings</a>
+                    </li>
+                   
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
 
-
-    <div class="site-wrap">
-        <div class="site-mobile-menu site-navbar-target">
-            <div class="site-mobile-menu-header">
-                <div class="site-mobile-menu-close mt-3">
-                    <span class="icon-close2 js-menu-toggle"></span>
-                </div>
-            </div>
-            <div class="site-mobile-menu-body"></div>
-        </div>
-        <header class="site-navbar mt-3">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="site-logo col-6"><a href="/">Job Transparency</a></div>
-
-                    <nav class="mx-auto site-navigation">
-                        <ul class="site-menu js-clone-nav d-none d-xl-block ml-0 pl-0" style="font-size: x-large;">
-                            <li>
-                                <a href="/">Home</a>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/hangfire">ETL Jobs</a>
                             </li>
-                            <li><a asp-action="Index" asp-controller="JobPostings">Job Listings</a></li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Applies">My Applies</a>
 
-                            @if (SignInManager.IsSignedIn(User))
-                            {
+                        </li>
 
-                                if (User.IsInRole("Admin"))
-                                {
-                                    <li>
-                                        <a href="/hangfire">ETL Jobs</a>
-                                    </li>
-                                }
-                                <li>
-                                    <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
-                                </li>
-                                <li><a asp-action="Index" asp-controller="Applies">My Applies</a></li>
-                                <li>
-                                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
-                                        <button type="submit" class="nav-link btn btn-link" style="color: red;font-size: x-large;">Logout</button>
-                                    </form>
-                                </li>
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                            <button type="submit" class="nav-link btn btn-link">Logout</button>
+                        </form>
 
 
-                            }
-                            else
-                            {
-                                <li><a asp-action="RegisterType" asp-controller="Home">Register</a></li>
-                                <li>
-                                    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
 
-                    <div class="right-cta-menu text-right d-flex aligin-items-center col-6">
-                        <div class="ml-auto">
-                            <a href="/" class="btn btn-primary border-width-2 d-none d-lg-inline-block"><span class="mr-2 icon-paper-plane"></span>Contact Us</a>
-                        </div>
-                        <a href="/" class="site-menu-toggle js-menu-toggle d-inline-block d-xl-none mt-lg-2 ml-3"><span class="icon-menu h3 m-0 p-0 mt-2"></span></a>
-                    </div>
-
-                </div>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="RegisterType" asp-controller="Home">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        </li>
+                    }
+                </ul>
             </div>
-        </header>
+        </nav>
+    </header>
+    <div class="site-wrap">
         @RenderBody()
         <footer class="site-footer">
 
@@ -140,6 +132,14 @@
             notificationMadeBy.ondismiss = function () { return false; };
             var notificationCheckMeOut = alertify.message('Check me out at <a href="https://www.avaneesa.me/">avaneesa.me</a>', 10000);
             notificationCheckMeOut.ondismiss = function () { return false; };
+            function myFunction() {
+                var x = document.getElementById("myLinks");
+                if (x.style.display === "block") {
+                    x.style.display = "none";
+                } else {
+                    x.style.display = "block";
+                }
+            }
         </script>
         @RenderSection("Scripts", required: false)
 

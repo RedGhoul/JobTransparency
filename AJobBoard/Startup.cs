@@ -45,7 +45,7 @@ namespace AJobBoard
             });
 
             services.AddDbContext<ApplicationDbContext>(options => options
-                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncy_DB_PROD"), mySqlOptions => mySqlOptions
+                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncy_DB_LOCAL"), mySqlOptions => mySqlOptions
                     .ServerVersion(new ServerVersion(new Version(5, 7, 29), ServerType.MySql))
                     .CommandTimeout(300)
                 ));
@@ -99,7 +99,7 @@ namespace AJobBoard
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings().UseStorage(
                     new MySqlStorage(
-                        Secrets.getConnectionString(Configuration, "Hangfire_DB_PROD"),
+                        Secrets.getConnectionString(Configuration, "Hangfire_DB_LOCAL"),
                         new MySqlStorageOptions
                         {
                             QueuePollInterval = TimeSpan.FromSeconds(15),
