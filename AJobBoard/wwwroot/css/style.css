@@ -1,21 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito:200,300,400,700");
-#loader {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+.spacer {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 .tooltip-inner {
     min-width: 100px;
@@ -2339,3 +2325,27 @@ h1, h2, h3, h4 {
     .job-item .meta strong {
         color: #3c3c3c;
     }
+
+@media only screen and (max-width: 600px) {
+    .row.mb-5.justify-content-center.jobpostingform {
+        padding-top: 100px;
+    }
+    .alertify-notifier.ajs-bottom.ajs-right {
+        display: none;
+    }
+    .btn.btn-primary.btn-lg.next.top {
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-right: -10px;
+        margin-left: 60px;
+        margin-top: -100px;
+    }
+    .btn.btn-primary.btn-lg.next.bottom {
+        padding-right: 16px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-right: -10px;
+        margin-left: 60px;
+    }
+}

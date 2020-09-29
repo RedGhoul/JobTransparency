@@ -12,7 +12,7 @@ namespace AJobBoard.Data
         Task<IEnumerable<JobPosting>> GetWithKeyPhrase(int amount);
         Task<List<JobPosting>> GetAllWithKeyPhrase();
         Task<List<JobPosting>> GetAll();
-        Task<string> GetTotal();
+        string GetTotal();
         Task<JobPosting> GetById(int id);
         JobPosting GetByIdWithKeyPhrases(int id);
         Task<IEnumerable<JobPosting>> GetAllNoneKeywords();

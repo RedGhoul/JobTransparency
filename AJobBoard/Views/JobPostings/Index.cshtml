@@ -2,19 +2,19 @@
 
 <section class="site-section JobPostingList" style="background-color: #343a40;">
     <div class="container">
-        <div class="row mb-5 justify-content-center">
+        <div class="row mb-5 justify-content-center jobpostingform">
             @*<div class="col-md-7 text-center" style="padding-bottom: 100px;padding-top: 50px;">
-                @if (ViewBag.TotalJobs > 0)
-                {
-                    <h2 class="section-title mb-2" style="color:white;"> Found the following Jobs in @ViewBag.SecsToQuery Seconds</h2>
+                    @if (ViewBag.TotalJobs > 0)
+                    {
+                        <h2 class="section-title mb-2" style="color:white;"> Found the following Jobs in @ViewBag.SecsToQuery Seconds</h2>
 
-                }
-                else
-                {
-                    <h2 class="section-title mb-2" style="color:white;"> Could not find any jobs :(</h2>
+                    }
+                    else
+                    {
+                        <h2 class="section-title mb-2" style="color:white;"> Could not find any jobs :(</h2>
 
-                }
-            </div>*@
+                    }
+                </div>*@
             <div class="col-md-12 text-center">
                 @using (Html.BeginForm("IndexPost", "JobPostings", FormMethod.Post))
                 {
@@ -63,7 +63,7 @@
                                 <div class="ml-auto">
                                     <div class="row">
                                         <div class="col-4">
-                                            @if (ViewBag.Page > 0 && ViewBag.Page!= 1)
+                                            @if (ViewBag.Page > 0 && ViewBag.Page != 1)
                                             {
                                                 @using (Html.BeginForm("IndexPost", "JobPostings", FormMethod.Post))
                                                 {
@@ -71,7 +71,7 @@
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
                                                     <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page - 1)" />
-                                                    <button type="submit" class="btn btn-primary btn-lg next">&laquo; Prev</button>
+                                                    <button type="submit" class="btn btn-primary btn-lg next top">&laquo; Prev</button>
                                                 }
                                             }
                                         </div>
@@ -88,7 +88,7 @@
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
                                                     <input type="hidden" name="FindModel.page" value="@(ViewBag.Page + 1)" />
-                                                    <button type="submit" class="btn btn-primary btn-lg next">Next &raquo;</button>
+                                                    <button type="submit" class="btn btn-primary btn-lg next top">Next &raquo;</button>
                                                 }
 
                                             }
@@ -113,6 +113,12 @@
         <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
             <div class="col-md-2">
                 <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
+                <div class="spacer">
+                </div>
+                <button data-id="@item.Id" class="btn btn-warning ViewSummary">View Summary</button>
+            </div>
+            <div class="col-md-4 Summary_@item.Id" style="color:beige;display: none;">
+                <p style="color: beige" class="meta">@item.Summary</p>
             </div>
             <div class="col-md-4" style="color: beige">
                 @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
@@ -123,13 +129,12 @@
                 {
                     <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
                 }
-                <h2><a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a> </h2>
-                @*@foreach (var phrase in item.KeyPhrases)
-            {
-                <p>@phrase.Text</p>
-            }*@
+                <h2>
+                    <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+                </h2>
                 <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong></p>
             </div>
+
             <div class="col-md-2 text-left">
                 <h3 style="color: beige">@Html.DisplayNameFor(model => model.FindModel.Location):</h3>
                 @if (string.IsNullOrEmpty(item.Location))
@@ -177,7 +182,7 @@
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
                                                     <input type="hidden" name="FindModel.Page" value="@(ViewBag.Page - 1)" />
-                                                    <button type="submit" class="btn btn-primary btn-lg next">&laquo; Prev</button>
+                                                    <button type="submit" class="btn btn-primary btn-lg next bottom">&laquo; Prev</button>
                                                 }
                                             }
                                         </div>
@@ -194,7 +199,7 @@
                                                     <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
                                                     <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
                                                     <input type="hidden" name="FindModel.page" value="@(ViewBag.Page + 1)" />
-                                                    <button type="submit" class="btn btn-primary btn-lg next">Next &raquo;</button>
+                                                    <button type="submit" class="btn btn-primary btn-lg next bottom">Next &raquo;</button>
                                                 }
 
                                             }
@@ -216,14 +221,16 @@
                 <div class="row align-items-start job-item border-bottom pb-3 mb-3 pt-3">
                     <div class="col-md-2"></div>
                     <div class="col-md-4"><h4 style="text-align:center;">Sorry nothing was found matching that criteria</h4></div>
-                    <div class="col-md-4">@using (Html.BeginForm("IndexPost", "JobPostings", FormMethod.Post))
-                                          {
-                                              <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
-                                              <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
-                                              <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
-                                              <input type="hidden" name="FindModel.page" value="1" />
-                                              <button type="submit" class="btn btn-primary btn-lg">Back To Search</button>
-                                          }</div>
+                    <div class="col-md-4">
+                        @using (Html.BeginForm("IndexPost", "JobPostings", FormMethod.Post))
+                        {
+                            <input type="hidden" name="FindModel.KeyWords" value="@ViewBag.KeyWords" />
+                            <input type="hidden" name="FindModel.Location" value="@ViewBag.Location" />
+                            <input type="hidden" name="FindModel.MaxResults" value="@ViewBag.MaxResults" />
+                            <input type="hidden" name="FindModel.page" value="1" />
+                            <button type="submit" class="btn btn-primary btn-lg">Back To Search</button>
+                        }
+                    </div>
                     <div class="col-md-2"></div>
 
                 </div>
@@ -260,6 +267,16 @@
     <script>
         $('[data-toggle="tooltip"]').tooltip();
         var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+
+        $('.ViewSummary').click(function () {
+            var id = $(this).data('id');
+            if ($(".Summary_" + id).is(":hidden")) {
+                $(".Summary_" + id).show();
+            } else {
+                $(".Summary_" + id).hide();
+            }
+        });
+
         $('.AddToApplies').click(function () {
             var d = $(this).data('id');
             $.ajax({

@@ -34,12 +34,10 @@ namespace AJobBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddAutoMapper(typeof(Startup));
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+
 
             services.AddDistributedRedisCache(option =>
             {
@@ -74,6 +72,12 @@ namespace AJobBoard
 
                 // User settings
                 options.User.RequireUniqueEmail = true;
+            });
+            
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             //Setting the Account Login page
@@ -112,7 +116,6 @@ namespace AJobBoard
             services.AddHttpClient("NLTK");
             services.AddHangfireServer();
             services.AddResponseCaching();
-            services.AddSession();
             services.AddMvc();
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -176,10 +179,7 @@ namespace AJobBoard
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
                 WorkerCount = 4,
-            });
-
-            app.UseSession();
-
+            });            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

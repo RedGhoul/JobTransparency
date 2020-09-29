@@ -34,6 +34,7 @@ namespace AJobBoard.Services
             ISearchResponse<JobPostingDTO> searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
                 .From(fromNumber)
                 .Size(12)
+                .Source(sf => sf.Excludes(e => e.Fields("key*")))
                 .Query(q => q
                      .Match(m => m
                         .Field(f => f.Description)

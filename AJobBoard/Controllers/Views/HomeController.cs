@@ -31,7 +31,7 @@ namespace AJobBoard.Controllers.Views
         {
             _logger.LogInformation("Home called");
 
-            ViewBag.TotalJobs = await _jobPostingRepository.GetTotal();
+            ViewBag.TotalJobs = _jobPostingRepository.GetTotal();
             return View(
                 new HomeIndexViewModel(
                     await _jobPostingRepository.GetRandomSet(),

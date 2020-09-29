@@ -43,9 +43,9 @@ namespace AJobBoard.Data
 
         }
 
-        public async Task<string> GetTotal()
+        public string GetTotal()
         {
-            int totalJobs = await _ctx.JobPostings.CountAsync();
+            int totalJobs = _ctx.JobPostings.AsParallel().Count();
 
             return totalJobs.ToString();
         }
@@ -86,7 +86,7 @@ namespace AJobBoard.Data
             string jobPostingString = await _cache.GetStringAsync(cacheKey);
 
             JobPosting jobPosting = null;
-            if (string.IsNullOrEmpty(jobPostingString))
+            if (string.IsNullOrEmpty(jobPostingString) || jobPostingString.ToLower().Equals("null"))
             {
                 jobPosting = await _ctx.JobPostings.FindAsync(id);
                 DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();

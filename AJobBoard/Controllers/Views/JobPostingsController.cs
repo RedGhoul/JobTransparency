@@ -32,19 +32,17 @@ namespace AJobBoard.Controllers.Views
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            string value = HttpContext.Session.GetString(_searchVmCacheKey);
+            HomeIndexViewModel homeIndexVm = JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel());
 
-            HomeIndexViewModel homeIndexVm = string.IsNullOrEmpty(value) ?
-                JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel()) :
-                JsonConvert.DeserializeObject<HomeIndexViewModel>(value);
+            homeIndexVm.FindModel.Page = pageNumber ?? 1;
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
             List<Models.DTO.JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            string count = await _jobPostingRepository.GetTotal();
+            string count =  _jobPostingRepository.GetTotal();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
@@ -60,10 +58,7 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            string vmData = JsonConvert.SerializeObject(homeIndexVm);
-            HttpContext.Session.SetString(_searchVmCacheKey, vmData);
-
-            return RedirectToAction("Index");
+            return RedirectToAction("Index",new { pageNumber = homeIndexVm.FindModel.Page });
         }
 
 
