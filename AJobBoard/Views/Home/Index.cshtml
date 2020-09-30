@@ -91,8 +91,13 @@
 
                     <div class="col-md-2">
                         <button data-id="@item.Id" class="btn btn-warning AddToApplies">Add To Applies</button>
+                        <div class="spacer">
+                        </div>
+                        <button data-id="@item.Id" class="btn btn-warning ViewSummary">View Summary</button>
                     </div>
-
+                    <div class="col-md-4 Summary_@item.Id" style="color:beige;display: none;">
+                        <p style="color: black" class="meta">@item.Summary</p>
+                    </div>
                     <div class="col-md-4">
                         @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
                         {
@@ -103,7 +108,7 @@
                             <span class="badge badge-primary px-2 py-1 mb-3">Software</span>
                         }
                         <h2>
-                            <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="right" title="@item.Summary">@Html.DisplayFor(modelItem => item.Title)</a>
+                            <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
                         </h2>
                         <p style="color: black;">Publisher: <strong>Indeed</strong> </p>
                     </div>
@@ -172,7 +177,14 @@
             $('[data-toggle="tooltip"]').tooltip();
             var randomPicIndex = Math.floor(Math.random() * 10);
             $(".home-section section-hero overlay bg-image").css('background-image', 'url(' + 'images/tech' + randomPicIndex + '.jpg' + ')');
-
+            $('.ViewSummary').click(function () {
+                var id = $(this).data('id');
+                if ($(".Summary_" + id).is(":hidden")) {
+                    $(".Summary_" + id).show();
+                } else {
+                    $(".Summary_" + id).hide();
+                }
+            });
 
             var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
             $('.AddToApplies').click(function () {

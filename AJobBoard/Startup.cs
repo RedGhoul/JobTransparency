@@ -34,18 +34,34 @@ namespace AJobBoard
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string AppDBConnectionString = "";
+            string AppCacheConnectionString = "";
+            string AppHangFireConnectionString = "";
 
-
+            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
+            {
+                AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_LOCAL");
+                AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_LOCAL");
+                AppHangFireConnectionString = Secrets.getConnectionString(Configuration, "Hangfire_DB_LOCAL");
+            }
+            else
+            {
+                AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_PROD");
+                AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_PROD");
+                AppHangFireConnectionString = Secrets.getConnectionString(Configuration, "Hangfire_DB_PROD");
+            }
+            
             services.AddAutoMapper(typeof(Startup));
 
 
             services.AddDistributedRedisCache(option =>
             {
-                option.Configuration = Secrets.getConnectionString(Configuration, "RedisConnection");
+                option.Configuration = AppCacheConnectionString;
             });
+            
 
             services.AddDbContext<ApplicationDbContext>(options => options
-                .UseMySql(Secrets.getConnectionString(Configuration, "JobTransparncy_DB_LOCAL"), mySqlOptions => mySqlOptions
+                .UseMySql(AppDBConnectionString, mySqlOptions => mySqlOptions
                     .ServerVersion(new ServerVersion(new Version(5, 7, 29), ServerType.MySql))
                     .CommandTimeout(300)
                 ));
@@ -98,8 +114,7 @@ namespace AJobBoard
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings().UseStorage(
-                    new MySqlStorage(
-                        Secrets.getConnectionString(Configuration, "Hangfire_DB_LOCAL"),
+                    new MySqlStorage(AppHangFireConnectionString,
                         new MySqlStorageOptions
                         {
                             QueuePollInterval = TimeSpan.FromSeconds(15),
