@@ -3,15 +3,12 @@ using AJobBoard.Data;
 using AJobBoard.Models;
 using AJobBoard.Models.Data;
 using AJobBoard.Models.DTO;
+using AJobBoard.Models.View;
 using AJobBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using AJobBoard.Models.View;
 using Xunit;
 
 namespace AJobBoard.Tests.Controller.Tests
@@ -35,7 +32,7 @@ namespace AJobBoard.Tests.Controller.Tests
 
         //    var controller = new JobPostingsController(mockRepoJob.Object,
         //        mockNLTKService.Object, mockRepoKeyPharse.Object); 
-            
+
         //    //Act
         //   var result = await controller.Index();
 
@@ -52,36 +49,36 @@ namespace AJobBoard.Tests.Controller.Tests
         {
             // Arrange
             int jobId = 1;
-            var tempjob = new JobPosting
+            JobPosting tempjob = new JobPosting
             {
                 Id = jobId,
                 Title = "Full Stack Developer",
                 Company = "Walmart",
                 NumberOfViews = 1
             };
-            var mockRepoJob = new Mock<IJobPostingRepository>();
+            Mock<IJobPostingRepository> mockRepoJob = new Mock<IJobPostingRepository>();
             mockRepoJob.Setup(repo => repo.GetById(jobId))
                 .ReturnsAsync(tempjob);
 
             mockRepoJob.Setup(repo => repo.AddView(tempjob))
                .ReturnsAsync(TickNumberOfViewAsync(tempjob));
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            Mock<IKeyPharseRepository> mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+            Mock<INLTKService> mockNLTKService = new Mock<INLTKService>();
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
+            JobPostingsController controller = new JobPostingsController(mockRepoJob.Object,
                 mockNLTKService.Object, mockRepoKeyPharse.Object);
 
             // Act
-            var result = await controller.Details(jobId);
+            IActionResult result = await controller.Details(jobId);
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<JobPosting>(
+            ViewResult viewResult = Assert.IsType<ViewResult>(result);
+            JobPosting model = Assert.IsAssignableFrom<JobPosting>(
                 viewResult.ViewData.Model);
             Assert.Equal(2, model.NumberOfViews);
-           
+
         }
 
         [Fact]
@@ -89,23 +86,23 @@ namespace AJobBoard.Tests.Controller.Tests
         {
             // Arrange
             int jobId = 1000;
-            var mockRepoJob = new Mock<IJobPostingRepository>();
+            Mock<IJobPostingRepository> mockRepoJob = new Mock<IJobPostingRepository>();
             mockRepoJob.Setup(repo => repo.GetById(jobId))
                 .ReturnsAsync(GetJobPostingById(jobId));
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            Mock<IKeyPharseRepository> mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+            Mock<INLTKService> mockNLTKService = new Mock<INLTKService>();
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
+            JobPostingsController controller = new JobPostingsController(mockRepoJob.Object,
                 mockNLTKService.Object, mockRepoKeyPharse.Object);
 
             // Act
-            var result = await controller.Details(jobId);
+            IActionResult result = await controller.Details(jobId);
 
             // Assert
 
-            var viewResult = Assert.IsType<NotFoundResult>(result);
+            NotFoundResult viewResult = Assert.IsType<NotFoundResult>(result);
 
         }
 
@@ -113,7 +110,7 @@ namespace AJobBoard.Tests.Controller.Tests
         public async Task Create_Returns_ValidViewResult_WhenModelStateInvalid()
         {
             // Arrange
-            var tempjob = new JobPosting
+            JobPosting tempjob = new JobPosting
             {
                 Title = "Full Stack Developer",
                 Company = "Walmart",
@@ -123,16 +120,16 @@ namespace AJobBoard.Tests.Controller.Tests
             tempjob = CreateJobPostingAsync(tempjob);
 
 
-            var mockRepoJob = new Mock<IJobPostingRepository>();
+            Mock<IJobPostingRepository> mockRepoJob = new Mock<IJobPostingRepository>();
             mockRepoJob.Setup(repo => repo.Create(tempjob))
                 .ReturnsAsync(tempjob);
 
             mockRepoJob.Setup(repo => repo.Put(tempjob.Id, tempjob))
                 .ReturnsAsync(tempjob);
 
-            var temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);
+            KeyPhrasesWrapperDTO temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);
             tempjob.KeyPhrases = new List<KeyPhrase>();
-            foreach (var item in temKeyPharse.rank_list)
+            foreach (KeyPhraseDTO item in temKeyPharse.rank_list)
             {
                 tempjob.KeyPhrases.Add(new KeyPhrase
                 {
@@ -140,12 +137,12 @@ namespace AJobBoard.Tests.Controller.Tests
                     Text = item.Text
                 });
             }
-            var tempValDTO = GetNLTKSummary(tempjob.Description);
+            SummaryDTO tempValDTO = GetNLTKSummary(tempjob.Description);
             tempjob.Summary = tempValDTO.SummaryText;
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            Mock<IKeyPharseRepository> mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+            Mock<INLTKService> mockNLTKService = new Mock<INLTKService>();
 
             mockNLTKService.Setup(service => service.GetNLTKKeyPhrases(tempjob.Description))
                 .ReturnsAsync(temKeyPharse);
@@ -153,17 +150,17 @@ namespace AJobBoard.Tests.Controller.Tests
             mockNLTKService.Setup(service => service.GetNLTKSummary(tempjob.Description))
                 .ReturnsAsync(tempValDTO);
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
+            JobPostingsController controller = new JobPostingsController(mockRepoJob.Object,
                 mockNLTKService.Object, mockRepoKeyPharse.Object);
 
             controller.ModelState.AddModelError("Salary", "no Salary found");
 
             // Act
-            var result = await controller.Create(tempjob);
+            IActionResult result = await controller.Create(tempjob);
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<JobPosting>(
+            ViewResult viewResult = Assert.IsType<ViewResult>(result);
+            JobPosting model = Assert.IsAssignableFrom<JobPosting>(
                 viewResult.ViewData.Model);
 
         }
@@ -172,7 +169,7 @@ namespace AJobBoard.Tests.Controller.Tests
         public async Task Create_Returns_RedirectToActionResult_WhenModelStateValid()
         {
             // Arrange
-            var tempjob = new JobPosting
+            JobPosting tempjob = new JobPosting
             {
                 Title = "Full Stack Developer",
                 Company = "Walmart",
@@ -182,16 +179,16 @@ namespace AJobBoard.Tests.Controller.Tests
             tempjob = CreateJobPostingAsync(tempjob);
 
 
-            var mockRepoJob = new Mock<IJobPostingRepository>();
+            Mock<IJobPostingRepository> mockRepoJob = new Mock<IJobPostingRepository>();
             mockRepoJob.Setup(repo => repo.Create(tempjob))
                 .ReturnsAsync(tempjob);
 
             mockRepoJob.Setup(repo => repo.Put(tempjob.Id, tempjob))
                 .ReturnsAsync(tempjob);
 
-            var temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);
+            KeyPhrasesWrapperDTO temKeyPharse = GetNLTKKeyPhrases(tempjob.Description);
             tempjob.KeyPhrases = new List<KeyPhrase>();
-            foreach (var item in temKeyPharse.rank_list)
+            foreach (KeyPhraseDTO item in temKeyPharse.rank_list)
             {
                 tempjob.KeyPhrases.Add(new KeyPhrase
                 {
@@ -199,12 +196,12 @@ namespace AJobBoard.Tests.Controller.Tests
                     Text = item.Text
                 });
             }
-            var tempValDTO = GetNLTKSummary(tempjob.Description);
+            SummaryDTO tempValDTO = GetNLTKSummary(tempjob.Description);
             tempjob.Summary = tempValDTO.SummaryText;
 
-            var mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
+            Mock<IKeyPharseRepository> mockRepoKeyPharse = new Mock<IKeyPharseRepository>();
 
-            var mockNLTKService = new Mock<INLTKService>();
+            Mock<INLTKService> mockNLTKService = new Mock<INLTKService>();
 
             mockNLTKService.Setup(service => service.GetNLTKKeyPhrases(tempjob.Description))
                 .ReturnsAsync(temKeyPharse);
@@ -212,15 +209,15 @@ namespace AJobBoard.Tests.Controller.Tests
             mockNLTKService.Setup(service => service.GetNLTKSummary(tempjob.Description))
                 .ReturnsAsync(tempValDTO);
 
-            var controller = new JobPostingsController(mockRepoJob.Object,
+            JobPostingsController controller = new JobPostingsController(mockRepoJob.Object,
                 mockNLTKService.Object, mockRepoKeyPharse.Object);
 
 
             // Act
-            var result = await controller.Create(tempjob);
+            IActionResult result = await controller.Create(tempjob);
 
             // Assert
-            var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
+            RedirectToActionResult redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Null(redirectToActionResult.ControllerName);
             Assert.Equal("Index", redirectToActionResult.ActionName);
 
@@ -270,16 +267,16 @@ namespace AJobBoard.Tests.Controller.Tests
         private KeyPhrasesWrapperDTO GetNLTKKeyPhrases(string des)
         {
             KeyPhrasesWrapperDTO temp = new KeyPhrasesWrapperDTO();
-            var KeyPhrasesDTOs = new List<KeyPhraseDTO>();
+            List<KeyPhraseDTO> KeyPhrasesDTOs = new List<KeyPhraseDTO>();
             for (int i = 0; i < 20; i++)
             {
-                
+
                 KeyPhrasesDTOs.Add(new KeyPhraseDTO
                 {
                     Affinty = 1.ToString(),
                     Text = i.ToString()
                 });
-  
+
             }
             temp.rank_list = KeyPhrasesDTOs;
             return temp;

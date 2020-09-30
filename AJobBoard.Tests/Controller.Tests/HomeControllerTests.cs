@@ -1,15 +1,5 @@
-using AJobBoard.Controllers.Views;
-using AJobBoard.Data;
-using AJobBoard.Models;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AJobBoard.Models.DTO;
-using AJobBoard.Models.View;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using Xunit;
 
 namespace AJobBoard.Tests.Controller.Tests

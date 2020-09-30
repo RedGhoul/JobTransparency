@@ -5,9 +5,7 @@ using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -43,7 +41,7 @@ namespace AJobBoard.Controllers.Views
 
             List<Models.DTO.JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            string count =  _jobPostingRepository.GetTotal();
+            string count = _jobPostingRepository.GetTotal();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
@@ -59,8 +57,11 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            return RedirectToAction("Index",new { pageNumber = homeIndexVm.FindModel.Page ,
-                keywords = homeIndexVm.FindModel.KeyWords});
+            return RedirectToAction("Index", new
+            {
+                pageNumber = homeIndexVm.FindModel.Page,
+                keywords = homeIndexVm.FindModel.KeyWords
+            });
         }
 
 
