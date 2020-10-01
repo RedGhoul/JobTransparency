@@ -54,12 +54,9 @@ namespace AJobBoard.Data
             builder.Entity<JobPosting>().Property(n => n.Id).UseHiLo();
 
             builder.Entity<JobPosting>().HasIndex(n => n.URL);
-            builder.Entity<JobPosting>().HasIndex(n => n.Description);
-            builder.Entity<JobPosting>().HasIndex(n => n.Summary);
-            builder.Entity<JobPosting>().HasIndex(n => n.Title).IsUnique();
+            builder.Entity<JobPosting>().HasIndex(n => n.Title);
 
             builder.Entity<KeyPhrase>().HasIndex(n => n.Affinty);
-            builder.Entity<KeyPhrase>().HasIndex(n => n.Text);
         }
 
 

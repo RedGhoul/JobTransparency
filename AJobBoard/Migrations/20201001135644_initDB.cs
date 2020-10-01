@@ -319,25 +319,14 @@ namespace Jobtransparency.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobPostings_Description",
-                table: "JobPostings",
-                column: "Description");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_JobPostings_PosterId",
                 table: "JobPostings",
                 column: "PosterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobPostings_Summary",
-                table: "JobPostings",
-                column: "Summary");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_JobPostings_Title",
                 table: "JobPostings",
-                column: "Title",
-                unique: true);
+                column: "Title");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobPostings_URL",
@@ -353,11 +342,6 @@ namespace Jobtransparency.Migrations
                 name: "IX_KeyPhrase_JobPostingId",
                 table: "KeyPhrase",
                 column: "JobPostingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KeyPhrase_Text",
-                table: "KeyPhrase",
-                column: "Text");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

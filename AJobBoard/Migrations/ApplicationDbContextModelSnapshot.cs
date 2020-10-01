@@ -208,14 +208,9 @@ namespace Jobtransparency.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Description");
-
                     b.HasIndex("PosterId");
 
-                    b.HasIndex("Summary");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
+                    b.HasIndex("Title");
 
                     b.HasIndex("URL");
 
@@ -243,8 +238,6 @@ namespace Jobtransparency.Migrations
                     b.HasIndex("Affinty");
 
                     b.HasIndex("JobPostingId");
-
-                    b.HasIndex("Text");
 
                     b.ToTable("KeyPhrase");
                 });

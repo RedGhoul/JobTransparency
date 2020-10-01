@@ -1,9 +1,11 @@
 ﻿using AJobBoard.Utils.HangFire;
+using AJobBoard.Utils.Seeder;
 using Hangfire;
 using Jobtransparency.Utils.HangFire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace Jobtransparency
 {
@@ -58,8 +60,9 @@ namespace Jobtransparency
             });
         }
 
-        public static void UseStartUpMethods(this IApplicationBuilder app)
+        public static async Task UseStartUpMethodsAsync(this IApplicationBuilder app)
         {
+            await Seeder.CreateUserRoles(app);
             //HangFireJobScheduler.ScheduleRecurringJobs();
         }
     }

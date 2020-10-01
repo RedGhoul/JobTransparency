@@ -12,7 +12,8 @@ namespace AJobBoard.Data
         Task<IEnumerable<JobPosting>> GetWithKeyPhrase(int amount);
         Task<List<JobPosting>> GetAllWithKeyPhrase();
         Task<List<JobPosting>> GetAll();
-        string GetTotal();
+        Task<List<JobPostingDTO>> GetAllFromElastic();
+        Task<string> GetTotalAsync();
         Task<JobPosting> GetById(int id);
         JobPosting GetByIdWithKeyPhrases(int id);
         Task<IEnumerable<JobPosting>> GetAllNoneKeywords();

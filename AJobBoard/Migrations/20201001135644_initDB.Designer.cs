@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Jobtransparency.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201001120028_initDB")]
+    [Migration("20201001135644_initDB")]
     partial class initDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -210,14 +210,9 @@ namespace Jobtransparency.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Description");
-
                     b.HasIndex("PosterId");
 
-                    b.HasIndex("Summary");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
+                    b.HasIndex("Title");
 
                     b.HasIndex("URL");
 
@@ -245,8 +240,6 @@ namespace Jobtransparency.Migrations
                     b.HasIndex("Affinty");
 
                     b.HasIndex("JobPostingId");
-
-                    b.HasIndex("Text");
 
                     b.ToTable("KeyPhrase");
                 });

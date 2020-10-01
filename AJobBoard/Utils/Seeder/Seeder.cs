@@ -9,13 +9,10 @@ using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.Seeder
 {
-    public class Seeder
-    {
-        public Seeder()
-        {
-        }
+    public static class Seeder
+    { 
 
-        private async Task CreateUserRoles(IApplicationBuilder app)
+        public static async Task CreateUserRoles(IApplicationBuilder app)
         {
             using (IServiceScope scope = app.ApplicationServices.CreateScope())
             {

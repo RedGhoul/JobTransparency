@@ -4,6 +4,7 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -17,8 +18,12 @@ namespace AJobBoard.Controllers.Views
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _nltkService;
         private readonly IKeyPharseRepository _keyPharseRepository;
-        private readonly string _searchVmCacheKey = "SearchVMCacheKey";
+        private readonly IMapper _mapper;
+        private readonly ElasticService _es;
+
         public JobPostingsController(
+            ElasticService elasticService,
+            IMapper mapper,
             IJobPostingRepository jobPostingRepository,
             INLTKService nltkService,
             IKeyPharseRepository keyPharseRepository)
@@ -26,6 +31,8 @@ namespace AJobBoard.Controllers.Views
             _jobPostingRepository = jobPostingRepository;
             _nltkService = nltkService;
             _keyPharseRepository = keyPharseRepository;
+            _mapper = mapper;
+            _es = elasticService;
         }
 
 
@@ -41,7 +48,7 @@ namespace AJobBoard.Controllers.Views
 
             List<JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            string count = _jobPostingRepository.GetTotal();
+            string count = await _jobPostingRepository.GetTotalAsync();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 
@@ -175,6 +182,30 @@ namespace AJobBoard.Controllers.Views
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _jobPostingRepository.DeleteById(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet, ActionName("IndexToDB")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> IndexToDB()
+        {
+            var eles = await _jobPostingRepository.GetAllFromElastic();
+            foreach (var item in eles)
+            {
+                await _jobPostingRepository.Create(_mapper.Map<JobPosting>(item));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet, ActionName("DbToIndex")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DbToIndex()
+        {
+            var eles = await _jobPostingRepository.GetAll();
+            foreach (var item in eles)
+            {
+                await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(item));
+            }
             return RedirectToAction(nameof(Index));
         }
 

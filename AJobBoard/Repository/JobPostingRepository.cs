@@ -43,11 +43,21 @@ namespace AJobBoard.Data
 
         }
 
-        public string GetTotal()
+        public async Task<string> GetTotalAsync()
         {
-            int totalJobs = _ctx.JobPostings.AsParallel().Count();
+            string cacheKey = "TotalJobs";
+            string totalJobs = await _cache.GetStringAsync(cacheKey);
+            if (string.IsNullOrEmpty(totalJobs))
+            {
 
-            return totalJobs.ToString();
+                var totalJobsNum = _ctx.JobPostings.Count();
+                DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
+                options.SetSlidingExpiration(TimeSpan.FromDays(1));
+                await _cache.SetStringAsync(cacheKey, totalJobsNum.ToString(), options);
+                return totalJobsNum.ToString();
+            }
+
+            return totalJobs;
         }
 
         public async Task<bool> Exists(TestCheckDTO tcDTO)
@@ -90,7 +100,7 @@ namespace AJobBoard.Data
             {
                 jobPosting = await _ctx.JobPostings.FindAsync(id);
                 DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromDays(30));
+                options.SetSlidingExpiration(TimeSpan.FromDays(1));
                 await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPosting), options);
             }
             else
@@ -149,6 +159,7 @@ namespace AJobBoard.Data
         {
             try
             {
+                jobPosting.Id = 0;
                 await _ctx.JobPostings.AddAsync(jobPosting);
                 await _ctx.SaveChangesAsync();
             }
@@ -260,6 +271,12 @@ namespace AJobBoard.Data
             return jobs;
         }
 
+        public async Task<List<JobPostingDTO>> GetAllFromElastic()
+        {
+            List<JobPostingDTO> jobsCollection = await _es.GetAllJobPostings();
+            return jobsCollection;
+        }
+        
         public async Task<List<JobPosting>> GetAllWithOutSummary()
         {
             List<JobPosting> jobs = await _ctx.JobPostings

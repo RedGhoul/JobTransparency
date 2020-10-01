@@ -38,7 +38,7 @@ namespace AJobBoard
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseBasicConfiguration(env);
 
@@ -48,7 +48,7 @@ namespace AJobBoard
 
             app.UseEndPointConfiguration();
 
-            app.UseStartUpMethods();
+            await app.UseStartUpMethodsAsync();
         }
     }
 }

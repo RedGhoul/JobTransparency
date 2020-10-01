@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Nest;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -51,6 +52,32 @@ namespace AJobBoard.Services
             IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponse.Documents;
             return (List<JobPostingDTO>)JobPosting;
         }
+
+        public async Task<List<JobPostingDTO>> GetAllJobPostings()
+        {
+            List<JobPostingDTO> indexedList = new List<JobPostingDTO>();
+            var scanResults = elasticClient.Search<JobPostingDTO>(s => s
+                            .From(0)
+                            .Size(5)
+                            .MatchAll()
+                             //I used field to get only the value I needed rather than getting the whole document
+                            
+                            .Scroll("5m")
+                        );
+
+            var results = elasticClient.Scroll<JobPostingDTO>("10m", scanResults.ScrollId);
+            while (results.Documents.Any())
+            {
+                foreach (var doc in results.Documents)
+                {
+                    indexedList.Add(doc);
+                }
+
+                results = elasticClient.Scroll<JobPostingDTO>("10m", results.ScrollId);
+            }
+            return indexedList;
+        }
+
 
         public async Task<bool> DeleteJobPostingIndexAsync()
         {
