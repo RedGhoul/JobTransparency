@@ -109,7 +109,7 @@ namespace AJobBoard.Data
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DocumentExists(document.DocumentId))
+                if (!DocumentExists(document.DocumentId ?? 0))
                 {
                     return false;
                 }
@@ -127,11 +127,10 @@ namespace AJobBoard.Data
             return _ctx.Document.Any(e => e.DocumentId == id);
         }
 
-        public List<Document> GetDocumentsOfCurrentUser(string userId)
+        public async Task<List<Document>> GetDocumentsOfCurrentUserAsync(string userId)
         {
             //var User = await _userManager.GetUserAsync(HttpContext.User);
-            List<Document> Documents = _ctx.Users.Include(x => x.Documents)
-                .Where(x => x.Id.Equals(userId)).Select(x => x.Documents).FirstOrDefault();
+            List<Document> Documents = await _ctx.Document.Where(x => x.OwnerId.Equals(userId)).ToListAsync();
             return Documents;
         }
 

@@ -1,5 +1,6 @@
 ﻿using AJobBoard;
 using AJobBoard.Data;
+using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
@@ -12,8 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Pomelo.EntityFrameworkCore.MySql.Storage;
 using System;
 
 namespace Jobtransparency
@@ -129,19 +128,16 @@ namespace Jobtransparency
         {
             string AppDBConnectionString = "";
             string AppCacheConnectionString = "";
-            string AppHangFireConnectionString = "";
 
             if (Configuration.GetValue<string>("Environment").Equals("Dev"))
             {
                 AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_LOCAL");
                 AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_LOCAL");
-                AppHangFireConnectionString = Secrets.getConnectionString(Configuration, "Hangfire_DB_LOCAL");
             }
             else
             {
                 AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_PROD");
                 AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_PROD");
-                AppHangFireConnectionString = Secrets.getConnectionString(Configuration, "Hangfire_DB_PROD");
             }
 
             services.AddDistributedRedisCache(option =>
@@ -150,27 +146,10 @@ namespace Jobtransparency
             });
 
 
-            services.AddDbContext<ApplicationDbContext>(options => options
-                .UseMySql(AppDBConnectionString, mySqlOptions => mySqlOptions
-                    .ServerVersion(new ServerVersion(new Version(8, 0, 19), ServerType.MySql))
-                    .CommandTimeout(300)
-                ));
+            services.AddDbContext<ApplicationDbContext>(options =>
+              options.UseNpgsql(AppDBConnectionString));
 
-            services.AddHangfire(configuration => configuration
-               .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-               .UseSimpleAssemblyNameTypeSerializer()
-               .UseRecommendedSerializerSettings().UseStorage(
-                   new MySqlStorage(AppHangFireConnectionString,
-                       new MySqlStorageOptions
-                       {
-                           QueuePollInterval = TimeSpan.FromSeconds(15),
-                           JobExpirationCheckInterval = TimeSpan.FromHours(1),
-                           CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                           PrepareSchemaIfNecessary = true,
-                           DashboardJobListLimit = 50000,
-                           TransactionTimeout = TimeSpan.FromMinutes(1),
-                           TablePrefix = "Hangfire"
-                       })));
+           
         }
     }
 }

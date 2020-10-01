@@ -60,7 +60,7 @@ namespace Jobtransparency
 
         public static void UseStartUpMethods(this IApplicationBuilder app)
         {
-            HangFireJobScheduler.ScheduleRecurringJobs();
+            //HangFireJobScheduler.ScheduleRecurringJobs();
         }
     }
 }

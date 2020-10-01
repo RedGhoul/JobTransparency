@@ -26,8 +26,8 @@ namespace AJobBoard.Controllers.Views
         {
             ApplicationUser currentUser = await _userRepository
                 .getUserFromHttpContextAsync(HttpContext);
-            List<Document> documents = _documentRepository
-                .GetDocumentsOfCurrentUser(currentUser.Id);
+            List<Document> documents = await _documentRepository
+                .GetDocumentsOfCurrentUserAsync(currentUser.Id);
 
             return View(documents);
         }

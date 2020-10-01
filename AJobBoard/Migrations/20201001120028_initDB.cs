@@ -1,13 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace AJobBoard.Migrations
+namespace Jobtransparency.Migrations
 {
-    public partial class everything : Migration
+    public partial class initDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence(
+                name: "EntityFrameworkHiLoSequence",
+                incrementBy: 10);
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -44,7 +48,8 @@ namespace AJobBoard.Migrations
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     IsJobSeeker = table.Column<bool>(nullable: false),
-                    IsRecruiter = table.Column<bool>(nullable: false)
+                    IsRecruiter = table.Column<bool>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,34 +57,11 @@ namespace AJobBoard.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobPostings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Title = table.Column<string>(nullable: true),
-                    Summary = table.Column<string>(nullable: true),
-                    URL = table.Column<string>(nullable: true),
-                    Company = table.Column<string>(nullable: true),
-                    Location = table.Column<string>(nullable: true),
-                    PostDate = table.Column<string>(nullable: true),
-                    Salary = table.Column<string>(nullable: true),
-                    Posters = table.Column<string>(nullable: true),
-                    JobSource = table.Column<string>(nullable: true),
-                    NumberOfApplies = table.Column<int>(nullable: false),
-                    NumberOfViews = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobPostings", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -100,7 +82,7 @@ namespace AJobBoard.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -185,23 +167,114 @@ namespace AJobBoard.Migrations
                 columns: table => new
                 {
                     DocumentId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DocumentName = table.Column<string>(nullable: true),
                     URL = table.Column<string>(nullable: true),
                     IsResume = table.Column<bool>(nullable: false),
                     IsOtherDoc = table.Column<bool>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: true)
+                    OwnerId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Document", x => x.DocumentId);
                     table.ForeignKey(
-                        name: "FK_Document_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Document_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "JobPostings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SequenceHiLo),
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    URL = table.Column<string>(nullable: true),
+                    Company = table.Column<string>(nullable: true),
+                    Location = table.Column<string>(nullable: true),
+                    PostDate = table.Column<string>(nullable: true),
+                    Salary = table.Column<string>(nullable: true),
+                    Posters = table.Column<string>(nullable: true),
+                    JobSource = table.Column<string>(nullable: true),
+                    NumberOfApplies = table.Column<int>(nullable: false),
+                    NumberOfViews = table.Column<int>(nullable: false),
+                    PosterId = table.Column<string>(nullable: true),
+                    DateAdded = table.Column<DateTime>(nullable: false),
+                    Summary = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobPostings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobPostings_AspNetUsers_PosterId",
+                        column: x => x.PosterId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Applies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    JobPostingId = table.Column<int>(nullable: true),
+                    ApplierId = table.Column<string>(nullable: true),
+                    DateAddedToApplies = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Applies_AspNetUsers_ApplierId",
+                        column: x => x.ApplierId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Applies_JobPostings_JobPostingId",
+                        column: x => x.JobPostingId,
+                        principalTable: "JobPostings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KeyPhrase",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Affinty = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true),
+                    JobPostingId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KeyPhrase", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KeyPhrase_JobPostings_JobPostingId",
+                        column: x => x.JobPostingId,
+                        principalTable: "JobPostings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applies_ApplierId",
+                table: "Applies",
+                column: "ApplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applies_JobPostingId",
+                table: "Applies",
+                column: "JobPostingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -241,13 +314,57 @@ namespace AJobBoard.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Document_ApplicationUserId",
+                name: "IX_Document_OwnerId",
                 table: "Document",
-                column: "ApplicationUserId");
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostings_Description",
+                table: "JobPostings",
+                column: "Description");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostings_PosterId",
+                table: "JobPostings",
+                column: "PosterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostings_Summary",
+                table: "JobPostings",
+                column: "Summary");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostings_Title",
+                table: "JobPostings",
+                column: "Title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobPostings_URL",
+                table: "JobPostings",
+                column: "URL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KeyPhrase_Affinty",
+                table: "KeyPhrase",
+                column: "Affinty");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KeyPhrase_JobPostingId",
+                table: "KeyPhrase",
+                column: "JobPostingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KeyPhrase_Text",
+                table: "KeyPhrase",
+                column: "Text");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Applies");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -267,13 +384,19 @@ namespace AJobBoard.Migrations
                 name: "Document");
 
             migrationBuilder.DropTable(
-                name: "JobPostings");
+                name: "KeyPhrase");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "JobPostings");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropSequence(
+                name: "EntityFrameworkHiLoSequence");
         }
     }
 }

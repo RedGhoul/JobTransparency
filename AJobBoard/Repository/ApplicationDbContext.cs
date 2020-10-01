@@ -23,24 +23,43 @@ namespace AJobBoard.Data
             builder.Entity<JobPosting>()
             .HasMany(c => c.KeyPhrases)
             .WithOne(e => e.JobPosting)
-            .IsRequired();
+            .HasForeignKey(x => x.JobPostingId)
+            .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<JobPosting>()
             .HasMany(c => c.Applies)
-            .WithOne(e => e.JobPosting);
+            .WithOne(e => e.JobPosting)
+            .HasForeignKey(x => x.JobPostingId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+
+            builder.Entity<ApplicationUser>()
+            .HasMany(c => c.CreatedJobPostings)
+            .WithOne(e => e.Poster)
+            .HasForeignKey(x => x.PosterId)
+            .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUser>()
             .HasMany(c => c.Documents)
-            .WithOne(e => e.Owner);
-
-            builder.Entity<ApplicationUser>()
-            .HasMany(c => c.JobPostings)
-            .WithOne(e => e.Poster);
+            .WithOne(e => e.Owner)
+            .HasForeignKey(x => x.OwnerId)
+            .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<ApplicationUser>()
             .HasMany(c => c.Applies)
-            .WithOne(e => e.Applier);
+            .WithOne(e => e.Applier)
+            .HasForeignKey(x => x.ApplierId)
+            .OnDelete(DeleteBehavior.SetNull);
 
+            builder.Entity<JobPosting>().Property(n => n.Id).UseHiLo();
+
+            builder.Entity<JobPosting>().HasIndex(n => n.URL);
+            builder.Entity<JobPosting>().HasIndex(n => n.Description);
+            builder.Entity<JobPosting>().HasIndex(n => n.Summary);
+            builder.Entity<JobPosting>().HasIndex(n => n.Title).IsUnique();
+
+            builder.Entity<KeyPhrase>().HasIndex(n => n.Affinty);
+            builder.Entity<KeyPhrase>().HasIndex(n => n.Text);
         }
 
 

@@ -10,7 +10,9 @@ namespace AJobBoard.Models.Entity
         }
         public int Id { get; set; }
         public JobPosting JobPosting { get; set; }
+        public int? JobPostingId { get; set; }
         public ApplicationUser Applier { get; set; }
+        public string? ApplierId { get; set; }
         public DateTime DateAddedToApplies { get; set; }
     }
 }

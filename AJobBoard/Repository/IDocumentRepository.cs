@@ -11,7 +11,7 @@ namespace AJobBoard.Data
         bool DocumentExists(int id);
         Task<Document> GetDocumentByIdAsync(int? id);
         Task<MemoryStream> DownLoadDocument(int documentId, ApplicationUser user);
-        List<Document> GetDocumentsOfCurrentUser(string userId);
+        Task<List<Document>> GetDocumentsOfCurrentUserAsync(string userId);
         Task RemoveDocumentFromUser(int documentId, ApplicationUser user);
         Task<bool> SaveDocumentToUser(DocumentViewModel document, ApplicationUser user);
         Task<bool> UpdateDocument(Document document);

@@ -1,4 +1,5 @@
 using AJobBoard.Data;
+using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

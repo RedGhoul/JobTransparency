@@ -24,6 +24,7 @@ namespace AJobBoard.Models.Entity
         public int NumberOfViews { get; set; }
         public List<Apply> Applies { get; set; }
         public ApplicationUser Poster { get; set; }
+        public string? PosterId { get; set; }
         public DateTime DateAdded { get; set; }
         public List<KeyPhrase> KeyPhrases { get; set; }
         public string Summary { get; set; }

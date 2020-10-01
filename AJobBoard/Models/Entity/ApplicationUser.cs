@@ -10,7 +10,7 @@ namespace AJobBoard.Models.Entity
         {
             DateCreated = DateTime.UtcNow;
             Documents = new List<Document>();
-            JobPostings = new List<JobPosting>();
+            CreatedJobPostings = new List<JobPosting>();
             Applies = new List<Apply>();
         }
 
@@ -18,9 +18,9 @@ namespace AJobBoard.Models.Entity
         public string LastName { get; set; }
         public bool IsJobSeeker { get; set; }
         public bool IsRecruiter { get; set; }
-        public List<Document> Documents { get; set; }
-        public List<JobPosting> JobPostings { get; set; }
-        public List<Apply> Applies { get; set; }
+        public ICollection<Document> Documents { get; set; }
+        public ICollection<JobPosting> CreatedJobPostings { get; set; }
+        public ICollection<Apply> Applies { get; set; }
         public DateTime DateCreated { get; set; }
     }
 }
