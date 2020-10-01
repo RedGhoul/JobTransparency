@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AJobBoard.Models
+namespace AJobBoard.Models.Entity
 {
     public class ApplicationUser : IdentityUser
     {

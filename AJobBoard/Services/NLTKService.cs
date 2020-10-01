@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
 using AJobBoard.Utils.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

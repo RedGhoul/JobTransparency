@@ -1,8 +1,7 @@
-﻿using AJobBoard.Models.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace AJobBoard.Models
+namespace AJobBoard.Models.Entity
 {
     public class JobPosting
     {

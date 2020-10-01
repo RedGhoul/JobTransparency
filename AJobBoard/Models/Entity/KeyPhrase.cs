@@ -1,6 +1,6 @@
-﻿namespace AJobBoard.Models.Data
+﻿namespace AJobBoard.Models.Entity
 {
-    public class KeyPhrase // Need to Make a DTO model of this
+    public class KeyPhrase
     {
         public int Id { get; set; }
         public string Affinty { get; set; }

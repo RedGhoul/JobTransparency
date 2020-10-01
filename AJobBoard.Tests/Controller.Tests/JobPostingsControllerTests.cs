@@ -1,8 +1,5 @@
 ﻿using AJobBoard.Controllers.Views;
 using AJobBoard.Data;
-using AJobBoard.Models;
-using AJobBoard.Models.Data;
-using AJobBoard.Models.DTO;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using Microsoft.AspNetCore.Mvc;

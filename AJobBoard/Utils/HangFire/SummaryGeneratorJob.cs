@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using Hangfire;
 using Microsoft.Extensions.Logging;
@@ -42,7 +43,7 @@ namespace AJobBoard.Utils.HangFire
             foreach (JobPosting jobPosting in jobpostingsWithoutSummaries)
             {
                 string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                Models.DTO.SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(rawText);
+                SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(rawText);
 
                 jobPosting.Summary = nltkSummary.SummaryText;
 

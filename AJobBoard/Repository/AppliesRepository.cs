@@ -1,5 +1,5 @@
-﻿using AJobBoard.Models;
-using Jobtransparency.Models.DTO;
+﻿using AJobBoard.Models.Entity;
+using Jobtransparency.Models.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

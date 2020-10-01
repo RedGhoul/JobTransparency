@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
 using System;
 using System.Collections.Generic;
 

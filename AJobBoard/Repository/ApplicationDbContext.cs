@@ -1,5 +1,4 @@
-﻿using AJobBoard.Models;
-using AJobBoard.Models.Data;
+﻿using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models.DTO;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -28,8 +29,8 @@ namespace Jobtransparency.Controllers.Views
         public async Task<IActionResult> IndexAsync()
         {
 
-            List<AJobBoard.Models.JobPosting> JPItems = await _jobPostingRepository.GetAll();
-            foreach (AJobBoard.Models.JobPosting item in JPItems)
+            List<JobPosting> JPItems = await _jobPostingRepository.GetAll();
+            foreach (JobPosting item in JPItems)
             {
                 JobPostingDTO jobs = _mapper.Map<JobPostingDTO>(item);
                 await _elasticsService.CreateJobPostingAsync(jobs);

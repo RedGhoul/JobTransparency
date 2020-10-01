@@ -1,5 +1,5 @@
-﻿using AJobBoard.Models;
-using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AutoMapper;
@@ -247,7 +247,7 @@ namespace AJobBoard.Data
 
         public async Task<List<KeyPhraseDTO>> GetByKeyPhrases(int id)
         {
-            List<Models.Data.KeyPhrase> keyPhrases = await _ctx.KeyPhrase.Include(x => x.JobPosting)
+            List<KeyPhrase> keyPhrases = await _ctx.KeyPhrase.Include(x => x.JobPosting)
                 .Where(x => x.JobPosting.Id == id)
                 .Take(10)
                 .ToListAsync();

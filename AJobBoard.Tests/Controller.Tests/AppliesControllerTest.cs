@@ -1,5 +1,4 @@
-﻿using AJobBoard.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AJobBoard.Tests.Controller.Tests
 {

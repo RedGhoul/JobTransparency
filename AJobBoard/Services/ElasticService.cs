@@ -1,5 +1,5 @@
-﻿using AJobBoard.Models;
-using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Utils.Config;
 using Microsoft.Extensions.Configuration;
 using Nest;
@@ -60,7 +60,7 @@ namespace AJobBoard.Services
 
         public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)
         {
-            IndexResponse things = await elasticClient.IndexDocumentAsync(jobPosting);
+            await elasticClient.IndexDocumentAsync(jobPosting);
         }
 
 

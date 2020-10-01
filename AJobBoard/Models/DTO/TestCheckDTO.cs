@@ -1,4 +1,4 @@
-﻿namespace AJobBoard.Models.DTO
+﻿namespace AJobBoard.Models.Dto
 {
     public class TestCheckDTO
     {

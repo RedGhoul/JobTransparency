@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AJobBoard.Models
+namespace AJobBoard.Models.Entity
 {
     public class Document
     {

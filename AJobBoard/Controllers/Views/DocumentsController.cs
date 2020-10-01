@@ -1,5 +1,5 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
+using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

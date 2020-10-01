@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models.DTO;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AutoMapper;
 using Hangfire;
@@ -42,11 +43,11 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
             if (await _es.DeleteJobPostingIndexAsync())
             {
-                List<Models.JobPosting> jobs = await _jobPostingRepository.GetAll();
-                foreach (Models.JobPosting item in jobs)
+                List<JobPosting> jobs = await _jobPostingRepository.GetAll();
+                foreach (JobPosting item in jobs)
                 {
                     JobPostingDTO DTO = _mapper.Map<JobPostingDTO>(item);
-                    List<Models.Data.KeyPhrase> KP = _keyPharseRepository.GetKeyPhrasesAsync(item.Id);
+                    List<KeyPhrase> KP = _keyPharseRepository.GetKeyPhrasesAsync(item.Id);
                     List<KeyPhraseDTO> KPDTOs = _mapper.Map<List<KeyPhraseDTO>>(KP);
                     DTO.KeyPhrases = KPDTOs;
                     await _es.CreateJobPostingAsync(DTO);

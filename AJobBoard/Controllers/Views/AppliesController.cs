@@ -1,6 +1,8 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models.DTO;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
+using Jobtransparency.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -24,13 +26,13 @@ namespace AJobBoard.Controllers.Views
         public async Task<IActionResult> Index()
         {
 
-            Models.ApplicationUser currentUser = await _userRepository.getUserFromHttpContextAsync(HttpContext);
+            ApplicationUser currentUser = await _userRepository.getUserFromHttpContextAsync(HttpContext);
 
-            System.Collections.Generic.List<Jobtransparency.Models.DTO.AppliesDTO> applications = await _appliesRepository.GetUsersAppliesAsync(currentUser);
+            System.Collections.Generic.List<AppliesDTO> applications = await _appliesRepository.GetUsersAppliesAsync(currentUser);
 
             AppliesIndexViewModel vm = new AppliesIndexViewModel();
 
-            foreach (Jobtransparency.Models.DTO.AppliesDTO applies in applications)
+            foreach (AppliesDTO applies in applications)
             {
                 vm.Applies.Add(new AppliesIndexDTO
                 {

@@ -1,6 +1,5 @@
 ﻿using AJobBoard;
 using AJobBoard.Data;
-using AJobBoard.Models;
 using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;

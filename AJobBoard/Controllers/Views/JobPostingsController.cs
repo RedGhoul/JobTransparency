@@ -1,6 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
-using AJobBoard.Models.Data;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AJobBoard.Utils.ControllerHelpers;
@@ -39,7 +39,7 @@ namespace AJobBoard.Controllers.Views
 
             JobPostingHelper.SetupViewBag(homeIndexVm, ViewBag);
 
-            List<Models.DTO.JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
+            List<JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
             string count = _jobPostingRepository.GetTotal();
 
@@ -97,14 +97,14 @@ namespace AJobBoard.Controllers.Views
             {
                 JobPosting newPosting = await _jobPostingRepository.Create(jobPosting);
 
-                Models.DTO.KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
+                KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
 
                 if (newPosting.KeyPhrases == null)
                 {
                     newPosting.KeyPhrases = new List<KeyPhrase>();
                 }
 
-                foreach (Models.DTO.KeyPhraseDTO item in wrapper.rank_list)
+                foreach (KeyPhraseDTO item in wrapper.rank_list)
                 {
                     newPosting.KeyPhrases.Add(new KeyPhrase
                     {
@@ -113,7 +113,7 @@ namespace AJobBoard.Controllers.Views
                     });
                 }
 
-                Models.DTO.SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
 
                 newPosting.Summary = nltkSummary.SummaryText;
 

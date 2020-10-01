@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models;
+﻿using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

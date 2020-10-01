@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models;
+﻿using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

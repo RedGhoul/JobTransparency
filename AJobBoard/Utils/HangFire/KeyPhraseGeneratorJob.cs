@@ -1,6 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
-using AJobBoard.Models.Data;
+using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using Hangfire;
 using Microsoft.Extensions.Logging;
@@ -51,12 +51,12 @@ namespace AJobBoard.Utils.HangFire
                 }
 
                 string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                Models.DTO.KeyPhrasesWrapperDTO wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
+                KeyPhrasesWrapperDTO wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
                 if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                 {
                     List<KeyPhrase> ListKeyPhrase = new List<KeyPhrase>();
 
-                    foreach (Models.DTO.KeyPhraseDTO item in wrapper.rank_list)
+                    foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
 
                         ListKeyPhrase.Add(new KeyPhrase

@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models.Data;
+﻿using AJobBoard.Models.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System;

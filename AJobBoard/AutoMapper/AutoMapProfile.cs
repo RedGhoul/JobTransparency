@@ -1,6 +1,5 @@
-﻿using AJobBoard.Models;
-using AJobBoard.Models.Data;
-using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AutoMapper;
 
 namespace Jobtransparency.AutoMapper

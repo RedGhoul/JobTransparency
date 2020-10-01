@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models;
+﻿using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 

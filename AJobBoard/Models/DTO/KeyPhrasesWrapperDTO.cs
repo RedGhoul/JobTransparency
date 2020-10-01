@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AJobBoard.Models.DTO
+namespace AJobBoard.Models.Dto
 {
     public class KeyPhrasesWrapperDTO
     {

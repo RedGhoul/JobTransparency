@@ -1,4 +1,4 @@
-﻿using AJobBoard.Models.Data;
+﻿using AJobBoard.Models.Entity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

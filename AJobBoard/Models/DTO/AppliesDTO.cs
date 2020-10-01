@@ -1,4 +1,4 @@
-﻿namespace Jobtransparency.Models.DTO
+﻿namespace Jobtransparency.Models.Dto
 {
     public class AppliesDTO
     {

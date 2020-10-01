@@ -1,4 +1,3 @@
-using AJobBoard.Models.DTO;
 using System.Collections.Generic;
 using Xunit;
 

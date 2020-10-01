@@ -1,6 +1,6 @@
 ﻿using AJobBoard.Data;
-using AJobBoard.Models;
-using Jobtransparency.Models.DTO;
+using AJobBoard.Models.Entity;
+using Jobtransparency.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;

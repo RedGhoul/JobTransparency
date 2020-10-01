@@ -1,5 +1,5 @@
-﻿using AJobBoard.Models;
-using AJobBoard.Models.DTO;
+﻿using AJobBoard.Models.Dto;
+using AJobBoard.Models.Entity;
 using AJobBoard.Models.View;
 using System.Collections.Generic;
 using System.Threading.Tasks;
