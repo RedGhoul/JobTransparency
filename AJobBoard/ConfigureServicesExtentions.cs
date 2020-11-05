@@ -6,7 +6,7 @@ using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using AutoMapper;
 using Hangfire;
-using Hangfire.MySql.Core;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -149,7 +149,8 @@ namespace Jobtransparency
             services.AddDbContext<ApplicationDbContext>(options =>
               options.UseNpgsql(AppDBConnectionString));
 
-           
+            services.AddHangfire(config =>
+                 config.UsePostgreSqlStorage(AppDBConnectionString));
         }
     }
 }

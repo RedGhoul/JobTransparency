@@ -39,13 +39,13 @@ namespace Jobtransparency
 
         public static void UseHangFireConfiguration(this IApplicationBuilder app)
         {
+            app.UseHangfireServer(new BackgroundJobServerOptions
+            {
+                WorkerCount = 6,
+            });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangFireAuthorizationFilter() }
-            });
-            app.UseHangfireServer(new BackgroundJobServerOptions
-            {
-                WorkerCount = 4,
             });
         }
 
@@ -63,7 +63,7 @@ namespace Jobtransparency
         public static async Task UseStartUpMethodsAsync(this IApplicationBuilder app)
         {
             await Seeder.CreateUserRoles(app);
-            //HangFireJobScheduler.ScheduleRecurringJobs();
+            HangFireJobScheduler.ScheduleRecurringJobs();
         }
     }
 }
