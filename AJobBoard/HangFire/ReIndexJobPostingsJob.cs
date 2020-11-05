@@ -41,8 +41,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
-            if (await _es.DeleteJobPostingIndexAsync())
-            {
+            await _es.DeleteJobPostingIndexAsync();
                 List<JobPosting> jobs = await _jobPostingRepository.GetAll();
                 foreach (JobPosting item in jobs)
                 {
@@ -52,8 +51,6 @@ namespace AJobBoard.Utils.HangFire
                     DTO.KeyPhrases = KPDTOs;
                     await _es.CreateJobPostingAsync(DTO);
                 }
-            }
-
             _logger.LogInformation("ReIndexJobPostingsJob Ends... ");
         }
     }

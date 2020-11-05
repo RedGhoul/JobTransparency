@@ -53,15 +53,15 @@ namespace AJobBoard.Services
             return (List<JobPostingDTO>)JobPosting;
         }
 
-        public async Task<List<JobPostingDTO>> GetAllJobPostings()
+        public List<JobPostingDTO> GetAllJobPostings()
         {
             List<JobPostingDTO> indexedList = new List<JobPostingDTO>();
             var scanResults = elasticClient.Search<JobPostingDTO>(s => s
                             .From(0)
                             .Size(5)
                             .MatchAll()
-                             //I used field to get only the value I needed rather than getting the whole document
-                            
+                            //I used field to get only the value I needed rather than getting the whole document
+
                             .Scroll("5m")
                         );
 
@@ -79,10 +79,9 @@ namespace AJobBoard.Services
         }
 
 
-        public async Task<bool> DeleteJobPostingIndexAsync()
+        public async Task DeleteJobPostingIndexAsync()
         {
-            HttpResponseMessage response = await new HttpClient().DeleteAsync(baseUrlsearch + "/jobpostings");
-            return response.IsSuccessStatusCode;
+            await elasticClient.Indices.DeleteAsync("jobpostings");
         }
 
         public async Task CreateJobPostingAsync(JobPostingDTO jobPosting)

@@ -273,7 +273,7 @@ namespace AJobBoard.Data
 
         public async Task<List<JobPostingDTO>> GetAllFromElastic()
         {
-            List<JobPostingDTO> jobsCollection = await _es.GetAllJobPostings();
+            List<JobPostingDTO> jobsCollection = _es.GetAllJobPostings();
             return jobsCollection;
         }
         
