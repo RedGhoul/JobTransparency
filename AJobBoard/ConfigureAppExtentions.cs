@@ -41,7 +41,7 @@ namespace Jobtransparency
         {
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
-                WorkerCount = 6,
+                WorkerCount = 8,
             });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
