@@ -232,8 +232,24 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
+            string cacheKey = "RandomSetOfJobs";
+            string jobPostingString = await _cache.GetStringAsync(cacheKey);
 
-            return await _es.GetRandomSetOfJobPosting();
+            List<JobPostingDTO> jobPostings;
+            if (string.IsNullOrEmpty(jobPostingString) || jobPostingString.ToLower().Equals("null"))
+            {
+                jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 13)).Take(10).ToListAsync());
+                DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
+                options.SetSlidingExpiration(TimeSpan.FromDays(1));
+                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPostings), options);
+            }
+            else
+            {
+                jobPostings = JsonConvert.DeserializeObject<List<JobPostingDTO>>(jobPostingString);
+            }
+
+
+            return jobPostings;
         }
 
         public async Task<List<JobPostingDTO>> ConfigureSearch(HomeIndexViewModel homeIndexVm)
