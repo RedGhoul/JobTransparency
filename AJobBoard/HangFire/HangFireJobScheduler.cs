@@ -21,7 +21,7 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.RemoveIfExists(nameof(ReIndexJobPostingsJob));
             RecurringJob.AddOrUpdate<ReIndexJobPostingsJob>(nameof(ReIndexJobPostingsJob),
                 job => job.Run(JobCancellationToken.Null),
-                Cron.Monthly(27, 1), TimeZoneInfo.Local, "reIndex_jobpostings_job");
+                Cron.Monthly(27, 1), TimeZoneInfo.Local, "reindex_jobpostings_job");
         }
     }
 }
