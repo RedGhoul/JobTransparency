@@ -9,7 +9,7 @@ namespace AJobBoard.Utils.HangFire
         {
             Microsoft.AspNetCore.Http.HttpContext httpContext = context.GetHttpContext();
             string useRole = httpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            return useRole == "Admin";
+            return useRole.Equals("Admin");
         }
     }
 }
