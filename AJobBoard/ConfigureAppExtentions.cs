@@ -5,6 +5,7 @@ using Jobtransparency.Utils.HangFire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Threading.Tasks;
 
 namespace Jobtransparency
@@ -39,7 +40,14 @@ namespace Jobtransparency
 
         public static void UseHangFireConfiguration(this IApplicationBuilder app)
         {
-            app.UseHangfireServer();
+            app.UseHangfireServer(new BackgroundJobServerOptions()
+            {
+                SchedulePollingInterval = TimeSpan.FromMinutes(1),
+                HeartbeatInterval = TimeSpan.FromSeconds(20),
+                ServerCheckInterval = TimeSpan.FromSeconds(20),
+                WorkerCount = Environment.ProcessorCount * 2,
+                ServerName = "Jobs"
+            });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangFireAuthorizationFilter() }
