@@ -64,8 +64,10 @@ namespace AJobBoard.Utils.HangFire
                         {
                             Affinty = item.Affinty,
                             Text = item.Text,
-                            JobPosting = JobPosting
+                            JobPostingId = JobPosting.Id
                         });
+                        _logger.LogInformation($"item.Affinty {item.Affinty}");
+                        _logger.LogInformation($"item.Text {item.Text}");
 
                     }
 
