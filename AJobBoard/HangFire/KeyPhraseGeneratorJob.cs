@@ -52,10 +52,11 @@ namespace AJobBoard.Utils.HangFire
 
                 string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
                 KeyPhrasesWrapperDTO wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
+                _logger.LogInformation("KeyPhrasesWrapperDTO wrapper");
                 if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                 {
                     List<KeyPhrase> ListKeyPhrase = new List<KeyPhrase>();
-
+                    _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
 
@@ -68,12 +69,10 @@ namespace AJobBoard.Utils.HangFire
 
                     }
 
-                    await _KeyPharseRepository.CreateKeyPhrasesAsync(ListKeyPhrase);
-
-                    JobPosting.KeyPhrases = ListKeyPhrase;
+                    _KeyPharseRepository.CreateKeyPhrases(ListKeyPhrase);
+                    _logger.LogInformation("_KeyPharseRepository.CreateKeyPhrases(ListKeyPhrase);");
                 }
 
-                await _jobPostingRepository.Put(JobPosting.Id, JobPosting);
             }
 
             _logger.LogInformation("KeyPhraseGeneratorJob Ends... ");

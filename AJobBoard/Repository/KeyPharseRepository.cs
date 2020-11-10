@@ -19,18 +19,19 @@ namespace AJobBoard.Data
             _cache = cache;
         }
 
-        public async Task CreateKeyPhrasesAsync(List<KeyPhrase> KeyPhrases)
+        public void CreateKeyPhrases(List<KeyPhrase> KeyPhrases)
         {
             try
             {
                 foreach (KeyPhrase item in KeyPhrases)
                 {
-                    await _ctx.KeyPhrase.AddAsync(item);
-                    await _ctx.SaveChangesAsync();
+                    _ctx.KeyPhrase.Add(item);
                 }
+                _ctx.SaveChanges();
             }
             catch (Exception ex)
             {
+                
                 Console.WriteLine(ex.StackTrace);
             }
         }
