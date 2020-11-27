@@ -1,9 +1,13 @@
 using Hangfire;
 using Jobtransparency;
+using Jobtransparency.Services;
+using Jobtransparency.Utils.Config;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace AJobBoard
 {
@@ -31,6 +35,13 @@ namespace AJobBoard
             services.UseInjectables(Configuration);
 
             services.UseAuthorizationRules();
+
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromHours(3));
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.UseHttpClient();
 

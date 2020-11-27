@@ -23,7 +23,7 @@ namespace AJobBoard.Services
         {
             string AccessKeyId = Secrets.getAppSettingsValue(configuration, "AKIDS3");
             string AwsSecretKey = Secrets.getAppSettingsValue(configuration, "SAK");
-            S3Client = new AmazonS3Client(AccessKeyId, AwsSecretKey, Amazon.RegionEndpoint.USEast1);
+            //S3Client = new AmazonS3Client(AccessKeyId, AwsSecretKey, Amazon.RegionEndpoint.USEast1);
         }
 
         public async Task<string> UploadStreamToBucket(string bucket, string key, string contentType, Stream stream)

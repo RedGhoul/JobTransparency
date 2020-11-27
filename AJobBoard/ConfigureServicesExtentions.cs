@@ -56,6 +56,8 @@ namespace Jobtransparency
             //Password Strength Setting
             services.Configure<IdentityOptions>(options =>
             {
+                options.SignIn.RequireConfirmedAccount = true;
+
                 // Password settings
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;

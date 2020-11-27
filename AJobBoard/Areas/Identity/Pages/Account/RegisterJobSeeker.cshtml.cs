@@ -99,9 +99,9 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                     string resumeKEY = "";
                     if (ModelState.IsValid)
                     {
-                        resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
-                            "Resumes/" + user.Id + Input.Resume.FileName,
-                            Input.Resume.ContentType, Input.Resume.OpenReadStream());
+                        //resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
+                        //    "Resumes/" + user.Id + Input.Resume.FileName,
+                        //    Input.Resume.ContentType, Input.Resume.OpenReadStream());
                     }
                     else
                     {

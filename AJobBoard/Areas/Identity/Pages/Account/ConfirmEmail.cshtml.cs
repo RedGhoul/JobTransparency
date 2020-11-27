@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Areas.Identity.Pages.Account
@@ -30,6 +32,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             {
                 return NotFound($"Unable to load user with ID '{userId}'.");
             }
+            code = Encoding.Default.GetString(WebEncoders.Base64UrlDecode(code));
 
             IdentityResult result = await _userManager.ConfirmEmailAsync(user, code);
             if (!result.Succeeded)
@@ -37,7 +40,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                 throw new InvalidOperationException($"Error confirming email for user with ID '{userId}':");
             }
 
-            return Page();
+            return RedirectToAction("Index", "HomeController");
         }
     }
 }

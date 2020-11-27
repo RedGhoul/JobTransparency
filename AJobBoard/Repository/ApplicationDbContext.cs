@@ -1,7 +1,6 @@
 ﻿using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 namespace AJobBoard.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -51,7 +50,7 @@ namespace AJobBoard.Data
             .HasForeignKey(x => x.ApplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<JobPosting>().Property(n => n.Id).UseHiLo();
+            builder.Entity<JobPosting>().Property(n => n.Id);
 
             builder.Entity<JobPosting>().HasIndex(n => n.URL);
             builder.Entity<JobPosting>().HasIndex(n => n.Title);
