@@ -3,8 +3,6 @@ using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Jobtransparency.Services
@@ -25,7 +23,7 @@ namespace Jobtransparency.Services
 
         public async Task Execute(string apiKey, string subject, string message, string email)
         {
-            
+
             RestClient client = new RestClient();
             client.BaseUrl = new Uri("https://api.mailgun.net/v3");
             client.Authenticator =

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace AJobBoard.Utils.Seeder
 {
     public static class Seeder
-    { 
+    {
 
         public static async Task CreateUserRoles(IApplicationBuilder app)
         {

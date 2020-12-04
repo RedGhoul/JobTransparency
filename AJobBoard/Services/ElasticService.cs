@@ -6,7 +6,6 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Services
@@ -36,6 +35,16 @@ namespace AJobBoard.Services
                 .From(fromNumber)
                 .Size(12)
                 .Source(sf => sf.Excludes(e => e.Fields("key*")))
+                .Query(q => q
+                     .Match(m => m
+                        .Field(f => f.Location)
+                        .Query(keywords)
+                     ))
+                .Query(q => q
+                     .Match(m => m
+                        .Field(f => f.Company)
+                        .Query(keywords)
+                     ))
                 .Query(q => q
                      .Match(m => m
                         .Field(f => f.Description)

@@ -40,7 +40,7 @@ namespace AJobBoard
                 o.TokenLifespan = TimeSpan.FromHours(3));
 
             services.AddTransient<IEmailSender, EmailSender>();
-            
+
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.UseHttpClient();

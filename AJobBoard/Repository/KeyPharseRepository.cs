@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace AJobBoard.Data
 {
@@ -31,7 +30,7 @@ namespace AJobBoard.Data
             }
             catch (Exception ex)
             {
-                
+
                 Console.WriteLine(ex.StackTrace);
             }
         }

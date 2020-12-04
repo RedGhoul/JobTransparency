@@ -42,15 +42,15 @@ namespace AJobBoard.Utils.HangFire
         {
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
             await _es.DeleteJobPostingIndexAsync();
-                List<JobPosting> jobs = await _jobPostingRepository.GetAll();
-                foreach (JobPosting item in jobs)
-                {
-                    JobPostingDTO DTO = _mapper.Map<JobPostingDTO>(item);
-                    List<KeyPhrase> KP = _keyPharseRepository.GetKeyPhrasesAsync(item.Id);
-                    List<KeyPhraseDTO> KPDTOs = _mapper.Map<List<KeyPhraseDTO>>(KP);
-                    DTO.KeyPhrases = KPDTOs;
-                    await _es.CreateJobPostingAsync(DTO);
-                }
+            List<JobPosting> jobs = await _jobPostingRepository.GetAll();
+            foreach (JobPosting item in jobs)
+            {
+                JobPostingDTO DTO = _mapper.Map<JobPostingDTO>(item);
+                List<KeyPhrase> KP = _keyPharseRepository.GetKeyPhrasesAsync(item.Id);
+                List<KeyPhraseDTO> KPDTOs = _mapper.Map<List<KeyPhraseDTO>>(KP);
+                DTO.KeyPhrases = KPDTOs;
+                await _es.CreateJobPostingAsync(DTO);
+            }
             _logger.LogInformation("ReIndexJobPostingsJob Ends... ");
         }
     }

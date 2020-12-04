@@ -1,9 +1,6 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Jobtransparency.HangFire
 {
@@ -26,7 +23,7 @@ namespace Jobtransparency.HangFire
         public void RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("KeepHangFireAliveJob Starts... ");
-            
+
             _logger.LogInformation("KeepHangFireAliveJob Ends... ");
         }
     }

@@ -292,7 +292,7 @@ namespace AJobBoard.Data
             List<JobPostingDTO> jobsCollection = _es.GetAllJobPostings();
             return jobsCollection;
         }
-        
+
         public async Task<List<JobPosting>> GetAllWithOutSummary()
         {
             List<JobPosting> jobs = await _ctx.JobPostings

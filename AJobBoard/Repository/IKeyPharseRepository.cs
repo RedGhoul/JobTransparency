@@ -1,6 +1,5 @@
 ﻿using AJobBoard.Models.Entity;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace AJobBoard.Data
 {
