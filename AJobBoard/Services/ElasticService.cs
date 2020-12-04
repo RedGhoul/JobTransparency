@@ -31,34 +31,59 @@ namespace AJobBoard.Services
 
         public async Task<List<JobPostingDTO>> QueryJobPosting(int fromNumber, string keywords)
         {
-            ISearchResponse<JobPostingDTO> searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
-                .From(fromNumber)
-                .Size(12)
-                .Source(sf => sf.Excludes(e => e.Fields("key*")))
+            var searchResponses = elasticClient.Search<JobPostingDTO>(s => s
                 .Query(q => q
-                     .Match(m => m
-                        .Field(f => f.Location)
-                        .Query(keywords)
-                     ))
-                .Query(q => q
-                     .Match(m => m
-                        .Field(f => f.Company)
-                        .Query(keywords)
-                     ))
-                .Query(q => q
-                     .Match(m => m
-                        .Field(f => f.Description)
-                        .Query(keywords)
-                     )
-                ).Query(q => q
-                     .Match(m => m
-                        .Field(f => f.Title)
-                        .Query(keywords)
-                     )
+                    .Bool(b => b
+                        .Should(mu => mu
+                            .Match(m => m
+                                .Field(f => f.Location)
+                                .Query(keywords)
+                            ), mu => mu
+                            .Match(m => m
+                                .Field(f => f.Company)
+                                .Query(keywords)
+                            ), mu => mu
+                            .Match(m => m
+                                .Field(f => f.Description)
+                                .Query(keywords)
+                            ), mu => mu
+                            .Match(m => m
+                                .Field(f => f.Title)
+                                .Query(keywords)
+                            )
+                        )
+                    )
                 ).Sort(q => q.Descending(u => u.DateAdded))
             );
 
-            IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponse.Documents;
+            //ISearchResponse<JobPostingDTO> searchResponse = await elasticClient.SearchAsync<JobPostingDTO>(s => s
+            //    .From(fromNumber)
+            //    .Size(12)
+            //    .Source(sf => sf.Excludes(e => e.Fields("key*")))
+            //    .Query(q => q
+            //         .Match(m => m
+            //            .Field(f => f.Location)
+            //            .Query(keywords)
+            //         ))
+            //    .Query(q => q
+            //         .Match(m => m
+            //            .Field(f => f.Company)
+            //            .Query(keywords)
+            //         ))
+            //    .Query(q => q
+            //         .Match(m => m
+            //            .Field(f => f.Description)
+            //            .Query(keywords)
+            //         )
+            //    ).Query(q => q
+            //         .Match(m => m
+            //            .Field(f => f.Title)
+            //            .Query(keywords)
+            //         )
+            //    ).Sort(q => q.Descending(u => u.DateAdded))
+            //);
+
+            IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponses.Documents;
             return (List<JobPostingDTO>)JobPosting;
         }
 
