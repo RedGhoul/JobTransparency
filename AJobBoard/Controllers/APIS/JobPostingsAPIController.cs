@@ -89,8 +89,9 @@ namespace AJobBoard.Controllers.API
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            if (string.IsNullOrEmpty(jobPosting.Description))
+            if (string.IsNullOrEmpty(jobPosting.Description) || string.IsNullOrWhiteSpace(jobPosting.Description) || jobPosting.Description.Equals("NULL"))
             {
+                _logger.LogInformation("jobPosting.Description is use less");
                 return BadRequest();
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
