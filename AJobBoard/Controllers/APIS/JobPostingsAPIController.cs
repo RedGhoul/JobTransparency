@@ -89,9 +89,9 @@ namespace AJobBoard.Controllers.API
         [HttpPost]
         public async Task<ActionResult<JobPosting>> PostJobPosting(JobPosting jobPosting)
         {
-            if (string.IsNullOrEmpty(jobPosting.Summary) || string.IsNullOrEmpty(jobPosting.Description))
+            if (string.IsNullOrEmpty(jobPosting.Description))
             {
-                return Ok();
+                return BadRequest();
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
             try
