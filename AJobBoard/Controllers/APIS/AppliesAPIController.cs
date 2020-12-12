@@ -73,19 +73,20 @@ namespace AJobBoard.Controllers.API
         }
 
         // POST: api/AppliesAPI
-        [HttpPost]
+        [HttpPost("addToUserApplies/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PostApply(Apply apply, int JobPostingId)
+        public async Task<IActionResult> AddJobPostingToCurrentUser(int id)
         {
-
             ApplicationUser currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser == null)
             {
                 return BadRequest("Please Sign in to Add to Applies");
             }
-            await _jobPostingRepository.AddApply(JobPostingId, currentUser);
-            JobPosting curJob = await _jobPostingRepository.GetById(JobPostingId);
-            bool result = await _userRepository.AddApplyToUser(currentUser, curJob, apply);
+
+            await _jobPostingRepository.IncrementNumberOfApplies(id);
+
+            var result = await _userRepository.AddApplyToUser(currentUser.Id,id);
+
             return result == true ? Ok() : (IActionResult)BadRequest();
         }
 

@@ -189,16 +189,16 @@
             var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
             $('.AddToApplies').click(function () {
                 var d = $(this).data('id');
+                console.log(d)
                 $.ajax({
                     method: "POST",
                     contentType: 'application/json',
                     headers: { "RequestVerificationToken": antiForgeryToken },
-                    url: "/api/AppliesAPI",
-                    data: JSON.stringify({ Id: parseInt(d) }),
+                    url: "/api/AppliesAPI/addToUserApplies/" + parseInt(d),
                     success: function (data) {
                         alertify.success("Added to Applies");
                     },
-                    error: function (xhr) { // if error occured
+                    error: function (xhr) {
                         alertify.error("Could Not Add this Job to your Applies");
                     }
                 })

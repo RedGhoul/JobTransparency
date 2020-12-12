@@ -190,7 +190,7 @@ namespace AJobBoard.Data
             return _ctx.JobPostings.Any(e => e.Id == id);
         }
 
-        public async Task<JobPosting> AddView(JobPosting jobPosting)
+        public async Task<JobPosting> IncrementNumberOfViews(JobPosting jobPosting)
         {
             jobPosting.NumberOfViews++;
 
@@ -213,7 +213,7 @@ namespace AJobBoard.Data
             return jobPosting;
         }
 
-        public async Task<bool> AddApply(int JobPostingId, ApplicationUser User)
+        public async Task<bool> IncrementNumberOfApplies(int JobPostingId)
         {
             JobPosting job = _ctx.JobPostings.Where(x => x.Id == JobPostingId).FirstOrDefault();
             job.NumberOfApplies++;
@@ -232,7 +232,9 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
+            
             string cacheKey = "RandomSetOfJobs";
+            await _cache.RemoveAsync(cacheKey);
             string jobPostingString = await _cache.GetStringAsync(cacheKey);
 
             List<JobPostingDTO> jobPostings;
@@ -240,7 +242,7 @@ namespace AJobBoard.Data
             {
                 jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 13)).Take(10).ToListAsync());
                 DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromDays(1));
+                options.SetSlidingExpiration(TimeSpan.FromMilliseconds(1));
                 await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPostings), options);
             }
             else

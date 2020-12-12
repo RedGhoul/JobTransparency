@@ -22,12 +22,12 @@ namespace AJobBoard.Data
         Task<JobPosting> Put(int id, JobPosting jobPosting);
         Task<JobPosting> Create(JobPosting jobPosting);
         Task<JobPosting> DeleteById(int id);
-        Task<JobPosting> AddView(JobPosting jobPosting);
+        Task<JobPosting> IncrementNumberOfViews(JobPosting jobPosting);
         Task<List<JobPostingDTO>> ConfigureSearch(HomeIndexViewModel homeIndexVm);
         Task<List<KeyPhraseDTO>> GetByKeyPhrases(int id);
         Task<bool> Exists(TestCheckDTO tcDto);
         Task<List<JobPostingDTO>> GetRandomSet();
-        Task<bool> AddApply(int JobPostingId, ApplicationUser User);
+        Task<bool> IncrementNumberOfApplies(int JobPostingId);
 
     }
 }

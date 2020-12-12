@@ -6,61 +6,49 @@
 
     <div class="container">
         <div class="row mb-5 justify-content-center">
-            <div class="col-md-12 text-center">
-
-                <table class="table" style="color: white;">
-                    <thead>
-                        <tr>
-                            <th>
-                                Title
-                            </th>
-                            <th>
-                                Company
-                            </th>
-                            <th>
-                                Location
-                            </th>
-                            <th>
-                                JobSource
-                            </th>
-                            <th>
-                                Views
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div class="col-md-12">
+                @if (Model.Applies.Count > 0)
+                {
+                    <div class="grid ml-5">
                         @foreach (var item in Model.Applies)
                         {
-                            <tr>
-                                <td>
-                                    @item.Title
-                                </td>
-                                <td>
-                                    @item.Company
-                                </td>
-                                <td>
-                                    @item.Location
-                                </td>
-                                <td>
-                                    @item.JobSource
-                                </td>
-                                <td>
-                                    @item.Views
-                                </td>
-                                <td>
-
-                                    <a asp-controller="Applies" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                </td>
-                            </tr>
+                            <div class="grid-item">
+                                <div class="card m-4" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Title</h5>
+                                        <a class="btn btn-info" asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">View</a>
+                                        <a class="btn btn-danger" asp-controller="Applies" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">Company: @item.Company</li>
+                                        <li class="list-group-item">Location: @item.Location</li>
+                                        <li class="list-group-item">JobSource: @item.JobSource</li>
+                                        <li class="list-group-item">Views: @item.Views</li>
+                                    </ul>
+                                </div>
+                            </div>
                         }
-                    </tbody>
-                </table>
+                    </div>
+                }else
+                {
+                    <h5 class="text-center"> You don't have any applies yet</h5>
+                }
             </div>
 
         </div>
     </div>
 
 </section>
+
+
+@section Scripts {
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.grid').isotope({
+                itemSelector: '.grid-item',
+                layoutMode: 'fitRows'
+            });
+        });
+    </script>
+}

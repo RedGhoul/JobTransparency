@@ -81,9 +81,11 @@ namespace AJobBoard.Controllers.Views
                 return NotFound();
             }
 
-            jobPosting = await _jobPostingRepository.AddView(jobPosting);
+            jobPosting = await _jobPostingRepository.IncrementNumberOfViews(jobPosting);
 
-            return View(jobPosting);
+            return View(new JobPostingDetailViewModel() { 
+                CurrentJobPosting = jobPosting,
+            });
         }
 
 

@@ -8,6 +8,6 @@ namespace AJobBoard.Data
     {
         Task<ApplicationUser> getUserFromHttpContextAsync(HttpContext context);
 
-        Task<bool> AddApplyToUser(ApplicationUser User, JobPosting JobPosting, Apply CurrentApply);
+        Task<bool> AddApplyToUser(string ApplierId, int JobPostingId);
     }
 }

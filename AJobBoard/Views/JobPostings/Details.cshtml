@@ -1,11 +1,11 @@
-﻿@model AJobBoard.Models.Entity.JobPosting
+﻿@model AJobBoard.Models.View.JobPostingDetailViewModel
 
-<section class="section-hero overlay inner-page bg-image" style="background-image: url('/images/hero_1.jpg');"
+<section class="section-hero overlay inner-page bg-image" style="background-image: url(@Model.ImageName);"
          id="home-section">
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="headerdetail text-white font-weight-bold">@Html.DisplayFor(model => model.Title)</h1>
+                <h1 class="headerdetail text-white font-weight-bold">@Html.DisplayFor(model => model.CurrentJobPosting.Title)</h1>
             </div>
         </div>
     </div>
@@ -18,23 +18,20 @@
         <div class="row align-items-center mb-5">
             <div class="col-lg-8 mb-4 mb-lg-0">
                 <div class="d-flex align-items-center">
-                    @*<div class="border p-2 d-inline-block mr-3 rounded">
-                        <img src="/images/featured-listing-1.jpg" alt="">
-                    </div>*@
                     <div>
-                        <h2>@Html.DisplayFor(model => model.Title)</h2>
+                        <h2>@Html.DisplayFor(model => model.CurrentJobPosting.Title)</h2>
                         <div>
-                            @if (!string.IsNullOrEmpty(Model.Company))
+                            @if (!string.IsNullOrEmpty(Model.CurrentJobPosting.Company))
                             {
-                                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>@Html.DisplayFor(model => model.Company)</span>
+                                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>@Html.DisplayFor(model => model.CurrentJobPosting.Company)</span>
                             }
                             else
                             {
                                 <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>N/A</span>
                             }
-                            @if (!string.IsNullOrEmpty(Model.Location))
+                            @if (!string.IsNullOrEmpty(Model.CurrentJobPosting.Location))
                             {
-                                <span class="m-2"><span class="icon-room mr-2"></span>@Html.DisplayFor(model => model.Location)</span>
+                                <span class="m-2"><span class="icon-room mr-2"></span>@Html.DisplayFor(model => model.CurrentJobPosting.Location)</span>
                             }
                             else
                             {
@@ -54,12 +51,12 @@
             <div class="col-lg-4">
                 <div class="row">
                     <div class="col-6">
-                        <a href="#" data-id="@Model.Id" class="btn btn-block btn-light btn-md AddToApplies">
+                        <a href="#" data-id="@Model.CurrentJobPosting.Id" class="btn btn-block btn-light btn-md AddToApplies">
                             <span class="icon-heart-o mr-2 text-danger"></span>Add To Applies
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="@Model.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a>
+                        <a href="@Model.CurrentJobPosting.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a>
                     </div>
                     <div style="margin-top:20px;" class="col-6">
                         <a href="/JobPostings/" class="btn btn-block btn-warning btn-md">Back</a>
@@ -76,7 +73,7 @@
                         Description
                     </h3>
                     <p>
-                        @Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Description).Replace(@"\", ""))
+                        @Html.Raw(System.Net.WebUtility.HtmlDecode(Model.CurrentJobPosting.Description).Replace(@"\", ""))
                     </p>
                 </div>
 
@@ -87,85 +84,24 @@
 
 @section Scripts{
     <script>
-        var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
-
-        $('.AddToApplies').click(function () {
-            var d = $(this).data('id');
-            $.ajax({
-                method: "POST",
-                contentType: 'application/json',
-                headers: { "RequestVerificationToken": antiForgeryToken },
-                url: "/api/AppliesAPI",
-                data: JSON.stringify({ Id: parseInt(d) }),
-                success: function (data) {
-                    alertify.success("Added to Applies");
-                },
-                error: function (data) {
-                    alertify.error("Could Not Add this Job to your Applies");
-                }
-            })
-
+        $(document).ready(function () {
+            var antiForgeryToken = $("input[name='__RequestVerificationToken']").val();
+            $('.AddToApplies').click(function () {
+                var d = $(this).data('id');
+                $.ajax({
+                    method: "POST",
+                    contentType: 'application/json',
+                    headers: { "RequestVerificationToken": antiForgeryToken },
+                    url: "/api/AppliesAPI/addToUserApplies/" + parseInt(d),
+                    success: function (data) {
+                        alertify.success("Added to Applies");
+                    },
+                    error: function (xhr) {
+                        alertify.error("Could Not Add this Job to your Applies");
+                    }
+                })
+            });
         });
     </script>
 
 }
-@*<h1>Details</h1>
-
-    <div>
-        <h4>JobPosting</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Title)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Title)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Summary)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Summary)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.URL)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.URL)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Company)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Company)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Location)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Location)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.PostDate)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.PostDate)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Salary)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Salary)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.Posters)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.Posters)
-            </dd>
-        </dl>
-    </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>*@

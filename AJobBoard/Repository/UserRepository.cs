@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Data
@@ -10,23 +11,30 @@ namespace AJobBoard.Data
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _ctx;
-
         public UserRepository(ApplicationDbContext ctx, UserManager<ApplicationUser> userManager)
         {
             _ctx = ctx;
             _userManager = userManager;
         }
 
-        public async Task<bool> AddApplyToUser(ApplicationUser User, JobPosting JobPosting, Apply CurrentApply)
+        public async Task<bool> AddApplyToUser(string ApplierId, int JobPostingId)
         {
-
-            User.Applies.Add(new Apply
+            if(_ctx.JobPostings.Any(x => x.Id.Equals(JobPostingId)) 
+                && _ctx.Users.Any(x => x.Id.Equals(ApplierId))
+                && !_ctx.Applies.Any(x => x.JobPostingId == JobPostingId 
+                && x.ApplierId.Equals(ApplierId)))
             {
-                DateAddedToApplies = DateTime.Now,
-                JobPosting = JobPosting
-            });
+                var newApply = new Apply
+                {
+                    JobPostingId = JobPostingId,
+                    DateAddedToApplies = DateTime.Now,
+                    ApplierId = ApplierId
+                };
 
-            return await _ctx.SaveChangesAsync() > 0;
+                _ctx.Applies.Add(newApply);
+                return await _ctx.SaveChangesAsync() > 0;
+            }
+            return false;
         }
 
         public async Task<ApplicationUser> getUserFromHttpContextAsync(HttpContext context)
