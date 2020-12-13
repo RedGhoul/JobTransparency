@@ -118,7 +118,24 @@
                 <button data-id="@item.Id" class="btn btn-warning ViewSummary">View Summary</button>
             </div>
             <div class="col-md-4 Summary_@item.Id" style="color:beige;display: none;">
-                <p style="color: beige" class="meta">@item.Summary</p>
+                @if (!string.IsNullOrEmpty(item.Summary))
+                {
+                    <p style="color: black" class="meta">
+                        @if (item.Summary.Length > 300)
+                        {
+                            @item.Summary.Substring(0, 300)
+                        }
+                        else
+                        {
+                            @item.Summary
+                        }
+                    </p>
+                    <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary float-right">Read More</a>
+                }
+                else
+                {
+                    <p>None Found</p>
+                }
             </div>
             <div class="col-md-4" style="color: beige">
                 @if (item.Title.ToLower().Contains("devops") || item.Title.ToLower().Contains("dev ops"))
