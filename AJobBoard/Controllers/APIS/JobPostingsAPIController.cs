@@ -4,7 +4,6 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,6 @@ namespace AJobBoard.Controllers.API
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        private readonly ILogger<JobPostingsAPIController> _logger;
 
         public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
             INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService)
@@ -91,7 +89,6 @@ namespace AJobBoard.Controllers.API
         {
             if (string.IsNullOrEmpty(jobPosting.Description) || string.IsNullOrWhiteSpace(jobPosting.Description) || jobPosting.Description.Equals("NULL"))
             {
-                _logger.LogInformation("jobPosting.Description is use less");
                 return BadRequest();
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);

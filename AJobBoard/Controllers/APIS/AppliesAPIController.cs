@@ -85,7 +85,7 @@ namespace AJobBoard.Controllers.API
 
             await _jobPostingRepository.IncrementNumberOfApplies(id);
 
-            var result = await _userRepository.AddApplyToUser(currentUser.Id,id);
+            var result = await _userRepository.AddApplyToUser(currentUser.Id, id);
 
             return result == true ? Ok() : (IActionResult)BadRequest();
         }

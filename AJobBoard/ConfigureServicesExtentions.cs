@@ -36,13 +36,11 @@ namespace Jobtransparency
             services.AddTransient<IJobPostingRepository, JobPostingRepository>();
             services.AddTransient<IKeyPharseRepository, KeyPharseRepository>();
             services.AddTransient<IAppliesRepository, AppliesRepository>();
-            services.AddTransient<IDocumentRepository, DocumentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddScoped<ICustomJob, KeyPhraseGeneratorJob>();
             services.AddScoped<ICustomJob, SummaryGeneratorJob>();
 
-            services.AddSingleton<IAWSService, AWSService>();
             services.AddSingleton<ElasticService, ElasticService>();
             services.AddSingleton<INLTKService, NLTKService>();
         }

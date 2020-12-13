@@ -1,5 +1,4 @@
 ﻿using AJobBoard.Models.Entity;
-using AJobBoard.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,17 +17,15 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RegisterJobSeekerModel> _logger;
-        private readonly IAWSService _AWSService;
 
         public RegisterJobSeekerModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterJobSeekerModel> logger, IAWSService AWSService)
+            ILogger<RegisterJobSeekerModel> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _AWSService = AWSService;
         }
 
         [BindProperty]
@@ -54,10 +51,6 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            [Display(Name = "Resume")]
-            public IFormFile Resume { get; set; }
-
-            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -77,8 +70,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            List<string> errors = _AWSService.validateFile(Input.Resume);
-            if (ModelState.IsValid && errors.Count == 0)
+            if (ModelState.IsValid)
             {
 
                 ApplicationUser user = new ApplicationUser
@@ -96,22 +88,11 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    string resumeKEY = "";
-                    if (ModelState.IsValid)
-                    {
-                        //resumeKEY = await _AWSService.UploadStreamToBucket("ajobboard",
-                        //    "Resumes/" + user.Id + Input.Resume.FileName,
-                        //    Input.Resume.ContentType, Input.Resume.OpenReadStream());
-                    }
-                    else
-                    {
-                        return Page();
-                    }
-                    user.Documents.Add(new Document { URL = resumeKEY, IsResume = true, IsOtherDoc = false });
 
                     await _userManager.UpdateAsync(user);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
                     return LocalRedirect(returnUrl);
                 }
                 foreach (IdentityError error in result.Errors)
@@ -120,7 +101,6 @@ namespace AJobBoard.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }

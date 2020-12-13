@@ -31,7 +31,6 @@ namespace AJobBoard.Data
             .HasForeignKey(x => x.JobPostingId)
             .OnDelete(DeleteBehavior.SetNull);
 
-
             builder.Entity<ApplicationUser>()
             .HasMany(c => c.CreatedJobPostings)
             .WithOne(e => e.Poster)
@@ -51,10 +50,8 @@ namespace AJobBoard.Data
             .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<JobPosting>().Property(n => n.Id);
-
             builder.Entity<JobPosting>().HasIndex(n => n.URL);
             builder.Entity<JobPosting>().HasIndex(n => n.Title);
-
             builder.Entity<KeyPhrase>().HasIndex(n => n.Affinty);
         }
 

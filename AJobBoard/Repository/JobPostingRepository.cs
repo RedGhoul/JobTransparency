@@ -232,7 +232,7 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
-            
+
             string cacheKey = "RandomSetOfJobs";
             await _cache.RemoveAsync(cacheKey);
             string jobPostingString = await _cache.GetStringAsync(cacheKey);
@@ -289,7 +289,7 @@ namespace AJobBoard.Data
             return jobs;
         }
 
-        public async Task<List<JobPostingDTO>> GetAllFromElastic()
+        public List<JobPostingDTO> GetAllFromElastic()
         {
             List<JobPostingDTO> jobsCollection = _es.GetAllJobPostings();
             return jobsCollection;
@@ -301,5 +301,6 @@ namespace AJobBoard.Data
                 .Where(x => x.Summary.Length <= 4 && !x.Summary.Contains("NULL")).ToListAsync();
             return jobs;
         }
+
     }
 }

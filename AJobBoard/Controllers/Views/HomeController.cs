@@ -45,16 +45,6 @@ namespace AJobBoard.Controllers.Views
             return View();
         }
 
-        public IActionResult DataIngest()
-        {
-            return View();
-        }
-
-        public IActionResult RegisterType()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,5 +1,4 @@
 ﻿using AJobBoard.Models.Dto;
-using AJobBoard.Models.Entity;
 using AJobBoard.Utils.Config;
 using Microsoft.Extensions.Configuration;
 using Nest;
@@ -58,7 +57,7 @@ namespace AJobBoard.Services
                 ).Sort(q => q.Descending(u => u.DateAdded))
             );
 
-          
+
 
             IReadOnlyCollection<JobPostingDTO> JobPosting = searchResponses.Documents;
             return (List<JobPostingDTO>)JobPosting;
@@ -114,16 +113,5 @@ namespace AJobBoard.Services
 
         }
 
-        public async Task CreateJobPostingBulk(List<JobPosting> jobPostings)
-        {
-
-        }
-
-
-        public void UpdateJobPosting(JobPosting jobPosting)
-        {
-
-
-        }
     }
 }

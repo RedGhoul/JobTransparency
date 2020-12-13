@@ -19,9 +19,9 @@ namespace AJobBoard.Data
 
         public async Task<bool> AddApplyToUser(string ApplierId, int JobPostingId)
         {
-            if(_ctx.JobPostings.Any(x => x.Id.Equals(JobPostingId)) 
+            if (_ctx.JobPostings.Any(x => x.Id.Equals(JobPostingId))
                 && _ctx.Users.Any(x => x.Id.Equals(ApplierId))
-                && !_ctx.Applies.Any(x => x.JobPostingId == JobPostingId 
+                && !_ctx.Applies.Any(x => x.JobPostingId == JobPostingId
                 && x.ApplierId.Equals(ApplierId)))
             {
                 var newApply = new Apply

@@ -52,21 +52,5 @@ namespace AJobBoard.Controllers.Views
             return View(vm);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            //var currentApply = await _appliesRepository.GetApplyAsync(id);
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTrue(int id)
-        {
-            bool deletedApply = await _appliesRepository.DeleteAppliesAsync(id);
-
-            return Redirect(nameof(Index));
-        }
-
     }
 }
