@@ -16,13 +16,13 @@ namespace AJobBoard.Data
     public class JobPostingRepository : IJobPostingRepository
     {
         private readonly ApplicationDbContext _ctx;
-        private readonly IDistributedCache _cache;
+       
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx, IDistributedCache cache, ElasticService es)
+        public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx, ElasticService es)
         {
             _ctx = ctx;
-            _cache = cache;
+           
             _es = es;
             _mapper = mapper;
         }
@@ -43,21 +43,9 @@ namespace AJobBoard.Data
 
         }
 
-        public async Task<string> GetTotalAsync()
+        public string GetTotal()
         {
-            string cacheKey = "TotalJobs";
-            string totalJobs = await _cache.GetStringAsync(cacheKey);
-            if (string.IsNullOrEmpty(totalJobs))
-            {
-
-                var totalJobsNum = _ctx.JobPostings.Count();
-                DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromDays(1));
-                await _cache.SetStringAsync(cacheKey, totalJobsNum.ToString(), options);
-                return totalJobsNum.ToString();
-            }
-
-            return totalJobs;
+            return _ctx.JobPostings.Count().ToString();
         }
 
         public async Task<bool> Exists(TestCheckDTO tcDTO)
@@ -92,22 +80,7 @@ namespace AJobBoard.Data
 
         public async Task<JobPosting> GetById(int id)
         {
-            string cacheKey = "JobSingle" + id;
-            string jobPostingString = await _cache.GetStringAsync(cacheKey);
-
-            JobPosting jobPosting = null;
-            if (string.IsNullOrEmpty(jobPostingString) || jobPostingString.ToLower().Equals("null"))
-            {
-                jobPosting = await _ctx.JobPostings.FindAsync(id);
-                DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromDays(1));
-                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPosting), options);
-            }
-            else
-            {
-                jobPosting = JsonConvert.DeserializeObject<JobPosting>(jobPostingString);
-            }
-
+            var jobPosting = await _ctx.JobPostings.FindAsync(id);
 
             return jobPosting;
         }
@@ -232,25 +205,7 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
-
-            string cacheKey = "RandomSetOfJobs";
-            await _cache.RemoveAsync(cacheKey);
-            string jobPostingString = await _cache.GetStringAsync(cacheKey);
-
-            List<JobPostingDTO> jobPostings;
-            if (string.IsNullOrEmpty(jobPostingString) || jobPostingString.ToLower().Equals("null"))
-            {
-                jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 13)).Take(10).ToListAsync());
-                DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-                options.SetSlidingExpiration(TimeSpan.FromMilliseconds(1));
-                await _cache.SetStringAsync(cacheKey, JsonConvert.SerializeObject(jobPostings), options);
-            }
-            else
-            {
-                jobPostings = JsonConvert.DeserializeObject<List<JobPostingDTO>>(jobPostingString);
-            }
-
-
+            var jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 13)).Take(10).ToListAsync());
             return jobPostings;
         }
 

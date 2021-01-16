@@ -48,7 +48,7 @@ namespace AJobBoard.Controllers.Views
 
             List<JobPostingDTO> result = await _jobPostingRepository.ConfigureSearch(homeIndexVm);
 
-            string count = await _jobPostingRepository.GetTotalAsync();
+            string count = _jobPostingRepository.GetTotal();
 
             ViewBag.MaxPage = int.Parse(count) / homeIndexVm.FindModel.Page;
 

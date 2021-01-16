@@ -142,7 +142,7 @@ namespace Jobtransparency
                 AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_PROD");
             }
 
-            services.AddDistributedRedisCache(options => options.Configuration = AppDBConnectionString = Secrets.getConnectionString(Configuration, "AppCacheConnectionString"));
+            //services.AddDistributedRedisCache(options => options.Configuration = AppCacheConnectionString);
 
             services.AddDbContext<ApplicationDbContext>(options =>
               options.UseMySql(

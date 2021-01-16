@@ -10,12 +10,11 @@ namespace AJobBoard.Data
     public class KeyPharseRepository : IKeyPharseRepository
     {
         private readonly ApplicationDbContext _ctx;
-        private readonly IDistributedCache _cache;
+       
 
-        public KeyPharseRepository(ApplicationDbContext ctx, IDistributedCache cache)
+        public KeyPharseRepository(ApplicationDbContext ctx)
         {
             _ctx = ctx;
-            _cache = cache;
         }
 
         public void CreateKeyPhrases(List<KeyPhrase> KeyPhrases)
