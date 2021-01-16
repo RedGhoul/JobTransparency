@@ -6,14 +6,16 @@ using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using AutoMapper;
 using Hangfire;
-using Hangfire.PostgreSql;
+using Hangfire.MySql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
+using System.Data;
 
 namespace Jobtransparency
 {
@@ -140,17 +142,33 @@ namespace Jobtransparency
                 AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_PROD");
             }
 
-            services.AddDistributedRedisCache(option =>
-            {
-                option.Configuration = AppCacheConnectionString;
-            });
-
+            services.AddDistributedRedisCache(options => options.Configuration = AppDBConnectionString = Secrets.getConnectionString(Configuration, "AppCacheConnectionString"));
 
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseNpgsql(AppDBConnectionString));
+              options.UseMySql(
+                        // Replace with your connection string.
+                        AppDBConnectionString,
+                        // Replace with your server version and type.
+                        // For common usages, see pull request #1233.
+                        new MySqlServerVersion(new Version(8, 0, 21)), // use MariaDbServerVersion for MariaDB
+                        mySqlOptions => mySqlOptions
+                            .CharSetBehavior(CharSetBehavior.NeverAppend))
+                    // Everything from this point on is optional but helps with debugging.
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors());
 
             services.AddHangfire(config =>
-                 config.UsePostgreSqlStorage(AppDBConnectionString));
+                 config.UseStorage(new MySqlStorage(AppDBConnectionString,new MySqlStorageOptions
+                 {
+                     TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
+                     QueuePollInterval = TimeSpan.FromSeconds(15),
+                     JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                     CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                     PrepareSchemaIfNecessary = true,
+                     DashboardJobListLimit = 50000,
+                     TransactionTimeout = TimeSpan.FromMinutes(1),
+                     TablesPrefix = "Hangfire"
+                 })));
         }
     }
 }
