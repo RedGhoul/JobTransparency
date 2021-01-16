@@ -92,49 +92,49 @@ namespace AJobBoard.Controllers.API
                 return BadRequest();
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
-            //try
-            //{
-            //    KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
-            //    if (wrapper?.rank_list != null)
-            //    {
-            //        List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
+            try
+            {
+                KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
+                if (wrapper?.rank_list != null)
+                {
+                    List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
 
-            //        foreach (KeyPhraseDTO item in wrapper.rank_list)
-            //        {
-            //            listKeyPhrase.Add(new KeyPhrase
-            //            {
-            //                Affinty = item.Affinty,
-            //                Text = item.Text,
-            //                JobPosting = newPosting
-            //            });
-            //        }
-            //        newPosting.KeyPhrases = listKeyPhrase;
-            //    }
+                    foreach (KeyPhraseDTO item in wrapper.rank_list)
+                    {
+                        listKeyPhrase.Add(new KeyPhrase
+                        {
+                            Affinty = item.Affinty,
+                            Text = item.Text,
+                            JobPosting = newPosting
+                        });
+                    }
+                    newPosting.KeyPhrases = listKeyPhrase;
+                }
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
-            //try
-            //{
-            //    SummaryDTO NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
-            //    if (NLTKSummary != null)
-            //    {
-            //        newPosting.Summary = NLTKSummary.SummaryText;
-            //    }
-            //    else
-            //    {
-            //        newPosting.Summary = "none";
-            //    }
+            try
+            {
+                SummaryDTO NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                if (NLTKSummary != null)
+                {
+                    newPosting.Summary = NLTKSummary.SummaryText;
+                }
+                else
+                {
+                    newPosting.Summary = "none";
+                }
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //}
-            //await _JobPostingRepository.Put(newPosting.Id, newPosting);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            await _JobPostingRepository.Put(newPosting.Id, newPosting);
             await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }
