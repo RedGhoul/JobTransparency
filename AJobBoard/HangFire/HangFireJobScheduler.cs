@@ -10,24 +10,24 @@ namespace Jobtransparency.Utils.HangFire
         public static void ScheduleRecurringJobs()
         {
             RecurringJob.RemoveIfExists(nameof(KeyPhraseGeneratorJob));
-            //RecurringJob.AddOrUpdate<KeyPhraseGeneratorJob>(nameof(KeyPhraseGeneratorJob),
-            //    job => job.Run(JobCancellationToken.Null),
-            //    Cron.Weekly(DayOfWeek.Monday, 5, 33), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<KeyPhraseGeneratorJob>(nameof(KeyPhraseGeneratorJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Weekly(DayOfWeek.Monday, 5, 33), TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(SummaryGeneratorJob));
-            //RecurringJob.AddOrUpdate<SummaryGeneratorJob>(nameof(SummaryGeneratorJob),
-            //    job => job.Run(JobCancellationToken.Null),
-            //    Cron.Weekly(DayOfWeek.Friday, 5, 33), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<SummaryGeneratorJob>(nameof(SummaryGeneratorJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Weekly(DayOfWeek.Friday, 5, 33), TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(ReIndexJobPostingsJob));
-            //RecurringJob.AddOrUpdate<ReIndexJobPostingsJob>(nameof(ReIndexJobPostingsJob),
-            //    job => job.Run(JobCancellationToken.Null),
-            //    Cron.Monthly(27, 1), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<ReIndexJobPostingsJob>(nameof(ReIndexJobPostingsJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Monthly(27, 1), TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(KeepHangFireAliveJob));
-            //RecurringJob.AddOrUpdate<KeepHangFireAliveJob>(nameof(KeepHangFireAliveJob),
-            //    job => job.Run(JobCancellationToken.Null),
-            //    Cron.Minutely(), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate<KeepHangFireAliveJob>(nameof(KeepHangFireAliveJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Minutely(), TimeZoneInfo.Local);
         }
     }
 }
