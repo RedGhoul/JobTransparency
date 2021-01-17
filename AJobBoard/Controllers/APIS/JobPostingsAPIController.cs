@@ -101,6 +101,7 @@ namespace AJobBoard.Controllers.API
 
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
+                        
                         listKeyPhrase.Add(new KeyPhrase
                         {
                             Affinty = item.Affinty,
@@ -108,6 +109,7 @@ namespace AJobBoard.Controllers.API
                             JobPosting = newPosting
                         });
                     }
+                    _keyPharseRepository.CreateKeyPhrases(listKeyPhrase);
                     newPosting.KeyPhrases = listKeyPhrase;
                 }
 
@@ -128,13 +130,14 @@ namespace AJobBoard.Controllers.API
                 {
                     newPosting.Summary = "none";
                 }
+                await _JobPostingRepository.Put(newPosting.Id, newPosting);
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            await _JobPostingRepository.Put(newPosting.Id, newPosting);
+            
             await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }

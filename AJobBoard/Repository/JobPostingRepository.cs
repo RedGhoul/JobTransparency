@@ -114,7 +114,7 @@ namespace AJobBoard.Data
         public async Task<JobPosting> Put(int id, JobPosting jobPosting)
         {
 
-            _ctx.Entry(jobPosting).State = EntityState.Modified;
+            //_ctx.Entry(jobPosting).State = EntityState.Modified;
 
             try
             {
