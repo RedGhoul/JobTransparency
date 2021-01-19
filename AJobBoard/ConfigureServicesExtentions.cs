@@ -162,7 +162,7 @@ namespace Jobtransparency
                  {
                      TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
                      QueuePollInterval = TimeSpan.FromSeconds(15),
-                     JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                     JobExpirationCheckInterval = TimeSpan.FromMinutes(1),
                      CountersAggregateInterval = TimeSpan.FromMinutes(5),
                      PrepareSchemaIfNecessary = true,
                      DashboardJobListLimit = 50000,
