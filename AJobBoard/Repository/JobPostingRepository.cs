@@ -51,9 +51,8 @@ namespace AJobBoard.Data
         public async Task<bool> Exists(TestCheckDTO tcDTO)
         {
             JobPosting jobPosting = await _ctx.JobPostings
-                .Where(x => x.URL.Equals(tcDTO.url) == true &&
-                x.Description.Equals(tcDTO.description) == true &&
-                x.Title.Equals(tcDTO.title) == true)
+                .Where(x => x.Description.Equals(tcDTO.description) == true &&
+                    x.Title.Equals(tcDTO.title) == true)
                 .FirstOrDefaultAsync();
 
             if (jobPosting != null)
