@@ -4,6 +4,7 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,16 @@ namespace AJobBoard.Controllers.API
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
-
+        ILogger<JobPostingsAPIController> _logger;
         public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
-            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService)
+            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService,ILogger<JobPostingsAPIController> logger)
         {
             _JobPostingRepository = JobPostingRepository;
             _nltkService = NLTKService;
             _keyPharseRepository = KeyPharseRepository;
             _es = elasticService;
             _mapper = mapper;
+            _logger = logger;
         }
 
 
