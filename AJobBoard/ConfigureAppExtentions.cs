@@ -45,7 +45,7 @@ namespace Jobtransparency
                 SchedulePollingInterval = TimeSpan.FromMinutes(1),
                 HeartbeatInterval = TimeSpan.FromSeconds(20),
                 ServerCheckInterval = TimeSpan.FromSeconds(20),
-                WorkerCount = 4,
+                WorkerCount = Environment.ProcessorCount,
                 ServerName = "Jobs"
             });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
