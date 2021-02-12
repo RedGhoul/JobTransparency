@@ -60,6 +60,8 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            public string isBot { get; set; }
         }
 
         public void OnGet(string returnUrl = null)
@@ -70,7 +72,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(Input.isBot))
             {
 
                 ApplicationUser user = new ApplicationUser
@@ -91,9 +93,9 @@ namespace AJobBoard.Areas.Identity.Pages.Account
 
                     await _userManager.UpdateAsync(user);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    return LocalRedirect(returnUrl);
+                    return RedirectToPage("/Account/Login", new { area = "Identity" });
                 }
                 foreach (IdentityError error in result.Errors)
                 {
