@@ -22,6 +22,7 @@ namespace AJobBoard
             }
             catch (Exception e)
             {
+                configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
                 Console.WriteLine(e);
             }
 
