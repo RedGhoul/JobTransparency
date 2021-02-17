@@ -23,11 +23,6 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.AddOrUpdate<ReIndexJobPostingsJob>(nameof(ReIndexJobPostingsJob),
                 job => job.Run(JobCancellationToken.Null),
                 Cron.Monthly(27, 1), TimeZoneInfo.Local);
-
-            RecurringJob.RemoveIfExists(nameof(KeepHangFireAliveJob));
-            RecurringJob.AddOrUpdate<KeepHangFireAliveJob>(nameof(KeepHangFireAliveJob),
-                job => job.Run(JobCancellationToken.Null),
-                Cron.Minutely(), TimeZoneInfo.Local);
         }
     }
 }

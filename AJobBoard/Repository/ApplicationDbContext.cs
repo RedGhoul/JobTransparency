@@ -53,6 +53,11 @@ namespace AJobBoard.Data
             builder.Entity<JobPosting>().HasIndex(n => n.URL);
             builder.Entity<JobPosting>().HasIndex(n => n.Title);
             builder.Entity<KeyPhrase>().HasIndex(n => n.Affinty);
+
+            builder.Entity<JobPosting>().HasIndex(x => new { x.Description, x.Summary, x.Company }).IsFullText();
+            builder.Entity<JobPosting>().HasIndex(x => x.Description).IsFullText();
+            builder.Entity<JobPosting>().HasIndex(x => x.Summary).IsFullText();
+            builder.Entity<JobPosting>().HasIndex(x => x.Company).IsFullText();
         }
 
 

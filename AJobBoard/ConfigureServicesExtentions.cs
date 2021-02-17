@@ -128,37 +128,19 @@ namespace Jobtransparency
 
         public static void UseDataStores(this IServiceCollection services, IConfiguration Configuration)
         {
-            string AppDBConnectionString = "";
-            string AppCacheConnectionString = "";
-
-            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
-            {
-                AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_LOCAL");
-                AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_LOCAL");
-            }
-            else
-            {
-                AppDBConnectionString = Secrets.getConnectionString(Configuration, "JobTransparncy_DB_PROD");
-                AppCacheConnectionString = Secrets.getConnectionString(Configuration, "RedisConnection_PROD");
-            }
-
-            //services.AddDistributedRedisCache(options => options.Configuration = AppCacheConnectionString);
+            string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
               options.UseMySql(
-                        // Replace with your connection string.
                         AppDBConnectionString,
-                        // Replace with your server version and type.
-                        // For common usages, see pull request #1233.
-                        new MySqlServerVersion(new Version(8, 0, 21)), // use MariaDbServerVersion for MariaDB
+                        new MySqlServerVersion(new Version(8, 0, 21)),
                         mySqlOptions => mySqlOptions
                             .CharSetBehavior(CharSetBehavior.NeverAppend))
-                    // Everything from this point on is optional but helps with debugging.
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors());
 
             services.AddHangfire(config =>
-                 config.UseStorage(new MySqlStorage(AppDBConnectionString,new MySqlStorageOptions
+                 config.UseStorage(new MySqlStorage(AppDBConnectionString, new MySqlStorageOptions
                  {
                      TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
                      QueuePollInterval = TimeSpan.FromSeconds(15),
@@ -169,6 +151,10 @@ namespace Jobtransparency
                      TransactionTimeout = TimeSpan.FromMinutes(1),
                      TablesPrefix = "Hangfire"
                  })));
+
+
         }
+
+        
     }
 }

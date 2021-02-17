@@ -27,19 +27,19 @@ namespace AJobBoard.Services
 
         public NLTKService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<NLTKService> logger)
         {
-            _nltkSecretKey = Secrets.getAppSettingsValue(configuration, "Auth-FlaskNLTK");
-            _urlflask = Secrets.getAppSettingsValue(configuration, "FlaskNLTK-Prod");
-            _GetNLTKKeyPhrases = Secrets.getAppSettingsValue(configuration, "_GetNLTKKeyPhrases");
-            _GetNLTKSummary = Secrets.getAppSettingsValue(configuration, "_GetNLTKSummary");
+            _nltkSecretKey = Secrets.GetAppSettingsValue(configuration, "Auth-FlaskNLTK");
+            _urlflask = Secrets.GetAppSettingsValue(configuration, "FlaskNLTK-Prod");
+            _GetNLTKKeyPhrases = Secrets.GetAppSettingsValue(configuration, "_GetNLTKKeyPhrases");
+            _GetNLTKSummary = Secrets.GetAppSettingsValue(configuration, "_GetNLTKSummary");
             _clientFactory = clientFactory;
 
             _retryPolicyKeyPhrases = Policy<KeyPhrasesWrapperDTO>
                .Handle<HttpRequestException>().RetryAsync(
-               Int32.Parse(Secrets.getAppSettingsValue(configuration, "MaxRetry")));
+               Int32.Parse(Secrets.GetAppSettingsValue(configuration, "MaxRetry")));
 
             _retryPolicySummary = Policy<SummaryDTO>
                .Handle<HttpRequestException>().RetryAsync(
-               Int32.Parse(Secrets.getAppSettingsValue(configuration, "MaxRetry")));
+               Int32.Parse(Secrets.GetAppSettingsValue(configuration, "MaxRetry")));
 
             _Logger = logger;
         }

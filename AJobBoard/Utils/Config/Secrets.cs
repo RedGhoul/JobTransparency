@@ -6,7 +6,7 @@ namespace AJobBoard.Utils.Config
     public static class Secrets
     {
 
-        public static string getAppSettingsValue(IConfiguration Configuration, string name)
+        public static string GetAppSettingsValue(IConfiguration Configuration, string name)
         {
             try
             {
@@ -26,7 +26,7 @@ namespace AJobBoard.Utils.Config
             return Environment.GetEnvironmentVariable(name);
         }
 
-        public static string getConnectionString(IConfiguration Configuration, string name)
+        public static string GetConnectionString(IConfiguration Configuration, string name)
         {
             try
             {
@@ -44,6 +44,25 @@ namespace AJobBoard.Utils.Config
             }
 
             return Environment.GetEnvironmentVariable(name);
+        }
+
+        public static string GetDBConnectionString(IConfiguration Configuration)
+        {
+            string AppDBConnectionString = "";
+            string AppCacheConnectionString = "";
+
+            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
+            {
+                AppDBConnectionString = GetConnectionString(Configuration, "JobTransparncy_DB_LOCAL");
+                AppCacheConnectionString = GetConnectionString(Configuration, "RedisConnection_LOCAL");
+            }
+            else
+            {
+                AppDBConnectionString = GetConnectionString(Configuration, "JobTransparncy_DB_PROD");
+                AppCacheConnectionString = GetConnectionString(Configuration, "RedisConnection_PROD");
+            }
+
+            return AppDBConnectionString;
         }
 
 

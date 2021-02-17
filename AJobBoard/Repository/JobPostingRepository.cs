@@ -215,9 +215,15 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            List<JobPostingDTO> jobsCollection = await _es.QueryJobPosting(fromNumber, homeIndexVm.FindModel.KeyWords);
+            var Description = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Description, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
+            var Summary = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Summary, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
+            var Company = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Company, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
 
-            return jobsCollection;
+            var result = await Description
+                .Concat(Summary)
+                .Concat(Company).Distinct().Take(12).ToListAsync();
+
+            return _mapper.Map<List<JobPostingDTO>>(result);
         }
 
         public JobPosting GetByIdWithKeyPhrases(int id)
