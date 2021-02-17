@@ -23,7 +23,7 @@ namespace AJobBoard.Controllers.API
         private readonly IMapper _mapper;
         ILogger<JobPostingsAPIController> _logger;
         public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
-            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService,ILogger<JobPostingsAPIController> logger)
+            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService, ILogger<JobPostingsAPIController> logger)
         {
             _JobPostingRepository = JobPostingRepository;
             _nltkService = NLTKService;
@@ -103,7 +103,7 @@ namespace AJobBoard.Controllers.API
 
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
-                        
+
                         listKeyPhrase.Add(new KeyPhrase
                         {
                             Affinty = item.Affinty,
@@ -139,7 +139,7 @@ namespace AJobBoard.Controllers.API
             {
                 Console.WriteLine(ex);
             }
-            
+
             await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }

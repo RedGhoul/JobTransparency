@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Sentry;
 using Serilog;
-using Serilog.Sinks.Elasticsearch;
 using System;
 
 namespace AJobBoard

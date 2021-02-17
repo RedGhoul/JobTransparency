@@ -4,7 +4,6 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
-using AutoMapper;
 using Hangfire;
 using Hangfire.MySql;
 using Microsoft.AspNetCore.Builder;
@@ -155,6 +154,6 @@ namespace Jobtransparency
 
         }
 
-        
+
     }
 }

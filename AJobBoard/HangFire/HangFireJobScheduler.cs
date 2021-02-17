@@ -1,6 +1,5 @@
 ﻿using AJobBoard.Utils.HangFire;
 using Hangfire;
-using Jobtransparency.HangFire;
 using System;
 
 namespace Jobtransparency.Utils.HangFire

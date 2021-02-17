@@ -1,4 +1,3 @@
-using Hangfire;
 using Jobtransparency;
 using Jobtransparency.Services;
 using Jobtransparency.Utils.Config;

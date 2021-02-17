@@ -4,8 +4,6 @@ using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +14,13 @@ namespace AJobBoard.Data
     public class JobPostingRepository : IJobPostingRepository
     {
         private readonly ApplicationDbContext _ctx;
-       
+
         private readonly ElasticService _es;
         private readonly IMapper _mapper;
         public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx, ElasticService es)
         {
             _ctx = ctx;
-           
+
             _es = es;
             _mapper = mapper;
         }

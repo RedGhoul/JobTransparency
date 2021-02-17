@@ -1,6 +1,5 @@
 ﻿using AJobBoard.Models.Entity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,7 @@ namespace AJobBoard.Data
     public class KeyPharseRepository : IKeyPharseRepository
     {
         private readonly ApplicationDbContext _ctx;
-       
+
 
         public KeyPharseRepository(ApplicationDbContext ctx)
         {
