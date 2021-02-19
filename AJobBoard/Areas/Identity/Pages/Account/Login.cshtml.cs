@@ -47,7 +47,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
 
-            public bool isBot { get; set; } = false;
+            public string isBot { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -71,7 +71,7 @@ namespace AJobBoard.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
-            if (ModelState.IsValid && Input.isBot == false)
+            if (string.IsNullOrEmpty(Input.isBot))
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
