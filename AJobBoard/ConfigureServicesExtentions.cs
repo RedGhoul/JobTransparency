@@ -138,18 +138,18 @@ namespace Jobtransparency
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors());
 
-            //services.AddHangfire(config =>
-            //     config.UseStorage(new MySqlStorage(AppDBConnectionString, new MySqlStorageOptions
-            //     {
-            //         TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
-            //         QueuePollInterval = TimeSpan.FromSeconds(15),
-            //         JobExpirationCheckInterval = TimeSpan.FromMinutes(1),
-            //         CountersAggregateInterval = TimeSpan.FromMinutes(5),
-            //         PrepareSchemaIfNecessary = true,
-            //         DashboardJobListLimit = 50000,
-            //         TransactionTimeout = TimeSpan.FromMinutes(1),
-            //         TablesPrefix = "Hangfire"
-            //     })));
+            services.AddHangfire(config =>
+                 config.UseStorage(new MySqlStorage(AppDBConnectionString, new MySqlStorageOptions
+                 {
+                     TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
+                     QueuePollInterval = TimeSpan.FromSeconds(15),
+                     JobExpirationCheckInterval = TimeSpan.FromMinutes(1),
+                     CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                     PrepareSchemaIfNecessary = true,
+                     DashboardJobListLimit = 50000,
+                     TransactionTimeout = TimeSpan.FromMinutes(1),
+                     TablesPrefix = "Hangfire"
+                 })));
 
 
         }
