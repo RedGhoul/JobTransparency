@@ -54,12 +54,10 @@ namespace AJobBoard.Utils.Config
             if (Configuration.GetValue<string>("Environment").Equals("Dev"))
             {
                 AppDBConnectionString = GetConnectionString(Configuration, "JobTransparncy_DB_LOCAL");
-                AppCacheConnectionString = GetConnectionString(Configuration, "RedisConnection_LOCAL");
             }
             else
             {
                 AppDBConnectionString = GetConnectionString(Configuration, "JobTransparncy_DB_PROD");
-                AppCacheConnectionString = GetConnectionString(Configuration, "RedisConnection_PROD");
             }
 
             return AppDBConnectionString;
