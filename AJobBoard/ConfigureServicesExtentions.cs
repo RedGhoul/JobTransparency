@@ -5,14 +5,13 @@ using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using Hangfire;
-using Hangfire.MySql;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.Data;
 
@@ -130,27 +129,12 @@ namespace Jobtransparency
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseMySql(
-                        AppDBConnectionString,
-                        new MySqlServerVersion(new Version(8, 0, 21)),
-                        mySqlOptions => mySqlOptions
-                            .CharSetBehavior(CharSetBehavior.NeverAppend))
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors());
+              options.UseNpgsql(AppDBConnectionString));
 
             services.AddHangfire(config =>
-                 config.UseStorage(new MySqlStorage(AppDBConnectionString, new MySqlStorageOptions
-                 {
-                     TransactionIsolationLevel = (System.Transactions.IsolationLevel?)IsolationLevel.ReadCommitted,
-                     QueuePollInterval = TimeSpan.FromSeconds(15),
-                     JobExpirationCheckInterval = TimeSpan.FromMinutes(1),
-                     CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                     PrepareSchemaIfNecessary = true,
-                     DashboardJobListLimit = 50000,
-                     TransactionTimeout = TimeSpan.FromMinutes(1),
-                     TablesPrefix = "Hangfire"
-                 })));
-
+                config.UsePostgreSqlStorage(AppDBConnectionString, new PostgreSqlStorageOptions() {
+                    QueuePollInterval = TimeSpan.FromSeconds(5),
+                }));
 
         }
 

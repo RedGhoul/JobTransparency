@@ -39,6 +39,7 @@ namespace AJobBoard.Controllers.Views
         [HttpGet]
         public async Task<IActionResult> Index(int? pageNumber, string? keywords)
         {
+
             HomeIndexViewModel homeIndexVm = JobPostingHelper.SetDefaultFindModel(new HomeIndexViewModel());
 
             homeIndexVm.FindModel.Page = pageNumber ?? 1;

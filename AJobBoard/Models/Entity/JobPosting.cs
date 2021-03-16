@@ -15,21 +15,15 @@ namespace AJobBoard.Models.Entity
 
         [Column(TypeName = "varchar(255)")]
         public string Title { get; set; }
-        [Column(TypeName = "longtext")]
+        [Column(TypeName = "TEXT")]
         public string Description { get; set; }
-        [Column(TypeName = "longtext")]
+        [Column(TypeName = "TEXT")]
         public string URL { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string Company { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string Location { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string PostDate { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string Salary { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string Posters { get; set; }
-        [Column(TypeName = "varchar(255)")]
         public string JobSource { get; set; }
         public int NumberOfApplies { get; set; }
         public int NumberOfViews { get; set; }
@@ -38,7 +32,7 @@ namespace AJobBoard.Models.Entity
         public string? PosterId { get; set; }
         public DateTime DateAdded { get; set; }
         public List<KeyPhrase> KeyPhrases { get; set; }
-        [Column(TypeName = "longtext")]
+        [Column(TypeName = "TEXT")]
         public string Summary { get; set; }
     }
 }

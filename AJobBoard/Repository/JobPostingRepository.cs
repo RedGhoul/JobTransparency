@@ -213,9 +213,9 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            var Description = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Description, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
-            var Summary = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Summary, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
-            var Company = _ctx.JobPostings.Where(x => EF.Functions.Match(x.Company, homeIndexVm.FindModel.KeyWords, MySqlMatchSearchMode.NaturalLanguage)).Skip(fromNumber).Take(12);
+            var Description = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", x.Description + homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
+            var Summary = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", x.Summary + homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
+            var Company = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
 
             var result = await Description
                 .Concat(Summary)
