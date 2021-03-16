@@ -17,14 +17,14 @@ namespace AJobBoard.Services
 
         public ElasticService(IConfiguration configuration)
         {
-            baseUrlsearch = Secrets.GetConnectionString(configuration, "ElasticIndexBaseUrl");
-            ConnectionSettings settings = new ConnectionSettings(new Uri(baseUrlsearch))
-                .DefaultIndex("jobpostings")
-                .BasicAuthentication(
-                    Secrets.GetAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"),
-                    Secrets.GetAppSettingsValue(configuration, "ELASTIC_PASSWORD_Search"))
-                .RequestTimeout(TimeSpan.FromMinutes(2));
-            elasticClient = new ElasticClient(settings);
+            //baseUrlsearch = Secrets.GetConnectionString(configuration, "ElasticIndexBaseUrl");
+            //ConnectionSettings settings = new ConnectionSettings(new Uri(baseUrlsearch))
+            //    .DefaultIndex("jobpostings")
+            //    .BasicAuthentication(
+            //        Secrets.GetAppSettingsValue(configuration, "ELASTIC_USERNAME_Search"),
+            //        Secrets.GetAppSettingsValue(configuration, "ELASTIC_PASSWORD_Search"))
+            //    .RequestTimeout(TimeSpan.FromMinutes(2));
+            //elasticClient = new ElasticClient(settings);
 
         }
 
