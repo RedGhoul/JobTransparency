@@ -11,7 +11,7 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.RemoveIfExists(nameof(KeyPhraseGeneratorJob));
             RecurringJob.AddOrUpdate<KeyPhraseGeneratorJob>(nameof(KeyPhraseGeneratorJob),
                 job => job.Run(JobCancellationToken.Null),
-                Cron.Daily(12,20), TimeZoneInfo.Local);
+                Cron.Daily(12, 20), TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(SummaryGeneratorJob));
             RecurringJob.AddOrUpdate<SummaryGeneratorJob>(nameof(SummaryGeneratorJob),

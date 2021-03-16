@@ -1,9 +1,6 @@
-﻿using AJobBoard.Utils.Config;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Serilog;
-using System;
 
 namespace AJobBoard
 {
@@ -11,42 +8,7 @@ namespace AJobBoard
     {
         public static void Main(string[] args)
         {
-            IConfiguration configuration = null;
-            try
-            {
-                configuration = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .Build();
-            }
-            catch (Exception e)
-            {
-                configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-                Console.WriteLine(e);
-            }
-
-
-            string AppDBConnectionString = Secrets.GetDBConnectionString(configuration);
-
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                 .WriteTo.MySQL(AppDBConnectionString)
-                .CreateLogger();
-
-            try
-            {
-                Log.Information("Starting up");
-                CreateWebHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Application start-up failed");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-
-
+            CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)

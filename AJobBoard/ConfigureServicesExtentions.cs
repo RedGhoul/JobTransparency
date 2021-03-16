@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Data;
 
 namespace Jobtransparency
 {
@@ -132,7 +131,8 @@ namespace Jobtransparency
               options.UseNpgsql(AppDBConnectionString));
 
             services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(AppDBConnectionString, new PostgreSqlStorageOptions() {
+                config.UsePostgreSqlStorage(AppDBConnectionString, new PostgreSqlStorageOptions()
+                {
                     QueuePollInterval = TimeSpan.FromSeconds(5),
                 }));
 
