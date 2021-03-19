@@ -213,13 +213,7 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            var Description = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", x.Description + homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
-            var Summary = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", x.Summary + homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
-            var Company = _ctx.JobPostings.Where(x => EF.Functions.ToTsVector("english", homeIndexVm.FindModel.KeyWords).Matches("Npgsql")).Skip(fromNumber).Take(12);
-
-            var result = await Description
-                .Concat(Summary)
-                .Concat(Company).Distinct().Take(12).ToListAsync();
+            var result = _ctx.JobPostings.Where(p => p.SearchVector.Matches(homeIndexVm.FindModel.KeyWords)).Skip(fromNumber).Take(12);
 
             return _mapper.Map<List<JobPostingDTO>>(result);
         }

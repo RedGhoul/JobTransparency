@@ -49,15 +49,14 @@ namespace AJobBoard.Data
             .HasForeignKey(x => x.ApplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<JobPosting>().Property(n => n.Id);
-            builder.Entity<JobPosting>().HasIndex(n => n.URL);
-            builder.Entity<JobPosting>().HasIndex(n => n.Title);
-            builder.Entity<KeyPhrase>().HasIndex(n => n.Affinty);
+            builder.Entity<JobPosting>()
+            .HasGeneratedTsVectorColumn(
+                p => p.SearchVector,
+                "english",  // Text search config
+                p => new { p.Description, p.Summary, p.Company })
+            .HasIndex(p => p.SearchVector)
+            .HasMethod("GIN"); 
 
-            builder.Entity<JobPosting>().HasIndex(x => new { x.Description, x.Summary, x.Company }).IsTsVectorExpressionIndex("english");
-            builder.Entity<JobPosting>().HasIndex(x => x.Description).IsTsVectorExpressionIndex("english");
-            builder.Entity<JobPosting>().HasIndex(x => x.Summary).IsTsVectorExpressionIndex("english");
-            builder.Entity<JobPosting>().HasIndex(x => x.Company).IsTsVectorExpressionIndex("english");
         }
 
 

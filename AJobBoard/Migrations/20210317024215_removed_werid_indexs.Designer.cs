@@ -3,16 +3,17 @@ using System;
 using AJobBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using NpgsqlTypes;
 
 namespace Jobtransparency.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210317024215_removed_werid_indexs")]
+    partial class removed_werid_indexs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,12 +197,6 @@ namespace Jobtransparency.Migrations
                     b.Property<string>("Salary")
                         .HasColumnType("text");
 
-                    b.Property<NpgsqlTsVector>("SearchVector")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("tsvector")
-                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
-                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Description", "Summary", "Company" });
-
                     b.Property<string>("Summary")
                         .HasColumnType("TEXT");
 
@@ -213,10 +208,19 @@ namespace Jobtransparency.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Company")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    b.HasIndex("Description")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
                     b.HasIndex("PosterId");
 
-                    b.HasIndex("SearchVector")
-                        .HasMethod("GIN");
+                    b.HasIndex("Summary")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
+
+                    b.HasIndex("Description", "Summary", "Company")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english");
 
                     b.ToTable("JobPostings");
                 });

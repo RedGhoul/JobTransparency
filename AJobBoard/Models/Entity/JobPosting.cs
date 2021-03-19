@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NpgsqlTypes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,5 +35,7 @@ namespace AJobBoard.Models.Entity
         public List<KeyPhrase> KeyPhrases { get; set; }
         [Column(TypeName = "TEXT")]
         public string Summary { get; set; }
+
+        public NpgsqlTsVector SearchVector { get; set; }
     }
 }
