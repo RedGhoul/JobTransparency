@@ -46,16 +46,9 @@ namespace AJobBoard.Data
             builder.Entity<ApplicationUser>()
             .HasMany(c => c.Applies)
             .WithOne(e => e.Applier)
-            .HasForeignKey(x => x.ApplierId)
+            //.HasForeignKey(x => x.ApplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-            builder.Entity<JobPosting>()
-            .HasGeneratedTsVectorColumn(
-                p => p.SearchVector,
-                "english",  // Text search config
-                p => new { p.Description, p.Summary, p.Company })
-            .HasIndex(p => p.SearchVector)
-            .HasMethod("GIN"); 
 
         }
 

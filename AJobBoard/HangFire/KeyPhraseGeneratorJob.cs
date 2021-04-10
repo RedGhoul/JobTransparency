@@ -62,7 +62,7 @@ namespace AJobBoard.Utils.HangFire
 
                         ListKeyPhrase.Add(new KeyPhrase
                         {
-                            Affinty = item.Affinty,
+                            Affinty = float.Parse(item.Affinty),
                             Text = item.Text,
                             JobPostingId = JobPosting.Id
                         });

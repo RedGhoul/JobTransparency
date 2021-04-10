@@ -5,7 +5,7 @@ using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using Hangfire;
-using Hangfire.PostgreSql;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -128,13 +128,20 @@ namespace Jobtransparency
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseNpgsql(AppDBConnectionString));
+              options.UseSqlServer(AppDBConnectionString));
 
-            services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(AppDBConnectionString, new PostgreSqlStorageOptions()
-                {
-                    QueuePollInterval = TimeSpan.FromSeconds(5),
-                }));
+            services.AddHangfire(configuration => configuration
+                             .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                             .UseSimpleAssemblyNameTypeSerializer()
+                             .UseRecommendedSerializerSettings()
+                             .UseSqlServerStorage(AppDBConnectionString, new SqlServerStorageOptions
+                             {
+                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                                 QueuePollInterval = TimeSpan.Zero,
+                                 UseRecommendedIsolationLevel = true,
+                                 DisableGlobalLocks = true
+                             }));
 
         }
 

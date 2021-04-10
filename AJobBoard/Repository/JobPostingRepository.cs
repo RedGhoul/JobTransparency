@@ -213,7 +213,7 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            var result = _ctx.JobPostings.Where(p => p.SearchVector.Matches(homeIndexVm.FindModel.KeyWords)).Skip(fromNumber).Take(12);
+            var result = _ctx.JobPostings.Skip(fromNumber).Take(12);
 
             return _mapper.Map<List<JobPostingDTO>>(result);
         }

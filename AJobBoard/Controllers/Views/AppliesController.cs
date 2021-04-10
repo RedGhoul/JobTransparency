@@ -52,5 +52,10 @@ namespace AJobBoard.Controllers.Views
             return View(vm);
         }
 
+        public async Task<IActionResult> Delete(int applyId)
+        {
+            await _appliesRepository.DeleteAppliesAsync(applyId);
+            return RedirectToAction("Index");
+        }
     }
 }
