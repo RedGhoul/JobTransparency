@@ -21,7 +21,12 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.RemoveIfExists(nameof(GetJobPostingsJob));
             RecurringJob.AddOrUpdate<GetJobPostingsJob>(nameof(GetJobPostingsJob),
                 job => job.Run(JobCancellationToken.Null),
-                Cron.Daily(1, 20), TimeZoneInfo.Local);
+                Cron.Daily(3, 20), TimeZoneInfo.Local);
+
+            RecurringJob.RemoveIfExists(nameof(IsJobExpiredJobPostingsJob));
+            RecurringJob.AddOrUpdate<IsJobExpiredJobPostingsJob>(nameof(IsJobExpiredJobPostingsJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Daily(5, 20), TimeZoneInfo.Local);
         }
     }
 }

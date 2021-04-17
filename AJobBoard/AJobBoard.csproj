@@ -57,6 +57,7 @@
 
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\tech\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
 

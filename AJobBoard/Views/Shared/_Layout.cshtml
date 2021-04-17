@@ -5,6 +5,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    @{ string SEO_Info_Title = (ViewData["SEO_Info_Title"] ?? string.Empty) as string;
+        string SEO_Info_Description = (ViewData["SEO_Info_Description"] ?? string.Empty) as string; }
+    @if (SEO_Info_Title != "")
+    {
+<title>@SEO_Info_Title</title>}
+    @if (SEO_Info_Description != "")
+    {
+<meta name="description" content="@SEO_Info_Description">}
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Job Transparency</title>
@@ -14,7 +24,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/alertify.min.css" integrity="sha256-HyknUQX006D7lC1CzL2BQqMMjX7cQV7unnkuNrYUDgM=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/css/themes/bootstrap.min.css" integrity="sha256-tWRKenfvuraOz4u9wNIkJVrUFbRN712r9WtYhGUPirg=" crossorigin="anonymous" />
-
     <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body id="top">
@@ -40,41 +49,38 @@
 
                         if (User.IsInRole("Admin"))
                         {
-                             <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Job Getting
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="JobGettingConfigs">JobGettingConfigs</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="PositionCities">PositionCities</a>
-                                    <a class="dropdown-item" asp-action="Index" asp-controller="PositionNames">PositionNames</a>
-                                </div>
-                            </div>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Job Getting
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" asp-action="Index" asp-controller="JobGettingConfigs">JobGettingConfigs</a>
+                <a class="dropdown-item" asp-action="Index" asp-controller="PositionCities">PositionCities</a>
+                <a class="dropdown-item" asp-action="Index" asp-controller="PositionNames">PositionNames</a>
+            </div>
+        </div>
                             <li class="nav-item">
                                 <a class="nav-link" href="/hangfire">Hangfire</a>
+                            </li> }
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
                             </li>
-                        }
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">My Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-action="Index" asp-controller="Applies">My Applies</a>
+                                            <li class="nav-item">
+                                                <a class="nav-link" asp-action="Index" asp-controller="Applies">My Applies</a>
 
-                        </li>
+                                            </li>
 
-                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
-                            <button type="submit" class="nav-link btn btn-link">Logout</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/RegisterJobSeeker">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                        </li>
-                    }
+                                                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                                                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                                                            </form> }
+                                                                        else
+                                                                        {
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" asp-area="Identity" asp-page="/Account/RegisterJobSeeker">Register</a>
+                                                            </li>
+                                                                            <li class="nav-item">
+                                                                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                                                            </li>}
                 </ul>
             </div>
         </nav>

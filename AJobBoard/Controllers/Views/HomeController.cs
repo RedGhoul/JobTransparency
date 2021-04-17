@@ -28,8 +28,6 @@ namespace AJobBoard.Controllers.Views
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            _logger.LogInformation("Home called");
-
             ViewBag.TotalJobs = _jobPostingRepository.GetTotal();
             return View(
                 new HomeIndexViewModel(

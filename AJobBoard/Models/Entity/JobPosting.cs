@@ -29,5 +29,6 @@ namespace AJobBoard.Models.Entity
         public DateTime DateAdded { get; set; }
         public List<KeyPhrase> KeyPhrases { get; set; }
         public string Summary { get; set; }
+        public bool Expried { get; set; } = false;
     }
 }

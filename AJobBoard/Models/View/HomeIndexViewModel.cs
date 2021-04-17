@@ -25,8 +25,7 @@ namespace AJobBoard.Models.View
 
         private static string GenerateRandomFrontImage()
         {
-            return "https://staticassetsforsites.s3-us-west-2.amazonaws.com/tech" + new Random().Next(1, 10) +
-                   "-min.jpg";
+            return "/images/tech/" + new Random().Next(1, 10) +".jpg";
         }
     }
 }

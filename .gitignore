@@ -35,7 +35,6 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 
-/AJobBoard/wwwroot
 AJobBoard/ScaffoldingReadme.txt
 Scrapper/node_modules
 AJobBoard/appsettings.json
