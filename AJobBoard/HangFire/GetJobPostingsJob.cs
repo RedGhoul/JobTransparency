@@ -54,13 +54,14 @@ namespace AJobBoard.Utils.HangFire
                     var positions = _ctx.PositionName.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
                     foreach (var position in positions)
                     {
-                        foreach (float value in Enumerable.Range(1, int.Parse(mainConfig.MaxNumber)).Select(x => x + 10))
+                        for (int i = 0; i < int.Parse(mainConfig.MaxNumber); i++)
                         {
+                            int currInt = i * 10;
                             string json = JsonConvert.SerializeObject(new
                             {
                                 City = city.Name,
                                 Pos = position.Name,
-                                Start = 0,
+                                Start = currInt,
                                 UA = RandomUa.RandomUserAgent,
                                 Job_Type = "fulltime",
                                 Max_Age = mainConfig.MaxAge,
@@ -78,7 +79,7 @@ namespace AJobBoard.Utils.HangFire
 
                             HttpClient client = _clientFactory.CreateClient("NLTK");
 
-                            var stuff = await client.SendAsync(request);
+                            var stuff = client.Send(request);
                         }
                         
                     }
