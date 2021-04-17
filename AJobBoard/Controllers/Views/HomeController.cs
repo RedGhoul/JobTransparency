@@ -15,13 +15,12 @@ namespace AJobBoard.Controllers.Views
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly ILogger<HomeController> _logger;
-        private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        public HomeController(IMapper mapper, IKeyPharseRepository keyPharseRepository, IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger, ElasticService elasticService)
+        public HomeController(IMapper mapper, IKeyPharseRepository keyPharseRepository, 
+            IJobPostingRepository jobPostingRepository, ILogger<HomeController> logger)
         {
             _jobPostingRepository = jobPostingRepository;
             _logger = logger;
-            _es = elasticService;
             _keyPharseRepository = keyPharseRepository;
             _mapper = mapper;
         }

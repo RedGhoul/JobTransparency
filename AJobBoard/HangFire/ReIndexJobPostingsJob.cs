@@ -16,18 +16,16 @@ namespace AJobBoard.Utils.HangFire
         private readonly ILogger<ReIndexJobPostingsJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly IKeyPharseRepository _keyPharseRepository;
-        private readonly ElasticService _es;
         private readonly ApplicationDbContext _ctx;
         private readonly IMapper _mapper;
-        public ReIndexJobPostingsJob(IKeyPharseRepository keyPharseRepository, IMapper mapper, ILogger<ReIndexJobPostingsJob> logger,
+        public ReIndexJobPostingsJob(IKeyPharseRepository keyPharseRepository, IMapper mapper, 
+            ILogger<ReIndexJobPostingsJob> logger,
             IJobPostingRepository jobPostingRepository,
-            ApplicationDbContext ctx,
-            ElasticService elasticService)
+            ApplicationDbContext ctx)
         {
             _jobPostingRepository = jobPostingRepository;
             _keyPharseRepository = keyPharseRepository;
             _logger = logger;
-            _es = elasticService;
             _ctx = ctx;
             _mapper = mapper;
         }
@@ -41,7 +39,6 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("ReIndexJobPostingsJob Starts... ");
-            await _es.DeleteJobPostingIndexAsync();
             List<JobPosting> jobs = await _jobPostingRepository.GetAll();
             foreach (JobPosting item in jobs)
             {
@@ -49,7 +46,6 @@ namespace AJobBoard.Utils.HangFire
                 List<KeyPhrase> KP = _keyPharseRepository.GetKeyPhrasesAsync(item.Id);
                 List<KeyPhraseDTO> KPDTOs = _mapper.Map<List<KeyPhraseDTO>>(KP);
                 DTO.KeyPhrases = KPDTOs;
-                await _es.CreateJobPostingAsync(DTO);
             }
             _logger.LogInformation("ReIndexJobPostingsJob Ends... ");
         }

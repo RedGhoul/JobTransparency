@@ -1,0 +1,79 @@
+﻿@model List<Jobtransparency.Models.Entity.JobGettingConfig>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<link href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css" rel="stylesheet">
+<style>
+    .float-right.search.btn-group {
+        padding-right: 20px;
+    }
+</style>
+<section class="site-section" style="padding-top:200px; padding-right: 20px; padding-left: 20px;">
+    <div class="container">
+        <h1>Index</h1>
+
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <div class="row btable">
+            <div class="col-md-12">
+                <table id="table"
+                       data-toggle="table"
+                       data-height="900"
+                       data-search="true"
+                       data-page-size="30"
+                       data-page-list="[30, 50, 100, 200, All]"
+                       data-pagination="true">
+                    <thead>
+                        <tr>
+                            <th>
+                                MaxAge
+                            </th>
+                            <th>
+                                MaxNumber
+                            </th>
+                            <th>
+                                Host
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count(); i++)
+                        {
+                            <tr id="tr-id-@i" class="tr-class-@i" data-title="bootstrap table" data-object='{"key": "value"}'>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].MaxAge)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].MaxNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].Host)
+                                </td>
+
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@Model[i].Id">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@Model[i].Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+@section Scripts{
+    <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#table').bootstrapTable()
+        })
+    </script>
+}

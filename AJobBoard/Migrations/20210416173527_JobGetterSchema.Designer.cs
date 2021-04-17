@@ -4,14 +4,16 @@ using AJobBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Jobtransparency.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210416173527_JobGetterSchema")]
+    partial class JobGetterSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,6 +237,26 @@ namespace Jobtransparency.Migrations
                     b.ToTable("KeyPhrase");
                 });
 
+            modelBuilder.Entity("Jobtransparency.Models.Entity.JobGetter.JobType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("JobGettingConfigId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobGettingConfigId");
+
+                    b.ToTable("JobType");
+                });
+
             modelBuilder.Entity("Jobtransparency.Models.Entity.JobGetter.PositionCities", b =>
                 {
                     b.Property<int>("Id")
@@ -295,8 +317,8 @@ namespace Jobtransparency.Migrations
                     b.Property<int>("JobGettingConfigId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Name")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -483,6 +505,17 @@ namespace Jobtransparency.Migrations
                     b.Navigation("JobPosting");
                 });
 
+            modelBuilder.Entity("Jobtransparency.Models.Entity.JobGetter.JobType", b =>
+                {
+                    b.HasOne("Jobtransparency.Models.Entity.JobGettingConfig", "JobGettingConfig")
+                        .WithMany("JobTypes")
+                        .HasForeignKey("JobGettingConfigId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobGettingConfig");
+                });
+
             modelBuilder.Entity("Jobtransparency.Models.Entity.JobGetter.PositionCities", b =>
                 {
                     b.HasOne("Jobtransparency.Models.Entity.JobGettingConfig", "JobGettingConfig")
@@ -574,6 +607,8 @@ namespace Jobtransparency.Migrations
 
             modelBuilder.Entity("Jobtransparency.Models.Entity.JobGettingConfig", b =>
                 {
+                    b.Navigation("JobTypes");
+
                     b.Navigation("PositionCities");
 
                     b.Navigation("PositionName");

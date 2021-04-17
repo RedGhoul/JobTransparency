@@ -19,16 +19,14 @@ namespace AJobBoard.Controllers.API
         private readonly IJobPostingRepository _JobPostingRepository;
         private readonly INLTKService _nltkService;
         private readonly IKeyPharseRepository _keyPharseRepository;
-        private readonly ElasticService _es;
         private readonly IMapper _mapper;
         ILogger<JobPostingsAPIController> _logger;
         public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
-            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ElasticService elasticService, ILogger<JobPostingsAPIController> logger)
+            INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ILogger<JobPostingsAPIController> logger)
         {
             _JobPostingRepository = JobPostingRepository;
             _nltkService = NLTKService;
             _keyPharseRepository = KeyPharseRepository;
-            _es = elasticService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -140,7 +138,6 @@ namespace AJobBoard.Controllers.API
                 Console.WriteLine(ex);
             }
 
-            await _es.CreateJobPostingAsync(_mapper.Map<JobPostingDTO>(newPosting));
             return Ok();
         }
 

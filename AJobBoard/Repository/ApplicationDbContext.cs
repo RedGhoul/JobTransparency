@@ -1,4 +1,6 @@
 ﻿using AJobBoard.Models.Entity;
+using Jobtransparency.Models.Entity;
+using Jobtransparency.Models.Entity.JobGetter;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 namespace AJobBoard.Data
@@ -14,10 +16,19 @@ namespace AJobBoard.Data
         public DbSet<Apply> Applies { get; set; }
         public DbSet<KeyPhrase> KeyPhrase { get; set; }
         public DbSet<Document> Document { get; set; }
+        public DbSet<JobGettingConfig> JobGettingConfig { get; set; }
+        public DbSet<PositionCities> PositionCities { get; set; }
+        public DbSet<PositionName> PositionName { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<PositionCities>().HasOne(x => x.JobGettingConfig).WithMany(x => x.PositionCities)
+                .HasForeignKey(x => x.JobGettingConfigId).OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<PositionName>().HasOne(x => x.JobGettingConfig).WithMany(x => x.PositionName)
+                .HasForeignKey(x => x.JobGettingConfigId).OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<JobPosting>()
             .HasMany(c => c.KeyPhrases)

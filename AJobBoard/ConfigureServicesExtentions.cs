@@ -39,8 +39,6 @@ namespace Jobtransparency
 
             services.AddScoped<ICustomJob, KeyPhraseGeneratorJob>();
             services.AddScoped<ICustomJob, SummaryGeneratorJob>();
-
-            services.AddSingleton<ElasticService, ElasticService>();
             services.AddSingleton<INLTKService, NLTKService>();
         }
 
@@ -111,14 +109,15 @@ namespace Jobtransparency
         {
             services.AddResponseCaching();
             services.AddMvc();
-            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
-            {
-                services.AddRazorPages().AddRazorRuntimeCompilation();
-            }
-            else
-            {
-                services.AddRazorPages();
-            }
+            //if (Configuration.GetValue<string>("Environment").Equals("Dev"))
+            //{
+            //    services.AddRazorPages().AddRazorRuntimeCompilation();
+            //}
+            //else
+            //{
+            //    services.AddRazorPages();
+            //}
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddResponseCompression();
 
         }

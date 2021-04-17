@@ -19,10 +19,8 @@ namespace AJobBoard.Controllers.Views
         private readonly INLTKService _nltkService;
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly IMapper _mapper;
-        private readonly ElasticService _es;
 
         public JobPostingsController(
-            ElasticService elasticService,
             IMapper mapper,
             IJobPostingRepository jobPostingRepository,
             INLTKService nltkService,
@@ -32,7 +30,6 @@ namespace AJobBoard.Controllers.Views
             _nltkService = nltkService;
             _keyPharseRepository = keyPharseRepository;
             _mapper = mapper;
-            _es = elasticService;
         }
 
 

@@ -15,13 +15,10 @@ namespace AJobBoard.Data
     {
         private readonly ApplicationDbContext _ctx;
 
-        private readonly ElasticService _es;
         private readonly IMapper _mapper;
-        public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx, ElasticService es)
+        public JobPostingRepository(IMapper mapper, ApplicationDbContext ctx)
         {
             _ctx = ctx;
-
-            _es = es;
             _mapper = mapper;
         }
 
@@ -239,12 +236,6 @@ namespace AJobBoard.Data
         {
             List<JobPosting> jobs = await _ctx.JobPostings.ToListAsync();
             return jobs;
-        }
-
-        public List<JobPostingDTO> GetAllFromElastic()
-        {
-            List<JobPostingDTO> jobsCollection = _es.GetAllJobPostings();
-            return jobsCollection;
         }
 
         public async Task<List<JobPosting>> GetAllWithOutSummary()
