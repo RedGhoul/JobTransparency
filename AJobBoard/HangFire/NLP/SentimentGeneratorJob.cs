@@ -49,7 +49,7 @@ namespace AJobBoard.Utils.HangFire
             {
                 string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
                 Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(rawText));
-
+                sentiment.JobPostingId = jobPosting.Id;
                 _ctx.Sentiment.Add(sentiment);
                 await _ctx.SaveChangesAsync();
             }
