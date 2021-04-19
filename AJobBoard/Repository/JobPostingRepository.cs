@@ -107,9 +107,6 @@ namespace AJobBoard.Data
 
         public async Task<JobPosting> Put(int id, JobPosting jobPosting)
         {
-
-            //_ctx.Entry(jobPosting).State = EntityState.Modified;
-
             try
             {
                 await _ctx.SaveChangesAsync();
@@ -241,7 +238,9 @@ namespace AJobBoard.Data
         public async Task<List<JobPosting>> GetAllWithOutSummary()
         {
             List<JobPosting> jobs = await _ctx.JobPostings
-                .Where(x => x.Summary.Length <= 4 && !x.Summary.Contains("NULL")).ToListAsync();
+                .Where(x => !x.Summary.Contains("NULL") || 
+                x.Summary == "").ToListAsync();
+
             return jobs;
         }
 

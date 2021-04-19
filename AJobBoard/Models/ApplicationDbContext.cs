@@ -16,9 +16,10 @@ namespace AJobBoard.Data
         public DbSet<Apply> Applies { get; set; }
         public DbSet<KeyPhrase> KeyPhrase { get; set; }
         public DbSet<Document> Document { get; set; }
+        public DbSet<PositionName> PositionName { get; set; }
         public DbSet<JobGettingConfig> JobGettingConfig { get; set; }
         public DbSet<PositionCities> PositionCities { get; set; }
-        public DbSet<PositionName> PositionName { get; set; }
+        public DbSet<Sentiment> Sentiment { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -60,7 +61,10 @@ namespace AJobBoard.Data
             //.HasForeignKey(x => x.ApplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-
+            builder.Entity<JobPosting>()
+            .HasOne(x => x.Sentiment)
+            .WithOne(x => x.JobPosting)
+            .HasForeignKey<Sentiment>(x => x.JobPostingId);
         }
 
 

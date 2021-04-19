@@ -1,6 +1,8 @@
 ﻿using AJobBoard.Models.Dto;
 using AJobBoard.Models.Entity;
 using AutoMapper;
+using Jobtransparency.Models.DTO;
+using Jobtransparency.Models.Entity;
 
 namespace Jobtransparency.AutoMapper
 {
@@ -14,6 +16,8 @@ namespace Jobtransparency.AutoMapper
             CreateMap<KeyPhraseDTO, KeyPhrase>();
             CreateMap<KeyPhrase, KeyPhraseDTO>();
 
+            CreateMap<SentimentDTO, Sentiment>();
+            CreateMap<Sentiment, SentimentDTO>();
 
         }
     }

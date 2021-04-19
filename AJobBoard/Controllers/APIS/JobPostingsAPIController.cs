@@ -94,7 +94,7 @@ namespace AJobBoard.Controllers.API
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
             try
             {
-                KeyPhrasesWrapperDTO wrapper = await _nltkService.GetNLTKKeyPhrases(jobPosting.Description);
+                KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(jobPosting.Description);
                 if (wrapper?.rank_list != null)
                 {
                     List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
@@ -121,7 +121,7 @@ namespace AJobBoard.Controllers.API
 
             try
             {
-                SummaryDTO NLTKSummary = await _nltkService.GetNLTKSummary(jobPosting.Description);
+                SummaryDTO NLTKSummary = await _nltkService.ExtractSummary(jobPosting.Description);
                 if (NLTKSummary != null)
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;

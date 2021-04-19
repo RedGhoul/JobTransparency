@@ -51,7 +51,7 @@ namespace AJobBoard.Utils.HangFire
                 }
 
                 string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                KeyPhrasesWrapperDTO wrapper = await _NLTKService.GetNLTKKeyPhrases(rawText);
+                KeyPhrasesWrapperDTO wrapper = await _NLTKService.ExtractKeyPhrases(rawText);
                 _logger.LogInformation("KeyPhrasesWrapperDTO wrapper");
                 if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                 {

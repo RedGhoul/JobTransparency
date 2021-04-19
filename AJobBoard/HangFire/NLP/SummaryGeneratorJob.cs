@@ -43,7 +43,7 @@ namespace AJobBoard.Utils.HangFire
             foreach (JobPosting jobPosting in jobpostingsWithoutSummaries)
             {
                 string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                SummaryDTO nltkSummary = await _nltkService.GetNLTKSummary(rawText);
+                SummaryDTO nltkSummary = await _nltkService.ExtractSummary(rawText);
 
                 jobPosting.Summary = nltkSummary.SummaryText;
 

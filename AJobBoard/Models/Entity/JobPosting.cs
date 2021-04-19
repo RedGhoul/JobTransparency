@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Jobtransparency.Models.Entity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -28,6 +29,7 @@ namespace AJobBoard.Models.Entity
         public string? PosterId { get; set; }
         public DateTime DateAdded { get; set; }
         public List<KeyPhrase> KeyPhrases { get; set; }
+        public Sentiment Sentiment { get; set; }
         public string Summary { get; set; }
         public bool Expried { get; set; } = false;
     }

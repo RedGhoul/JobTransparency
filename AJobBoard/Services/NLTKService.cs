@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Models.Dto;
 using AJobBoard.Utils.Config;
+using Jobtransparency.Models.DTO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -19,6 +20,7 @@ namespace AJobBoard.Services
         private readonly string _urlflask;
         private readonly string _GetNLTKKeyPhrases;
         private readonly string _GetNLTKSummary;
+        private readonly string _GetNLTKSentiment;
         private readonly string applicationJson = "application/json";
         private readonly IHttpClientFactory _clientFactory;
         private readonly AsyncRetryPolicy<KeyPhrasesWrapperDTO> _retryPolicyKeyPhrases;
@@ -31,6 +33,7 @@ namespace AJobBoard.Services
             _urlflask = Secrets.GetAppSettingsValue(configuration, "FlaskNLTK-Prod");
             _GetNLTKKeyPhrases = Secrets.GetAppSettingsValue(configuration, "_GetNLTKKeyPhrases");
             _GetNLTKSummary = Secrets.GetAppSettingsValue(configuration, "_GetNLTKSummary");
+            _GetNLTKSentiment = Secrets.GetAppSettingsValue(configuration, "_GetNLTKSentiment");
             _clientFactory = clientFactory;
 
             _retryPolicyKeyPhrases = Policy<KeyPhrasesWrapperDTO>
@@ -44,14 +47,14 @@ namespace AJobBoard.Services
             _Logger = logger;
         }
 
-        public async Task<KeyPhrasesWrapperDTO> GetNLTKKeyPhrases(string Description)
+        public async Task<KeyPhrasesWrapperDTO> ExtractKeyPhrases(string Description)
         {
             _Logger.LogInformation($"Sending the following Description {Description} to NLTK Service GetNLTKKeyPhrases");
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get,
                _urlflask + _GetNLTKKeyPhrases);
 
             HttpClient client = _clientFactory.CreateClient("NLTK");
-
+            client.Timeout = TimeSpan.FromMinutes(20);
             return await _retryPolicyKeyPhrases.ExecuteAsync(async () =>
             {
                 string json = JsonConvert.SerializeObject(new
@@ -96,56 +99,95 @@ namespace AJobBoard.Services
             });
         }
 
-        public async Task<SummaryDTO> GetNLTKSummary(string description)
+        public async Task<SentimentDTO> ExtractSentiment(string Description)
         {
-            _Logger.LogInformation($"Sending the following Description {description} to NLTK Service GetNLTKSummary");
+            _Logger.LogInformation($"Sending the following Description {Description} to NLTK Service ExtractSentiment");
+            HttpClient client = _clientFactory.CreateClient("NLTK");
+            client.Timeout = TimeSpan.FromMinutes(20);
+            string json = JsonConvert.SerializeObject(new
+            {
+                data = Description
+            });
+            _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service ExtractSentiment");
+
+            StringContent data = new(json, Encoding.UTF8, applicationJson);
+
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await client.PostAsync(_urlflask + _GetNLTKSentiment, data);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError($"Following Error occured Message {ex.Message} ExtractSentiment");
+                _Logger.LogError($"Following Error occured StackTrace {ex.StackTrace} ExtractSentiment");
+                _Logger.LogError($"Following Error occured InnerException {ex.InnerException} ExtractSentiment");
+
+            }
+
+            string result = response.Content.ReadAsStringAsync().Result;
+
+            try
+            {
+                return JsonConvert.DeserializeObject<SentimentDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError($"Following DeserializeObject Error occured content of result {result} ExtractSentiment");
+                _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} ExtractSentiment");
+                _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} ExtractSentiment");
+                _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} ExtractSentiment");
+
+            }
+            return new SentimentDTO();
+        }
+
+        public async Task<SummaryDTO> ExtractSummary(string Description)
+        {
+            _Logger.LogInformation($"Sending the following Description {Description} to NLTK Service GetNLTKSummary");
 
             HttpClient client = _clientFactory.CreateClient("NLTK");
+            client.Timeout = TimeSpan.FromMinutes(20);
 
-            return await _retryPolicySummary.ExecuteAsync(async () =>
+            string json = JsonConvert.SerializeObject(new
             {
-                string json = JsonConvert.SerializeObject(new
-                {
-                    data = description,
-                    authKey = _nltkSecretKey
-                });
-                _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKSummary");
-
-                StringContent data = new StringContent(json, Encoding.UTF8, applicationJson);
-
-                HttpResponseMessage response = null;
-                try
-                {
-                    response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
-                }
-                catch (Exception ex)
-                {
-                    _Logger.LogError($"Following Error occured Message {ex.Message} GetNLTKSummary");
-                    _Logger.LogError($"Following Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
-                    _Logger.LogError($"Following Error occured InnerException {ex.InnerException} GetNLTKSummary");
-
-                }
-
-                string result = response.Content.ReadAsStringAsync().Result;
-
-                try
-                {
-                    return JsonConvert.DeserializeObject<SummaryDTO>(result);
-                }
-                catch (Exception ex)
-                {
-                    _Logger.LogError($"Following DeserializeObject Error occured content of result {result} GetNLTKSummary");
-                    _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} GetNLTKSummary");
-                    _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
-                    _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} GetNLTKSummary");
-
-                }
-                return new SummaryDTO()
-                {
-                    SummaryText = ""
-                };
+                data = Description
             });
+            _Logger.LogInformation($"Sending the following Payload {json} to NLTK Service GetNLTKSummary");
 
+            StringContent data = new StringContent(json, Encoding.UTF8, applicationJson);
+
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError($"Following Error occured Message {ex.Message} GetNLTKSummary");
+                _Logger.LogError($"Following Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
+                _Logger.LogError($"Following Error occured InnerException {ex.InnerException} GetNLTKSummary");
+
+            }
+
+            string result = response.Content.ReadAsStringAsync().Result;
+
+            try
+            {
+                return JsonConvert.DeserializeObject<SummaryDTO>(result);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError($"Following DeserializeObject Error occured content of result {result} GetNLTKSummary");
+                _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} GetNLTKSummary");
+                _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
+                _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} GetNLTKSummary");
+
+            }
+            return new SummaryDTO()
+            {
+                SummaryText = ""
+            };
         }
 
     }
