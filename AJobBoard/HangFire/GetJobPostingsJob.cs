@@ -49,6 +49,7 @@ namespace AJobBoard.Utils.HangFire
                 var azureFunctionLink = mainConfig.LinkAzureFunction;
 
                 var cities = _ctx.PositionCities.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
+                cities.Reverse();
                 foreach (var city in cities)
                 {
                     var positions = _ctx.PositionName.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
@@ -82,7 +83,7 @@ namespace AJobBoard.Utils.HangFire
                                 Content = new StringContent(json, Encoding.UTF8, ContentType.Json),
                             };
 
-                            HttpClient client = _clientFactory.CreateClient("NLTK");
+                            HttpClient client = new HttpClient();
 
                             var stuff = client.Send(request);
                         }

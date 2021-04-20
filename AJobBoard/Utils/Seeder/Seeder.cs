@@ -3,8 +3,15 @@ using AJobBoard.Models.Entity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using RandomUserAgent;
+using RestSharp.Serialization;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.Seeder
@@ -57,6 +64,7 @@ namespace AJobBoard.Utils.Seeder
                         await UserManager.AddClaimAsync(user, CanDeletePostingClaim);
                     }
                 }
+            
             }
 
         }
