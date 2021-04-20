@@ -9,6 +9,7 @@ using Jobtransparency.Models.Entity;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -43,9 +44,11 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("SentimentGeneratorJob Starts... ");
-            List<JobPosting> jobpostingsWithoutSummaries = await _jobPostingRepository.GetAllWithOutSummary();
+            var JobPostingsWithSentiment = _ctx.Sentiment.ToList().Select(x => x.JobPostingId);
+            List<JobPosting> jobpostingsWithoutSentiment = 
+                _ctx.JobPostings.Where(x => !JobPostingsWithSentiment.Contains(x.Id)).ToList();
 
-            foreach (JobPosting jobPosting in jobpostingsWithoutSummaries)
+            foreach (JobPosting jobPosting in jobpostingsWithoutSentiment)
             {
                 string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
                 Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(rawText));

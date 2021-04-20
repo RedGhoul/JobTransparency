@@ -3,11 +3,13 @@ using AJobBoard.Models.Dto;
 using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using AutoMapper;
+using Jobtransparency.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Controllers.API
@@ -21,7 +23,9 @@ namespace AJobBoard.Controllers.API
         private readonly IKeyPharseRepository _keyPharseRepository;
         private readonly IMapper _mapper;
         ILogger<JobPostingsAPIController> _logger;
-        public JobPostingsAPIController(IMapper mapper, IJobPostingRepository JobPostingRepository,
+        private readonly ApplicationDbContext _ctx;
+
+        public JobPostingsAPIController(ApplicationDbContext ctx, IMapper mapper, IJobPostingRepository JobPostingRepository,
             INLTKService NLTKService, IKeyPharseRepository KeyPharseRepository, ILogger<JobPostingsAPIController> logger)
         {
             _JobPostingRepository = JobPostingRepository;
@@ -29,6 +33,7 @@ namespace AJobBoard.Controllers.API
             _keyPharseRepository = KeyPharseRepository;
             _mapper = mapper;
             _logger = logger;
+            _ctx = ctx;
         }
 
 
@@ -112,7 +117,6 @@ namespace AJobBoard.Controllers.API
                     _keyPharseRepository.CreateKeyPhrases(listKeyPhrase);
                     newPosting.KeyPhrases = listKeyPhrase;
                 }
-
             }
             catch (Exception ex)
             {
@@ -131,7 +135,22 @@ namespace AJobBoard.Controllers.API
                     newPosting.Summary = "none";
                 }
                 await _JobPostingRepository.Put(newPosting.Id, newPosting);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
+            try
+            {
+                string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
+                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(rawText));
+                if (sentiment != null)
+                {
+                    sentiment.JobPostingId = newPosting.Id;
+                    _ctx.Sentiment.Add(sentiment);
+                    await _ctx.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {
