@@ -3,55 +3,58 @@
 @{
     ViewData["Title"] = "Details";
 }
-<section class="site-section" style="padding-top:200px; padding-right: 20px; padding-left: 20px;">
-    <div class="container">
-        <h1>Details</h1>
 
-        <div>
-            <h4>JobGettingConfig</h4>
-            <hr />
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.MaxAge)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.MaxAge)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.MaxNumber)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.MaxNumber)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Host)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Host)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.LinkCheckIfJobExists)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.LinkCheckIfJobExists)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.LinkAzureFunction)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.LinkAzureFunction)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.LinkJobPostingCreation)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.LinkJobPostingCreation)
-                </dd>
-            </dl>
-        </div>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-            <a asp-action="Index">Back to List</a>
-        </div>
-    </div>
-</section>
+<h1>Details</h1>
+
+<div>
+    <h4>JobGettingConfig</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MaxAge)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MaxAge)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MaxNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MaxNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Host)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Host)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LinkCheckIfJobExists)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LinkCheckIfJobExists)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LinkAzureFunction)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LinkAzureFunction)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LinkAzureFunction2)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LinkAzureFunction2)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LinkJobPostingCreation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.LinkJobPostingCreation)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

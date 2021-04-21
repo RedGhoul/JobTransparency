@@ -14,6 +14,7 @@ namespace Jobtransparency.Models.Entity
         public string Host { get; set; }
         public string LinkCheckIfJobExists { get; set; }
         public string LinkAzureFunction { get; set; }
+        public string LinkAzureFunction2 { get; set; }
         public string LinkJobPostingCreation { get; set; }
         public ICollection<PositionCities> PositionCities { get; set; }
         public ICollection<PositionName> PositionName { get; set; }

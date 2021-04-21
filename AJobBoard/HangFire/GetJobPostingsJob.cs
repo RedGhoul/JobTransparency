@@ -46,7 +46,7 @@ namespace AJobBoard.Utils.HangFire
             
             if(mainConfig != null)
             {
-                var azureFunctionLink = mainConfig.LinkAzureFunction;
+                
 
                 var cities = _ctx.PositionCities.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
                 cities.Reverse();
@@ -63,6 +63,17 @@ namespace AJobBoard.Utils.HangFire
 
                         foreach (var item in lissss)
                         {
+                            Random rnd = new Random();
+                            int value = rnd.Next(1, 11);
+                            var azureFuncLink = "";
+                            if(value >= 5)
+                            {
+                                azureFuncLink = mainConfig.LinkAzureFunction;
+                            }
+                            else
+                            {
+                                azureFuncLink = mainConfig.LinkAzureFunction2;
+                            }
                             string json = JsonConvert.SerializeObject(new
                             {
                                 City = city.Name,
@@ -79,7 +90,7 @@ namespace AJobBoard.Utils.HangFire
                             var request = new HttpRequestMessage
                             {
                                 Method = HttpMethod.Get,
-                                RequestUri = new Uri(azureFunctionLink),
+                                RequestUri = new Uri(azureFuncLink),
                                 Content = new StringContent(json, Encoding.UTF8, ContentType.Json),
                             };
 

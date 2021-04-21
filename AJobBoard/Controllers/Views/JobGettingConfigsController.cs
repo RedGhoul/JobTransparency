@@ -7,11 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AJobBoard.Data;
 using Jobtransparency.Models.Entity;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Jobtransparency.Controllers.Views
 {
-    [Authorize(Roles = "Admin")]
     public class JobGettingConfigsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -56,7 +54,7 @@ namespace Jobtransparency.Controllers.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Create([Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkAzureFunction2,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
         {
             if (ModelState.IsValid)
             {
@@ -88,7 +86,7 @@ namespace Jobtransparency.Controllers.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkAzureFunction2,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
         {
             if (id != jobGettingConfig.Id)
             {

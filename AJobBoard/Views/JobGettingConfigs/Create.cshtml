@@ -3,59 +3,61 @@
 @{
     ViewData["Title"] = "Create";
 }
-<section class="site-section" style="padding-top:200px; padding-right: 20px; padding-left: 20px;">
-    <div class="container">
-        <h1>Create</h1>
 
-        <h4>JobGettingConfig</h4>
-        <hr />
-        <div class="row">
-            <div class="col-md-4">
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label asp-for="MaxAge" class="control-label"></label>
-                        <input asp-for="MaxAge" class="form-control" />
-                        <span asp-validation-for="MaxAge" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="MaxNumber" class="control-label"></label>
-                        <input asp-for="MaxNumber" class="form-control" />
-                        <span asp-validation-for="MaxNumber" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Host" class="control-label"></label>
-                        <input asp-for="Host" class="form-control" />
-                        <span asp-validation-for="Host" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="LinkCheckIfJobExists" class="control-label"></label>
-                        <input asp-for="LinkCheckIfJobExists" class="form-control" />
-                        <span asp-validation-for="LinkCheckIfJobExists" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="LinkAzureFunction" class="control-label"></label>
-                        <input asp-for="LinkAzureFunction" class="form-control" />
-                        <span asp-validation-for="LinkAzureFunction" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="LinkJobPostingCreation" class="control-label"></label>
-                        <input asp-for="LinkJobPostingCreation" class="form-control" />
-                        <span asp-validation-for="LinkJobPostingCreation" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-primary" />
-                    </div>
-                </form>
+<h1>Create</h1>
+
+<h4>JobGettingConfig</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaxAge" class="control-label"></label>
+                <input asp-for="MaxAge" class="form-control" />
+                <span asp-validation-for="MaxAge" class="text-danger"></span>
             </div>
-        </div>
+            <div class="form-group">
+                <label asp-for="MaxNumber" class="control-label"></label>
+                <input asp-for="MaxNumber" class="form-control" />
+                <span asp-validation-for="MaxNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Host" class="control-label"></label>
+                <input asp-for="Host" class="form-control" />
+                <span asp-validation-for="Host" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkCheckIfJobExists" class="control-label"></label>
+                <input asp-for="LinkCheckIfJobExists" class="form-control" />
+                <span asp-validation-for="LinkCheckIfJobExists" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkAzureFunction" class="control-label"></label>
+                <input asp-for="LinkAzureFunction" class="form-control" />
+                <span asp-validation-for="LinkAzureFunction" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkAzureFunction2" class="control-label"></label>
+                <input asp-for="LinkAzureFunction2" class="form-control" />
+                <span asp-validation-for="LinkAzureFunction2" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LinkJobPostingCreation" class="control-label"></label>
+                <input asp-for="LinkJobPostingCreation" class="form-control" />
+                <span asp-validation-for="LinkJobPostingCreation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 
-        @section Scripts {
-            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        }
-        </div>
-</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
