@@ -1,6 +1,11 @@
-﻿@model IEnumerable<Jobtransparency.Models.Entity.JobGettingConfig>
+﻿@model List<Jobtransparency.Models.Entity.JobGettingConfig>
 
-
+<link href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css" rel="stylesheet">
+<style>
+    .float-right.search.btn-group {
+        padding-right: 20px;
+    }
+</style>
 <section class="site-section JobPostingList" style="background-color: #343a40;">
     <div class="container">
         @{
@@ -12,67 +17,63 @@
         <p>
             <a asp-action="Create">Create New</a>
         </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.MaxAge)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.MaxNumber)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Host)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LinkCheckIfJobExists)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LinkAzureFunction)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LinkAzureFunction2)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.LinkJobPostingCreation)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaxAge)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaxNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Host)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LinkCheckIfJobExists)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LinkAzureFunction)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LinkAzureFunction2)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.LinkJobPostingCreation)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="row btable">
+            <div class="col-md-12">
+                <table id="table"
+                       data-toggle="table"
+                       data-height="900"
+                       data-search="true"
+                       data-page-size="30"
+                       data-page-list="[30, 50, 100, 200, All]"
+                       data-pagination="true">
+                    <thead>
+                        <tr>
+                            <th>
+                                Max Age
+                            </th>
+                            <th>
+                                Max Number
+                            </th>
+                            <th>
+                                Host
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count(); i++)
+                        {
+                            <tr id="tr-id-@i" class="tr-class-@i" data-title="bootstrap table" data-object='{"key": "value"}'>
 
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].MaxAge)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].MaxNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => Model[i].Host)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@Model[i].Id">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@Model[i].Id">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@Model[i].Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
+@section Scripts{
+    <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#table').bootstrapTable()
+        })
+    </script>
+}
