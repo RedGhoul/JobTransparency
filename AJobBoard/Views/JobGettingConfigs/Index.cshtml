@@ -1,71 +1,78 @@
 ﻿@model IEnumerable<Jobtransparency.Models.Entity.JobGettingConfig>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h1>Index</h1>
+<section class="site-section JobPostingList" style="background-color: #343a40;">
+    <div class="container">
+        @{
+            ViewData["Title"] = "Index";
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxAge)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaxNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Host)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinkCheckIfJobExists)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinkAzureFunction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinkAzureFunction2)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LinkJobPostingCreation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxAge)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Host)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinkCheckIfJobExists)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinkAzureFunction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinkAzureFunction2)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LinkJobPostingCreation)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <h1>Index</h1>
+
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MaxAge)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MaxNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Host)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LinkCheckIfJobExists)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LinkAzureFunction)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LinkAzureFunction2)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.LinkJobPostingCreation)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaxAge)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaxNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Host)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LinkCheckIfJobExists)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LinkAzureFunction)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LinkAzureFunction2)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LinkJobPostingCreation)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</section>
