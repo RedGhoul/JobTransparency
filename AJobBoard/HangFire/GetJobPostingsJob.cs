@@ -13,41 +13,38 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
 {
-    public class GetJobPostingsJob : ICustomJob
+    public class GetJobPostingsJob
     {
+        private const int MillisecondsTimeout = 30000;
         private readonly ILogger<GetJobPostingsJob> _logger;
-        private readonly IHttpClientFactory _clientFactory;
         private readonly ApplicationDbContext _ctx;
 
         public GetJobPostingsJob(
-            IHttpClientFactory clientFactory,
             ILogger<GetJobPostingsJob> logger,
             ApplicationDbContext ctx)
         {
-            _clientFactory = clientFactory;
             _logger = logger;
             _ctx = ctx;
         }
 
-        public async Task Run(IJobCancellationToken token)
+        public void Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await RunAtTimeOf(DateTime.Now);
+            RunAtTimeOf(DateTime.Now);
         }
 
-        public async Task RunAtTimeOf(DateTime now)
+        public void RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("GetJobPostingsJob Starts... ");
             var mainConfig = _ctx.JobGettingConfig.FirstOrDefault(x => x.Id == 1);
             
             if(mainConfig != null)
             {
-                
-
                 var cities = _ctx.PositionCities.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
                 cities.Reverse();
                 foreach (var city in cities)
@@ -55,7 +52,7 @@ namespace AJobBoard.Utils.HangFire
                     var positions = _ctx.PositionName.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
                     foreach (var position in positions)
                     {
-                        List<int> lissss = new List<int>();
+                        List<int> lissss = new();
                         for (int i = 0; i < int.Parse(mainConfig.MaxNumber); i++)
                         {
                             lissss.Add(i * 10);
@@ -63,7 +60,7 @@ namespace AJobBoard.Utils.HangFire
 
                         foreach (var item in lissss)
                         {
-                            Random rnd = new Random();
+                            Random rnd = new();
                             int value = rnd.Next(1, 11);
                             var azureFuncLink = "";
                             if(value >= 5)
@@ -97,6 +94,8 @@ namespace AJobBoard.Utils.HangFire
                             HttpClient client = new HttpClient();
 
                             var stuff = client.Send(request);
+
+                            Thread.Sleep(MillisecondsTimeout);
                         }
                        
 
