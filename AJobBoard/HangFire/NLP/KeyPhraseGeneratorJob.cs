@@ -14,6 +14,7 @@ namespace AJobBoard.Utils.HangFire
 {
     public class KeyPhraseGeneratorJob : ICustomJob
     {
+        private readonly int MinAffintyScore = 5;
         private readonly ILogger<KeyPhraseGeneratorJob> _logger;
         private readonly IJobPostingRepository _jobPostingRepository;
         private readonly INLTKService _NLTKService;
@@ -59,13 +60,17 @@ namespace AJobBoard.Utils.HangFire
                     _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
-
-                        ListKeyPhrase.Add(new KeyPhrase
+                        if (float.Parse(item.Affinty) > MinAffintyScore)
                         {
-                            Affinty = float.Parse(item.Affinty),
-                            Text = item.Text,
-                            JobPostingId = JobPosting.Id
-                        });
+                            ListKeyPhrase.Add(new KeyPhrase
+                            {
+                                Affinty = float.Parse(item.Affinty),
+                                Text = item.Text,
+                                JobPostingId = JobPosting.Id
+                            });
+                        }
+
+                        
                         _logger.LogInformation($"item.Affinty {item.Affinty}");
                         _logger.LogInformation($"item.Text {item.Text}");
 
