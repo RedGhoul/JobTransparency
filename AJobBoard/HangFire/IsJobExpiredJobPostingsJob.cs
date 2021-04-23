@@ -23,7 +23,7 @@ namespace AJobBoard.Utils.HangFire
         private readonly ILogger<GetJobPostingsJob> _logger;
         private readonly IHttpClientFactory _clientFactory;
         private readonly ApplicationDbContext _ctx;
-
+        private const int MillisecondsTimeout = 30000;
         public IsJobExpiredJobPostingsJob(
             IHttpClientFactory clientFactory,
             ILogger<GetJobPostingsJob> logger,
