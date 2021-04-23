@@ -18,6 +18,7 @@ namespace AJobBoard.Controllers.API
     [ApiController]
     public class JobPostingsAPIController : ControllerBase
     {
+        private const int MinAffintyScore = 5;
         private readonly IJobPostingRepository _JobPostingRepository;
         private readonly INLTKService _nltkService;
         private readonly IKeyPharseRepository _keyPharseRepository;
@@ -97,22 +98,27 @@ namespace AJobBoard.Controllers.API
                 return BadRequest();
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
+            var Description = new string(jobPosting.Description.Where(c => !char.IsPunctuation(c)).ToArray());
             try
             {
-                KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(jobPosting.Description);
+                
+                KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
                 if (wrapper?.rank_list != null)
                 {
                     List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
 
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
-
-                        listKeyPhrase.Add(new KeyPhrase
+                        if(float.Parse(item.Affinty) > MinAffintyScore)
                         {
-                            Affinty = float.Parse(item.Affinty),
-                            Text = item.Text,
-                            JobPosting = newPosting
-                        });
+                            listKeyPhrase.Add(new KeyPhrase
+                            {
+                                Affinty = float.Parse(item.Affinty),
+                                Text = item.Text,
+                                JobPosting = newPosting
+                            });
+                        }
+
                     }
                     _keyPharseRepository.CreateKeyPhrases(listKeyPhrase);
                     newPosting.KeyPhrases = listKeyPhrase;
@@ -125,7 +131,7 @@ namespace AJobBoard.Controllers.API
 
             try
             {
-                SummaryDTO NLTKSummary = await _nltkService.ExtractSummary(jobPosting.Description);
+                SummaryDTO NLTKSummary = await _nltkService.ExtractSummary(Description);
                 if (NLTKSummary != null)
                 {
                     newPosting.Summary = NLTKSummary.SummaryText;
@@ -143,8 +149,7 @@ namespace AJobBoard.Controllers.API
 
             try
             {
-                string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(rawText));
+                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(Description));
                 if (sentiment != null)
                 {
                     sentiment.JobPostingId = newPosting.Id;

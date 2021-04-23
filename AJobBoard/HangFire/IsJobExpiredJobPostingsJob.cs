@@ -13,6 +13,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AJobBoard.Utils.HangFire
@@ -64,6 +65,8 @@ namespace AJobBoard.Utils.HangFire
                     curSite.Expried = true;
                     await _ctx.SaveChangesAsync();
                 }
+
+                Thread.Sleep(MillisecondsTimeout);
             }
 
             _logger.LogInformation("IsJobExpiredJobPostingsJob Ends... ");

@@ -46,7 +46,6 @@ namespace AJobBoard.Utils.HangFire
             if(mainConfig != null)
             {
                 var cities = _ctx.PositionCities.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
-                cities.Reverse();
                 foreach (var city in cities)
                 {
                     var positions = _ctx.PositionName.Where(x => x.JobGettingConfigId == mainConfig.Id).ToList();
@@ -55,27 +54,13 @@ namespace AJobBoard.Utils.HangFire
                         List<int> lissss = new();
                         for (int i = 0; i < int.Parse(mainConfig.MaxNumber); i++)
                         {
-                            lissss.Add(i * 10);
-                        }
-
-                        foreach (var item in lissss)
-                        {
-                            Random rnd = new();
-                            int value = rnd.Next(1, 11);
-                            var azureFuncLink = "";
-                            if(value >= 5)
-                            {
-                                azureFuncLink = mainConfig.LinkAzureFunction;
-                            }
-                            else
-                            {
-                                azureFuncLink = mainConfig.LinkAzureFunction2;
-                            }
+                            var startPoint = i * 10;
+                            string azureFuncLink = getRandomAzureFunctionLink(mainConfig);
                             string json = JsonConvert.SerializeObject(new
                             {
                                 City = city.Name,
                                 Pos = position.Name,
-                                Start = item,
+                                Start = startPoint,
                                 UA = RandomUa.RandomUserAgent,
                                 Job_Type = "fulltime",
                                 Max_Age = mainConfig.MaxAge,
@@ -94,16 +79,32 @@ namespace AJobBoard.Utils.HangFire
                             HttpClient client = new HttpClient();
 
                             var stuff = client.Send(request);
-
-                            Thread.Sleep(MillisecondsTimeout);
                         }
-                       
+
+                        Thread.Sleep(MillisecondsTimeout);
 
                     }
                 }
             }
 
             _logger.LogInformation("GetJobPostingsJob Ends... ");
+        }
+
+        private static string getRandomAzureFunctionLink(Jobtransparency.Models.Entity.JobGettingConfig mainConfig)
+        {
+            Random rnd = new();
+            int value = rnd.Next(1, 11);
+            var azureFuncLink = "";
+            if (value >= 5)
+            {
+                azureFuncLink = mainConfig.LinkAzureFunction;
+            }
+            else
+            {
+                azureFuncLink = mainConfig.LinkAzureFunction2;
+            }
+
+            return azureFuncLink;
         }
     }
 }

@@ -50,8 +50,8 @@ namespace AJobBoard.Utils.HangFire
 
             foreach (JobPosting jobPosting in jobpostingsWithoutSentiment)
             {
-                string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(rawText));
+                var Description = new string(jobPosting.Description.Where(c => !char.IsPunctuation(c)).ToArray());
+                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(Description));
                 sentiment.JobPostingId = jobPosting.Id;
                 _ctx.Sentiment.Add(sentiment);
                 await _ctx.SaveChangesAsync();

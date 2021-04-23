@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -50,9 +51,8 @@ namespace AJobBoard.Utils.HangFire
                     continue;
                 }
 
-                string rawText = Regex.Replace(JobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                KeyPhrasesWrapperDTO wrapper = await _NLTKService.ExtractKeyPhrases(rawText);
-                _logger.LogInformation("KeyPhrasesWrapperDTO wrapper");
+                var Description = new string(JobPosting.Description.Where(c => !char.IsPunctuation(c)).ToArray());
+                KeyPhrasesWrapperDTO wrapper = await _NLTKService.ExtractKeyPhrases(Description);
                 if (wrapper != null && wrapper.rank_list != null && wrapper.rank_list.Count > 0)
                 {
                     List<KeyPhrase> ListKeyPhrase = new List<KeyPhrase>();

@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -42,8 +43,8 @@ namespace AJobBoard.Utils.HangFire
 
             foreach (JobPosting jobPosting in jobpostingsWithoutSummaries)
             {
-                string rawText = Regex.Replace(jobPosting.Description, "<.*?>", String.Empty).Replace("  ", " ");
-                SummaryDTO nltkSummary = await _nltkService.ExtractSummary(rawText);
+                var Description = new string(jobPosting.Description.Where(c => !char.IsPunctuation(c)).ToArray());
+                SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
 
                 jobPosting.Summary = nltkSummary.SummaryText;
 
