@@ -20,7 +20,8 @@ namespace AJobBoard.Utils.HangFire
 {
     public class GetJobPostingsJob
     {
-        private const int MillisecondsTimeout = 30000;
+        private const int MilliSecondsTimeoutPerCombo = 30000;
+        private const int MilliSecondsTimeoutPerCall = 5000;
         private readonly ILogger<GetJobPostingsJob> _logger;
         private readonly ApplicationDbContext _ctx;
 
@@ -79,9 +80,11 @@ namespace AJobBoard.Utils.HangFire
                             HttpClient client = new HttpClient();
 
                             var stuff = client.Send(request);
+
+                            Thread.Sleep(MilliSecondsTimeoutPerCall);
                         }
 
-                        Thread.Sleep(MillisecondsTimeout);
+                        Thread.Sleep(MilliSecondsTimeoutPerCombo);
 
                     }
                 }
@@ -94,7 +97,7 @@ namespace AJobBoard.Utils.HangFire
         {
             Random rnd = new();
             int value = rnd.Next(1, 11);
-            var azureFuncLink = "";
+            string azureFuncLink;
             if (value >= 5)
             {
                 azureFuncLink = mainConfig.LinkAzureFunction;
