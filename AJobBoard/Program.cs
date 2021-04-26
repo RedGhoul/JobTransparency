@@ -14,8 +14,8 @@ namespace AJobBoard
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
-                .UseSerilog()
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseSentry(); ;
         }
     }
 }
