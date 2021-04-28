@@ -11,7 +11,7 @@ namespace Jobtransparency.Migrations
                 suppressTransaction: true);
 
             migrationBuilder.Sql(
-                sql: "CREATE FULLTEXT INDEX ON JobPostings(Summary,Title,Company,Location) KEY INDEX PK_JobPostings;",
+                sql: "CREATE FULLTEXT INDEX ON JobPostings(Summary,Title,Company,Location) KEY INDEX PK_JobPostings WITH (CHANGE_TRACKING = AUTO);",
                 suppressTransaction: true);
         }
 
