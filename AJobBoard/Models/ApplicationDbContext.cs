@@ -10,6 +10,7 @@ namespace AJobBoard.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+            
         }
 
         public DbSet<JobPosting> JobPostings { get; set; }

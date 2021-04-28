@@ -69,8 +69,7 @@ namespace AJobBoard.Data
         public async Task<IEnumerable<JobPosting>> GetAllNoneKeywords()
         {
             return await _ctx.JobPostings.Include(x => x.KeyPhrases)
-                .Where(x => x.KeyPhrases == null ||
-                x.KeyPhrases.Count == 0 || x.KeyPhrases.Count == 1).ToListAsync();
+                .Where(x => !x.KeyPhrases.Any()).ToListAsync();
         }
 
         public async Task<JobPosting> GetById(int id)
@@ -197,7 +196,8 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
-            var jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 400)).Take(10).ToListAsync());
+            var jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 400))
+                .OrderByDescending(x => x.DateAdded).Take(10).ToListAsync());
             return jobPostings;
         }
 

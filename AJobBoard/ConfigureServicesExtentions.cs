@@ -18,6 +18,8 @@ namespace Jobtransparency
 {
     public static class ConfigureServicesExtentions
     {
+        private const int CommandTimeout = 3000;
+
         public static void UseAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(Startup));
@@ -109,15 +111,14 @@ namespace Jobtransparency
         {
             services.AddResponseCaching();
             services.AddMvc();
-            //if (Configuration.GetValue<string>("Environment").Equals("Dev"))
-            //{
-            //    services.AddRazorPages().AddRazorRuntimeCompilation();
-            //}
-            //else
-            //{
-            //    services.AddRazorPages();
-            //}
-            services.AddRazorPages().AddRazorRuntimeCompilation();
+            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
+            {
+                services.AddRazorPages().AddRazorRuntimeCompilation();
+            }
+            else
+            {
+                services.AddRazorPages();
+            }
             services.AddResponseCompression();
 
         }
@@ -127,7 +128,10 @@ namespace Jobtransparency
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlServer(AppDBConnectionString));
+              options.UseSqlServer(
+                  AppDBConnectionString,
+                  sqlServerOptions => sqlServerOptions.CommandTimeout(CommandTimeout)
+                  ));
 
             services.AddHangfire(configuration => configuration
                              .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
