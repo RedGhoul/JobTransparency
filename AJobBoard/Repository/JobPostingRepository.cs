@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -207,7 +208,10 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            var result = _ctx.JobPostings.Skip(fromNumber).Take(12);
+            var sql = $@"SELECT * FROM [JobPostings] WHERE 
+                    FREETEXT ((Summary,Title,Company,Location), N'{homeIndexVm.FindModel.KeyWords}')";
+            var result = await _ctx.JobPostings.FromSqlRaw(sql)
+                .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
 
             return _mapper.Map<List<JobPostingDTO>>(result);
         }

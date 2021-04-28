@@ -40,14 +40,6 @@ namespace Jobtransparency
 
         public static void UseHangFireConfiguration(this IApplicationBuilder app)
         {
-            app.UseHangfireServer(new BackgroundJobServerOptions()
-            {
-                SchedulePollingInterval = TimeSpan.FromMinutes(1),
-                HeartbeatInterval = TimeSpan.FromSeconds(20),
-                ServerCheckInterval = TimeSpan.FromSeconds(20),
-                WorkerCount = Environment.ProcessorCount,
-                ServerName = "Jobs"
-            });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangFireAuthorizationFilter() }
