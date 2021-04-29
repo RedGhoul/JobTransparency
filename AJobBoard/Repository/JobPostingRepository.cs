@@ -196,8 +196,9 @@ namespace AJobBoard.Data
         }
         public async Task<List<JobPostingDTO>> GetRandomSet()
         {
-            var jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings.Skip(new Random().Next(1, 400))
-                .OrderByDescending(x => x.DateAdded).Take(10).ToListAsync());
+            var jobPostings = _mapper.Map<List<JobPostingDTO>>(await _ctx.JobPostings
+                .OrderByDescending(x => x.DateAdded).Skip(new Random().Next(20, 400))
+                .Take(10).ToListAsync());
             return jobPostings;
         }
 
@@ -208,12 +209,23 @@ namespace AJobBoard.Data
             {
                 fromNumber = homeIndexVm.FindModel.Page * 12;
             }
-            var sql = $@"SELECT * FROM [JobPostings] WHERE 
-                    FREETEXT ((Summary,Title,Company,Location), N'{homeIndexVm.FindModel.KeyWords}')";
-            var result = await _ctx.JobPostings.FromSqlRaw(sql)
-                .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            List<JobPosting> resultSet;
 
-            return _mapper.Map<List<JobPostingDTO>>(result);
+            if (string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
+            {
+                resultSet = await _ctx.JobPostings
+                   .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            }
+            else
+            {
+                var sql = $@"SELECT * FROM [JobPostings] WHERE 
+                    FREETEXT ((Summary,Title,Company,Location), N'{homeIndexVm.FindModel.KeyWords}')";
+                resultSet = await _ctx.JobPostings.FromSqlRaw(sql)
+                    .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            }
+
+
+            return _mapper.Map<List<JobPostingDTO>>(resultSet);
         }
 
         public JobPosting GetByIdWithKeyPhrases(int id)
