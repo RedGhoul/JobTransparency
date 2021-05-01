@@ -97,16 +97,16 @@ namespace Jobtransparency.HangFire
 
                             foreach (var item in okRemoteJob.Tags)
                             {
-                                if(_ctx.Tags.Any(x => x.Text == item))
+                                if(_ctx.Tags.Any(x => x.Text.Trim() == item.Trim()))
                                 {
-                                    var tagFromDB = _ctx.Tags.Where(x => x.Text == item).FirstOrDefault();
+                                    var tagFromDB = _ctx.Tags.Where(x => x.Text.Trim() == item.Trim()).FirstOrDefault();
                                     newJobPosting.Tags.Add(tagFromDB);
                                 }
                                 else
                                 {
                                     newJobPosting.Tags.Add(new Models.Entity.Tag()
                                     {
-                                        Text = item
+                                        Text = item.Trim()
                                     });
                                 }
 
