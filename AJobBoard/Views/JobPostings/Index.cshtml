@@ -149,7 +149,7 @@
                 <h2>
                     <a asp-controller="JobPostings" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
                 </h2>
-                <p style="color: beige" class="meta">Publisher: <strong style="color: beige">Indeed</strong></p>
+                <p style="color: beige" class="meta">Publisher: <strong style="color: beige">@item.JobSource </strong></p>
             </div>
 
             <div class="col-md-2 text-left">
