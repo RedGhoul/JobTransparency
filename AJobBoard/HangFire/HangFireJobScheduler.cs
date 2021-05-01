@@ -12,7 +12,7 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.RemoveIfExists(nameof(OkRemoteJob));
             RecurringJob.AddOrUpdate<OkRemoteJob>(nameof(OkRemoteJob),
                 job => job.Run(JobCancellationToken.Null),
-                "*/20 * * * *", TimeZoneInfo.Local);
+                "0 * * * *", TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(GetJobPostingsJob));
             RecurringJob.AddOrUpdate<GetJobPostingsJob>(nameof(GetJobPostingsJob),

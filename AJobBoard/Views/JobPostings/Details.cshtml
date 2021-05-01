@@ -1,8 +1,6 @@
 ﻿@model AJobBoard.Models.View.JobPostingDetailViewModel
-@{
-    ViewData["SEO_Info_Title"] = Model.CurrentJobPosting.Title + " - " + Model.CurrentJobPosting.Company;
-    ViewData["SEO_Info_Description"] = Model.CurrentJobPosting.Summary;
-}
+@{ ViewData["SEO_Info_Title"] = Model.CurrentJobPosting.Title + " - " + Model.CurrentJobPosting.Company;
+                ViewData["SEO_Info_Description"] = Model.CurrentJobPosting.Summary; }
 <section class="section-hero overlay inner-page bg-image" style="background-image: url(@Model.ImageName);"
          id="home-section">
     <div class="container">
@@ -27,15 +25,15 @@
                             @if (!string.IsNullOrEmpty(Model.CurrentJobPosting.Company))
                             {
                 <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>@Html.DisplayFor(model => model.CurrentJobPosting.Company)</span> }
-                            else
-                            {
-                <span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>N/A</span>}
+            else
+            {
+<span class="ml-0 mr-2 mb-2"><span class="icon-briefcase mr-2"></span>N/A</span>}
                             @if (!string.IsNullOrEmpty(Model.CurrentJobPosting.Location))
                             {
                 <span class="m-2"><span class="icon-room mr-2"></span>@Html.DisplayFor(model => model.CurrentJobPosting.Location)</span> }
-                            else
-                            {
-                <span class="m-2"><span class="icon-room mr-2"></span>N/A</span>}
+            else
+            {
+<span class="m-2"><span class="icon-room mr-2"></span>N/A</span>}
 
                             <span class="m-2">
                                 <span class="icon-clock-o mr-2"></span><span class="text-primary">
@@ -55,7 +53,12 @@
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="@Model.CurrentJobPosting.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a>
+                        @if (Model.CurrentJobPosting.JobSource.Equals("Indeed"))
+                        {
+                    <a href="@Model.CurrentJobPosting.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Indeed</a> }
+                                else
+                                {
+                    <a href="@Model.CurrentJobPosting.URL" target="_blank" class="btn btn-block btn-primary btn-md">View On Remote Ok</a>}
                     </div>
                     <div style="margin-top:20px;" class="col-6">
                         <a href="/JobPostings/" class="btn btn-block btn-warning btn-md">Back</a>
