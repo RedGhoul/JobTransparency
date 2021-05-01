@@ -10,6 +10,7 @@ namespace AJobBoard.Models.Entity
         public JobPosting()
         {
             DateAdded = DateTime.UtcNow;
+            Tags = new List<Tag>();
         }
 
         public int Id { get; set; }
@@ -34,5 +35,7 @@ namespace AJobBoard.Models.Entity
         public bool Expried { get; set; } = false;
         public List<Tag> Tags { get; set; }
         public List<JobPostingTag> JobPostingTags { get; set; }
+        public string CompanyLogoUrl { get; set; }
+        public string Slug { get; set; }
     }
 }

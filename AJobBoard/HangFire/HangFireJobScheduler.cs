@@ -1,5 +1,6 @@
 ﻿using AJobBoard.Utils.HangFire;
 using Hangfire;
+using Jobtransparency.HangFire;
 using System;
 
 namespace Jobtransparency.Utils.HangFire
@@ -8,6 +9,11 @@ namespace Jobtransparency.Utils.HangFire
     {
         public static void ScheduleRecurringJobs()
         {
+            RecurringJob.RemoveIfExists(nameof(OkRemoteJob));
+            RecurringJob.AddOrUpdate<OkRemoteJob>(nameof(OkRemoteJob),
+                job => job.Run(JobCancellationToken.Null),
+                "*/20 * * * *", TimeZoneInfo.Local);
+
             RecurringJob.RemoveIfExists(nameof(GetJobPostingsJob));
             RecurringJob.AddOrUpdate<GetJobPostingsJob>(nameof(GetJobPostingsJob),
                 job => job.Run(JobCancellationToken.Null),

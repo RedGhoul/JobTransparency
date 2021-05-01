@@ -69,6 +69,8 @@ namespace AJobBoard.Services
                 try
                 {
                     response = await client.PostAsync(_urlflask + _GetNLTKKeyPhrases, data);
+                    string result = response.Content.ReadAsStringAsync().Result;
+                    return JsonConvert.DeserializeObject<KeyPhrasesWrapperDTO>(result);
                 }
                 catch (Exception ex)
                 {
@@ -78,20 +80,7 @@ namespace AJobBoard.Services
 
                 }
 
-                string result = response.Content.ReadAsStringAsync().Result;
-
-                try
-                {
-                    return JsonConvert.DeserializeObject<KeyPhrasesWrapperDTO>(result);
-                }
-                catch (Exception ex)
-                {
-                    _Logger.LogError($"Following DeserializeObject Error occured content of result {result} GetNLTKKeyPhrases");
-                    _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} GetNLTKKeyPhrases");
-                    _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} GetNLTKKeyPhrases");
-                    _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} GetNLTKKeyPhrases");
-
-                }
+             
                 return new KeyPhrasesWrapperDTO()
                 {
                     rank_list = new List<KeyPhraseDTO>()
@@ -116,27 +105,14 @@ namespace AJobBoard.Services
             try
             {
                 response = await client.PostAsync(_urlflask + _GetNLTKSentiment, data);
+                string result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<SentimentDTO>(result);
             }
             catch (Exception ex)
             {
                 _Logger.LogError($"Following Error occured Message {ex.Message} ExtractSentiment");
                 _Logger.LogError($"Following Error occured StackTrace {ex.StackTrace} ExtractSentiment");
                 _Logger.LogError($"Following Error occured InnerException {ex.InnerException} ExtractSentiment");
-
-            }
-
-            string result = response.Content.ReadAsStringAsync().Result;
-
-            try
-            {
-                return JsonConvert.DeserializeObject<SentimentDTO>(result);
-            }
-            catch (Exception ex)
-            {
-                _Logger.LogError($"Following DeserializeObject Error occured content of result {result} ExtractSentiment");
-                _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} ExtractSentiment");
-                _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} ExtractSentiment");
-                _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} ExtractSentiment");
 
             }
             return new SentimentDTO();
@@ -158,32 +134,21 @@ namespace AJobBoard.Services
             StringContent data = new StringContent(json, Encoding.UTF8, applicationJson);
 
             HttpResponseMessage response = null;
+
             try
             {
                 response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
+                string result = response.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<SummaryDTO>(result);
             }
             catch (Exception ex)
             {
                 _Logger.LogError($"Following Error occured Message {ex.Message} GetNLTKSummary");
                 _Logger.LogError($"Following Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
                 _Logger.LogError($"Following Error occured InnerException {ex.InnerException} GetNLTKSummary");
-
             }
+           
 
-            string result = response.Content.ReadAsStringAsync().Result;
-
-            try
-            {
-                return JsonConvert.DeserializeObject<SummaryDTO>(result);
-            }
-            catch (Exception ex)
-            {
-                _Logger.LogError($"Following DeserializeObject Error occured content of result {result} GetNLTKSummary");
-                _Logger.LogError($"Following DeserializeObject Error occured Message {ex.Message} GetNLTKSummary");
-                _Logger.LogError($"Following DeserializeObject Error occured StackTrace {ex.StackTrace} GetNLTKSummary");
-                _Logger.LogError($"Following DeserializeObject Error occured InnerException {ex.InnerException} GetNLTKSummary");
-
-            }
             return new SummaryDTO()
             {
                 SummaryText = ""

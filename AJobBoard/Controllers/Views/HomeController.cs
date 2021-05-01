@@ -4,6 +4,7 @@ using AJobBoard.Models.View;
 using AJobBoard.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;

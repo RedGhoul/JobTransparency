@@ -85,12 +85,14 @@ namespace AJobBoard.Data
                    j.HasKey(t => new { t.JobPostingId, t.TagId });
                });
 
+            builder.Entity<JobPosting>().Property(x => x.Slug).HasColumnType("nvarchar(300)");
 
             builder.Entity<Sentiment>().HasIndex(x => x.neg);
             builder.Entity<Sentiment>().HasIndex(x => x.compound);
             builder.Entity<Sentiment>().HasIndex(x => x.pos);
             builder.Entity<JobPosting>().HasIndex(x => x.DateAdded);
             builder.Entity<KeyPhrase>().HasIndex(x => x.Affinty);
+            builder.Entity<JobPosting>().HasIndex(x => x.Slug);
         }
 
 

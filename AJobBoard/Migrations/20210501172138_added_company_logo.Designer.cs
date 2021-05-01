@@ -4,14 +4,16 @@ using AJobBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Jobtransparency.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210501172138_added_company_logo")]
+    partial class added_company_logo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,9 +204,6 @@ namespace Jobtransparency.Migrations
                     b.Property<string>("Salary")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Slug")
-                        .HasColumnType("nvarchar(300)");
-
                     b.Property<string>("Summary")
                         .HasColumnType("nvarchar(max)");
 
@@ -219,8 +218,6 @@ namespace Jobtransparency.Migrations
                     b.HasIndex("DateAdded");
 
                     b.HasIndex("PosterId");
-
-                    b.HasIndex("Slug");
 
                     b.ToTable("JobPostings");
                 });
