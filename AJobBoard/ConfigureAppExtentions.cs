@@ -61,6 +61,8 @@ namespace Jobtransparency
         {
             await Seeder.CreateUserRoles(app);
             HangFireJobScheduler.ScheduleRecurringJobs();
+            //https://remoteok.io/?pagination=1619613716&worldwide=false
+            //https://remoteok.io/?pagination=1618910265&worldwide=false
         }
     }
 }

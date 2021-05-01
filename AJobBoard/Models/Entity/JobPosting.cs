@@ -32,5 +32,7 @@ namespace AJobBoard.Models.Entity
         public Sentiment Sentiment { get; set; }
         public string Summary { get; set; }
         public bool Expried { get; set; } = false;
+        public List<Tag> Tags { get; set; }
+        public List<JobPostingTag> JobPostingTags { get; set; }
     }
 }

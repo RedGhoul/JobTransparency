@@ -21,6 +21,8 @@ namespace AJobBoard.Data
         public DbSet<JobGettingConfig> JobGettingConfig { get; set; }
         public DbSet<PositionCities> PositionCities { get; set; }
         public DbSet<Sentiment> Sentiment { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<JobPostingTag> JobPostingTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -59,13 +61,36 @@ namespace AJobBoard.Data
             builder.Entity<ApplicationUser>()
             .HasMany(c => c.Applies)
             .WithOne(e => e.Applier)
-            //.HasForeignKey(x => x.ApplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<JobPosting>()
             .HasOne(x => x.Sentiment)
             .WithOne(x => x.JobPosting)
             .HasForeignKey<Sentiment>(x => x.JobPostingId);
+
+            builder.Entity<JobPosting>()
+           .HasMany(p => p.Tags)
+           .WithMany(p => p.JobPostings)
+           .UsingEntity<JobPostingTag>(
+               j => j
+                   .HasOne(pt => pt.Tag)
+                   .WithMany(t => t.JobPostingTags)
+                   .HasForeignKey(pt => pt.TagId),
+               j => j
+                   .HasOne(pt => pt.JobPosting)
+                   .WithMany(p => p.JobPostingTags)
+                   .HasForeignKey(pt => pt.JobPostingId),
+               j =>
+               {
+                   j.HasKey(t => new { t.JobPostingId, t.TagId });
+               });
+
+
+            builder.Entity<Sentiment>().HasIndex(x => x.neg);
+            builder.Entity<Sentiment>().HasIndex(x => x.compound);
+            builder.Entity<Sentiment>().HasIndex(x => x.pos);
+            builder.Entity<JobPosting>().HasIndex(x => x.DateAdded);
+            builder.Entity<KeyPhrase>().HasIndex(x => x.Affinty);
         }
 
 
