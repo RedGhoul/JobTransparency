@@ -1,4 +1,5 @@
-![Build Status](https://dev.azure.com/Avaneesa/Job%20Transparency/_apis/build/status/RedGhoul.JobTransparency?branchName=master)
+[![CircleCI](https://circleci.com/gh/RedGhoul/JobTransparency.svg?style=svg)](https://circleci.com/gh/RedGhoul/JobTransparency)
+[![CodeBeat badge](https://codebeat.co/badges/cf7dd755-174f-4d09-8810-dbbb12c68c38)](https://codebeat.co/projects/github-com-redghoul-jobtransparency-master)
 
 # Job Transparency
 
