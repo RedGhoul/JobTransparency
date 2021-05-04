@@ -9,10 +9,15 @@ namespace Jobtransparency.Utils.HangFire
     {
         public static void ScheduleRecurringJobs()
         {
+            RecurringJob.RemoveIfExists(nameof(OkRemoteJobByTags));
+            RecurringJob.AddOrUpdate<OkRemoteJobByTags>(nameof(OkRemoteJobByTags),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Daily(1, 10), TimeZoneInfo.Local);
+
             RecurringJob.RemoveIfExists(nameof(OkRemoteJob));
             RecurringJob.AddOrUpdate<OkRemoteJob>(nameof(OkRemoteJob),
                 job => job.Run(JobCancellationToken.Null),
-                "0 * * * *", TimeZoneInfo.Local);
+                "0 */2 * * *", TimeZoneInfo.Local);
 
             RecurringJob.RemoveIfExists(nameof(GetJobPostingsJob));
             RecurringJob.AddOrUpdate<GetJobPostingsJob>(nameof(GetJobPostingsJob),
@@ -33,7 +38,6 @@ namespace Jobtransparency.Utils.HangFire
             RecurringJob.AddOrUpdate<SentimentGeneratorJob>(nameof(SentimentGeneratorJob),
                 job => job.Run(JobCancellationToken.Null),
                 Cron.Daily(4, 20), TimeZoneInfo.Local);
-
 
             RecurringJob.RemoveIfExists(nameof(IsJobExpiredJobPostingsJob));
             RecurringJob.AddOrUpdate<IsJobExpiredJobPostingsJob>(nameof(IsJobExpiredJobPostingsJob),

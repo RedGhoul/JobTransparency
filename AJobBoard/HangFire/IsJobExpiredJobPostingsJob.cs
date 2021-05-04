@@ -2,13 +2,16 @@
 using AJobBoard.Models.Dto;
 using AJobBoard.Models.Entity;
 using AJobBoard.Services;
+using AJobBoard.Utils.Config;
 using Hangfire;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RandomUserAgent;
 using RestSharp.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -23,15 +26,19 @@ namespace AJobBoard.Utils.HangFire
         private readonly ILogger<GetJobPostingsJob> _logger;
         private readonly IHttpClientFactory _clientFactory;
         private readonly ApplicationDbContext _ctx;
-        private const int MillisecondsTimeout = 30000;
+        private readonly IConfiguration _configuration;
+        private const int MillisecondsTimeout = 5000;
+
         public IsJobExpiredJobPostingsJob(
             IHttpClientFactory clientFactory,
             ILogger<GetJobPostingsJob> logger,
-            ApplicationDbContext ctx)
+            ApplicationDbContext ctx,
+            IConfiguration configuration)
         {
             _clientFactory = clientFactory;
             _logger = logger;
             _ctx = ctx;
+            _configuration = configuration;
         }
 
         public async Task Run(IJobCancellationToken token)
@@ -43,31 +50,55 @@ namespace AJobBoard.Utils.HangFire
         public async Task RunAtTimeOf(DateTime now)
         {
             _logger.LogInformation("IsJobExpiredJobPostingsJob Starts... ");
+            string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            var sites = _ctx.JobPostings.ToList();
-
-            foreach (var curSite in sites)
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                var request = new HttpRequestMessage
+                // Create the Command and Parameter objects.
+                SqlCommand command = new SqlCommand(@"
+                      SELECT [Id]
+                          ,[URL]
+                      FROM [JobTransparency].[dbo].[JobPostings] 
+                      WHERE Expried = 0
+                ", connection);
+
+                try
                 {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri(curSite.URL),
-                };
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var Id = (int)reader[0];
+                        var URL = (string)reader[1];
+                        var request = new HttpRequestMessage
+                        {
+                            Method = HttpMethod.Get,
+                            RequestUri = new Uri(URL),
+                        };
 
-                HttpClient client = _clientFactory.CreateClient("NLTK");
+                        HttpClient client = _clientFactory.CreateClient("NLTK");
 
-                var data = await client.SendAsync(request);
+                        var data = await client.SendAsync(request);
 
-                var stringData = await data.Content.ReadAsStringAsync();
+                        var stringData = await data.Content.ReadAsStringAsync();
 
-                if(stringData.Contains("This job has expired on Indeed"))
-                {
-                    curSite.Expried = true;
-                    await _ctx.SaveChangesAsync();
+                        if (stringData.Contains("This job has expired on Indeed"))
+                        {
+                            var currentSite = _ctx.JobPostings.FirstOrDefault(x => x.Id == Id);
+                            currentSite.Expried = true;
+                            await _ctx.SaveChangesAsync();
+                        }
+
+                        Thread.Sleep(MillisecondsTimeout);
+                    }
+                    reader.Close();
                 }
-
-                Thread.Sleep(MillisecondsTimeout);
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                }
             }
+
 
             _logger.LogInformation("IsJobExpiredJobPostingsJob Ends... ");
         }
