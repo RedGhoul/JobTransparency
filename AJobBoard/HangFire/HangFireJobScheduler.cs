@@ -9,6 +9,11 @@ namespace Jobtransparency.Utils.HangFire
     {
         public static void ScheduleRecurringJobs()
         {
+            RecurringJob.RemoveIfExists(nameof(RemotiveIoDataJob));
+            RecurringJob.AddOrUpdate<RemotiveIoDataJob>(nameof(RemotiveIoDataJob),
+                job => job.Run(JobCancellationToken.Null),
+                Cron.Daily(1, 12), TimeZoneInfo.Local);
+
             RecurringJob.RemoveIfExists(nameof(OkRemoteJobByTags));
             RecurringJob.AddOrUpdate<OkRemoteJobByTags>(nameof(OkRemoteJobByTags),
                 job => job.Run(JobCancellationToken.Null),

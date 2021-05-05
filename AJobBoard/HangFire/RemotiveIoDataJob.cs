@@ -4,7 +4,7 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using Hangfire;
 using Jobtransparency.Models.DTO.QuickType;
-using Jobtransparency.Models.DTO.QuickType.OkRemoteData;
+using Jobtransparency.Models.DTO.QuickType.RemotiveIoData;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,14 +14,14 @@ using System.Threading.Tasks;
 
 namespace Jobtransparency.HangFire
 {
-    public class OkRemoteJob
+    public class RemotiveIoDataJob
     {
         private readonly int MinAffintyScore = 5;
         private readonly ApplicationDbContext _ctx;
         private readonly ILogger<OkRemoteJob> _logger;
         private readonly INLTKService _nltkService;
 
-        public OkRemoteJob(INLTKService nltkService, ILogger<OkRemoteJob> logger, ApplicationDbContext ctx)
+        public RemotiveIoDataJob(INLTKService nltkService, ILogger<OkRemoteJob> logger, ApplicationDbContext ctx)
         {
             _ctx = ctx;
             _logger = logger;
@@ -38,7 +38,7 @@ namespace Jobtransparency.HangFire
         {
             HttpClient client = new HttpClient();
 
-            var stuff = await client.GetAsync("https://remoteok.io/api");
+            var stuff = await client.GetAsync("https://remotive.io/api/remote-jobs");
 
 
             if (stuff.IsSuccessStatusCode)
@@ -47,12 +47,12 @@ namespace Jobtransparency.HangFire
 
                 try
                 {
-                    var okRemoteData = OkRemoteData.FromJson(contentString);
+                    var remotiveIO = RemotiveIoData.FromJson(contentString);
 
-                    foreach (var okRemoteJob in okRemoteData)
+                    foreach (var okRemoteJob in remotiveIO.Jobs)
                     {
-                        if (string.IsNullOrEmpty(okRemoteJob.Position)) continue;
-                        if(!_ctx.JobPostings.Any(x => x.Title == okRemoteJob.Position && x.Description == okRemoteJob.Description))
+                        if (string.IsNullOrEmpty(okRemoteJob.Title)) continue;
+                        if(!_ctx.JobPostings.Any(x => x.Title == okRemoteJob.Title && x.Description == okRemoteJob.Description))
                         {
                             var Description = new string(okRemoteJob.Description.Where(c => !char.IsPunctuation(c)).ToArray());
                             SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
@@ -60,15 +60,15 @@ namespace Jobtransparency.HangFire
 
                             var newJobPosting = new JobPosting()
                             {
-                                Title = okRemoteJob.Position,
+                                Title = okRemoteJob.Title,
                                 Description = okRemoteJob.Description,
                                 URL = okRemoteJob.Url.OriginalString,
-                                Company = okRemoteJob.Company,
-                                Location = okRemoteJob.Location,
-                                PostDate = okRemoteJob.Date.ToString(),
-                                Salary = "",
-                                JobSource = "RemoteOk",
-                                CompanyLogoUrl = okRemoteJob.CompanyLogo,
+                                Company = okRemoteJob.CompanyName,
+                                Location = okRemoteJob.CandidateRequiredLocation,
+                                PostDate = okRemoteJob.PublicationDate.ToString(),
+                                Salary = okRemoteJob.Salary,
+                                JobSource = "RemotiveIo",
+                                CompanyLogoUrl = okRemoteJob.CompanyLogoUrl.OriginalString,
                                 Summary = nltkSummary.SummaryText
                             };
 
@@ -96,21 +96,17 @@ namespace Jobtransparency.HangFire
                             }
                             await _ctx.SaveChangesAsync();
 
-                            foreach (var item in okRemoteJob.Tags)
+                            if (_ctx.Tags.Any(x => x.Text.Trim() == okRemoteJob.Category))
                             {
-                                if(_ctx.Tags.Any(x => x.Text.Trim() == item.Trim()))
+                                var tagFromDB = _ctx.Tags.Where(x => x.Text.Trim() == okRemoteJob.Category.Trim()).FirstOrDefault();
+                                newJobPosting.Tags.Add(tagFromDB);
+                            }
+                            else
+                            {
+                                newJobPosting.Tags.Add(new Models.Entity.Tag()
                                 {
-                                    var tagFromDB = _ctx.Tags.Where(x => x.Text.Trim() == item.Trim()).FirstOrDefault();
-                                    newJobPosting.Tags.Add(tagFromDB);
-                                }
-                                else
-                                {
-                                    newJobPosting.Tags.Add(new Models.Entity.Tag()
-                                    {
-                                        Text = item.Trim()
-                                    });
-                                }
-
+                                    Text = okRemoteJob.Category.Trim()
+                                });
                             }
                             await _ctx.SaveChangesAsync();
                         }

@@ -4,6 +4,7 @@ using AJobBoard.Models.Entity;
 using AJobBoard.Services;
 using Hangfire;
 using Jobtransparency.Models.DTO.QuickType;
+using Jobtransparency.Models.DTO.QuickType.OkRemoteData;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

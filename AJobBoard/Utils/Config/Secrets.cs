@@ -48,9 +48,7 @@ namespace AJobBoard.Utils.Config
 
         public static string GetDBConnectionString(IConfiguration Configuration)
         {
-            string AppDBConnectionString = "";
-            string AppCacheConnectionString = "";
-
+            string AppDBConnectionString;
             if (Configuration.GetValue<string>("Environment").Equals("Dev"))
             {
                 AppDBConnectionString = GetConnectionString(Configuration, "JobTransparncy_DB_LOCAL");

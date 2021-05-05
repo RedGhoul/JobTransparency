@@ -11,7 +11,7 @@ namespace Jobtransparency.HangFire
     public class GenerateKeyTopKeyWordsJobs 
         //: ICustomJob
     {
-        private readonly ApplicationDbContext _ctx;
+        //private readonly ApplicationDbContext _ctx;
 
         //public GenerateKeyTopKeyWordsJobs(ApplicationDbContext ctx)
         //{
