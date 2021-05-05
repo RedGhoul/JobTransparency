@@ -115,9 +115,14 @@ namespace Jobtransparency.HangFire
                 }
                 catch (Exception ex)
                 {
+                    throw ex;
                     _logger.LogError(ex, "Failed to deserialize");
                 }
-               
+
+            }
+            else
+            {
+                throw new Exception();
             }
         }
     }
