@@ -68,7 +68,7 @@ namespace Jobtransparency.HangFire
                                 PostDate = okRemoteJob.PublicationDate.ToString(),
                                 Salary = okRemoteJob.Salary,
                                 JobSource = "RemotiveIo",
-                                CompanyLogoUrl = okRemoteJob.CompanyLogoUrl.OriginalString,
+                                CompanyLogoUrl = okRemoteJob.CompanyLogoUrl == null ? "" : okRemoteJob.CompanyLogoUrl.OriginalString,
                                 Summary = nltkSummary.SummaryText
                             };
 
