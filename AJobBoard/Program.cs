@@ -15,7 +15,7 @@ namespace AJobBoard
         {
             return WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseSentry(); ;
+                .UseSentry();
         }
     }
 }

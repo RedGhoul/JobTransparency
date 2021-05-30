@@ -140,6 +140,22 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/AlertifyJS/1.11.4/alertify.min.js" integrity="sha256-TmZbMuBl7X3riNkZNRGGFWfpltDc50OK5Kzj4UrtvuE=" crossorigin="anonymous"></script>
         <script defer src="https://www.avaanalytics.com/js/prod/count.min.js" data-sharpcounter="https://www.avaanalytics.com/api/Interaction/Count"
                 data-sharpcounter-apikey="c2f2e1fe-f52d-42f3-ada7-a24e57d00dae"></script>
+        <script>
+            var notificationMadeBy = alertify.message('Created by Avaneesa Basappa', 10000);
+            notificationMadeBy.ondismiss = function () { return false; };
+            var notificationCheckMeOut = alertify.message('Check me out at <a href="https://www.avaneesa.me/">avaneesa.me</a>', 10000);
+            notificationCheckMeOut.ondismiss = function () { return false; };
+            function myFunction() {
+                var x = document.getElementById("myLinks");
+                if (x.style.display === "block") {
+                    x.style.display = "none";
+                } else {
+                    x.style.display = "block";
+                }
+            }
+        </script>
+        
+        
         @RenderSection("Scripts", required: false)
 
     </div>

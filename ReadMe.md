@@ -16,12 +16,12 @@ A Job Hunting CMS, designed to make finding a job a lot easier, by centralizing 
 
 - C# .Net Core 5 - ASP.NET MVC
 - Python - Azure Function (To Scrap Sources)
-- Python - Text Classify [textclassify](https://www.textclassify.com/)
+- Python - [Text Classify](https://www.textclassify.com/)
 - JavaScript - JQuery
 
 #### Data Stores
 
-- SQLServer - Main Data Store
+- MySQL - Main Data Store
 - Redis - For Reads of job Posts
 
 ### Hosted on Digital Ocean Using Docker & Docker Swarm
