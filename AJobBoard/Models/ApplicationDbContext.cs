@@ -86,6 +86,17 @@ namespace AJobBoard.Data
                });
 
             builder.Entity<JobPosting>().Property(x => x.Slug).HasColumnType("nvarchar(300)");
+            builder.Entity<JobPosting>().Property(x => x.Title).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.Company).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.Location).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.PostDate).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.Salary).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.Posters).HasColumnType("nvarchar(255)"); 
+            builder.Entity<JobPosting>().Property(x => x.JobSource).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.CompanyLogoUrl).HasColumnType("nvarchar(255)");
+            builder.Entity<JobPosting>().Property(x => x.Description).HasColumnType("nvarchar(max)");
+            builder.Entity<JobPosting>().Property(x => x.Summary).HasColumnType("nvarchar(max)");
+
 
             builder.Entity<Sentiment>().HasIndex(x => x.neg);
             builder.Entity<Sentiment>().HasIndex(x => x.compound);
@@ -93,6 +104,8 @@ namespace AJobBoard.Data
             builder.Entity<JobPosting>().HasIndex(x => x.DateAdded);
             builder.Entity<KeyPhrase>().HasIndex(x => x.Affinty);
             builder.Entity<JobPosting>().HasIndex(x => x.Slug);
+            builder.Entity<JobPosting>().HasIndex(x => new { x.Title, x.Company, x.Location, x.DateAdded}).IsUnique(true);
+
         }
 
 
