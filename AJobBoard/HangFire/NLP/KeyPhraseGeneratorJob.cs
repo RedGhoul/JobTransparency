@@ -89,11 +89,11 @@ namespace AJobBoard.Utils.HangFire
                             _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
                             foreach (KeyPhraseDTO item in wrapper.rank_list)
                             {
-                                if (float.Parse(item.Affinty) > MinAffintyScore)
+                                if (item.Affinty > MinAffintyScore)
                                 {
                                     ListKeyPhrase.Add(new KeyPhrase
                                     {
-                                        Affinty = float.Parse(item.Affinty),
+                                        Affinty = item.Affinty,
                                         Text = item.Text,
                                         JobPostingId = Id
                                     });

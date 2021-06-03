@@ -109,11 +109,11 @@ namespace AJobBoard.Controllers.API
 
                     foreach (KeyPhraseDTO item in wrapper.rank_list)
                     {
-                        if(float.Parse(item.Affinty) > MinAffintyScore)
+                        if(item.Affinty > MinAffintyScore)
                         {
                             listKeyPhrase.Add(new KeyPhrase
                             {
-                                Affinty = float.Parse(item.Affinty),
+                                Affinty = item.Affinty,
                                 Text = item.Text,
                                 JobPosting = newPosting
                             });

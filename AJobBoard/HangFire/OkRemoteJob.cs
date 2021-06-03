@@ -79,11 +79,11 @@ namespace Jobtransparency.HangFire
                             _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
                             foreach (KeyPhraseDTO KeyPhrase in wrapper.rank_list)
                             {
-                                if (float.Parse(KeyPhrase.Affinty) > MinAffintyScore)
+                                if (KeyPhrase.Affinty > MinAffintyScore)
                                 {
                                     _ctx.KeyPhrase.Add(new KeyPhrase
                                     {
-                                        Affinty = float.Parse(KeyPhrase.Affinty),
+                                        Affinty = KeyPhrase.Affinty,
                                         Text = KeyPhrase.Text,
                                         JobPostingId = newJobPosting.Id
                                     });

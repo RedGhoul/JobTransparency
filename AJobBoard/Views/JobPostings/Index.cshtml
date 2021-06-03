@@ -1,4 +1,5 @@
-﻿@model AJobBoard.Models.View.HomeIndexViewModel
+﻿@using System.Text.RegularExpressions
+@model AJobBoard.Models.View.HomeIndexViewModel
 
 <section class="site-section JobPostingList" style="background-color: #343a40;">
 <div class="container">
@@ -144,7 +145,8 @@
                         {
                             foreach (var KeyPhrase in item.KeyPhrases)
                             {
-                                if (Int32.Parse(KeyPhrase.Affinty) > 2 && KeyPhrase.Text.Length < 12)
+                                
+                                if (KeyPhrase.Affinty > 5 && KeyPhrase.Text.Length < 14)
                                 {
                                     <span class="badge badge-primary px-2 py-1 mb-3">@KeyPhrase.Text</span>
                                 }
