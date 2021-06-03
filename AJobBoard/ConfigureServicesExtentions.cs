@@ -111,14 +111,7 @@ namespace Jobtransparency
         {
             services.AddResponseCaching();
             services.AddMvc();
-            if (Configuration.GetValue<string>("Environment").Equals("Dev"))
-            {
-                services.AddRazorPages().AddRazorRuntimeCompilation();
-            }
-            else
-            {
-                services.AddRazorPages();
-            }
+            services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddResponseCompression();
 
         }
@@ -133,18 +126,18 @@ namespace Jobtransparency
                   sqlServerOptions => sqlServerOptions.CommandTimeout(CommandTimeout)
                   ));
 
-            services.AddHangfire(configuration => configuration
-                             .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                             .UseSimpleAssemblyNameTypeSerializer()
-                             .UseRecommendedSerializerSettings()
-                             .UseSqlServerStorage(AppDBConnectionString, new SqlServerStorageOptions
-                             {
-                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                                 QueuePollInterval = TimeSpan.Zero,
-                                 UseRecommendedIsolationLevel = true,
-                                 DisableGlobalLocks = true
-                             }));
+            //services.AddHangfire(configuration => configuration
+            //                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            //                 .UseSimpleAssemblyNameTypeSerializer()
+            //                 .UseRecommendedSerializerSettings()
+            //                 .UseSqlServerStorage(AppDBConnectionString, new SqlServerStorageOptions
+            //                 {
+            //                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+            //                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+            //                     QueuePollInterval = TimeSpan.Zero,
+            //                     UseRecommendedIsolationLevel = true,
+            //                     DisableGlobalLocks = true
+            //                 }));
 
         }
 

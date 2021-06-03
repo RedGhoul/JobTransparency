@@ -45,7 +45,7 @@ namespace AJobBoard
 
             services.UseHttpClient();
 
-            services.AddHangfireServer();
+            //services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -55,7 +55,7 @@ namespace AJobBoard
 
             app.UseAuthConfiguration();
 
-            app.UseHangFireConfiguration();
+            //app.UseHangFireConfiguration();
 
             app.UseEndPointConfiguration();
 

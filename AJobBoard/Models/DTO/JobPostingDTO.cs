@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Jobtransparency.Models.Entity;
 
 namespace AJobBoard.Models.Dto
 {
@@ -19,6 +20,7 @@ namespace AJobBoard.Models.Dto
         public int NumberOfViews { get; set; }
         public DateTime DateAdded { get; set; }
         public List<KeyPhraseDTO> KeyPhrases { get; set; }
+        public List<Tag> Tags { get; set; }
         public string Summary { get; set; }
     }
 }
