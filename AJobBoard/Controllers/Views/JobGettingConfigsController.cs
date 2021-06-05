@@ -54,7 +54,7 @@ namespace Jobtransparency.Controllers.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkAzureFunction2,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Create(JobGettingConfig jobGettingConfig)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Jobtransparency.Controllers.Views
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MaxAge,MaxNumber,Host,LinkCheckIfJobExists,LinkAzureFunction,LinkAzureFunction2,LinkJobPostingCreation")] JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Edit(int id, JobGettingConfig jobGettingConfig)
         {
             if (id != jobGettingConfig.Id)
             {
