@@ -40,8 +40,6 @@ namespace Jobtransparency
 
         public static void UseHangFireConfiguration(this IApplicationBuilder app)
         {
-            app.UseHangfireServer();
-
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangFireAuthorizationFilter() }
