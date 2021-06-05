@@ -1,4 +1,5 @@
 ﻿using Jobtransparency.Models.Entity;
+using NpgsqlTypes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,5 +38,6 @@ namespace AJobBoard.Models.Entity
         public List<JobPostingTag> JobPostingTags { get; set; }
         public string CompanyLogoUrl { get; set; }
         public string Slug { get; set; }
+        public NpgsqlTsVector SearchVector { get; set; }
     }
 }

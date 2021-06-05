@@ -5,6 +5,7 @@ using AJobBoard.Services;
 using AJobBoard.Utils.Config;
 using AJobBoard.Utils.HangFire;
 using Hangfire;
+using Hangfire.PostgreSql;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -98,8 +99,6 @@ namespace Jobtransparency
         {
             services.AddAuthorization(options =>
             {
-                //options.AddPolicy("AuthKey", policy =>
-                //    policy.Requirements.Add(new HasAuthKey(Configuration)));
                 options.AddPolicy("CanCreatePosting", policy => policy.RequireClaim("CanCreatePosting"));
                 options.AddPolicy("CanEditPosting", policy => policy.RequireClaim("CanEditPosting"));
                 options.AddPolicy("CanDeletePosting", policy => policy.RequireClaim("CanDeletePosting"));
@@ -121,23 +120,10 @@ namespace Jobtransparency
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseSqlServer(
-                  AppDBConnectionString,
-                  sqlServerOptions => sqlServerOptions.CommandTimeout(CommandTimeout)
-                  ));
+              options.UseNpgsql(AppDBConnectionString));
 
-            services.AddHangfire(configuration => configuration
-                             .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                             .UseSimpleAssemblyNameTypeSerializer()
-                             .UseRecommendedSerializerSettings()
-                             .UseSqlServerStorage(AppDBConnectionString, new SqlServerStorageOptions
-                             {
-                                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                                 QueuePollInterval = TimeSpan.Zero,
-                                 UseRecommendedIsolationLevel = true,
-                                 DisableGlobalLocks = true
-                             }));
+            services.AddHangfire(config =>
+                config.UsePostgreSqlStorage(AppDBConnectionString));
 
         }
 
