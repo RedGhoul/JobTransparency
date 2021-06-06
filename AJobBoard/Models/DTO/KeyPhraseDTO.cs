@@ -3,7 +3,7 @@
 
     public class KeyPhraseDTO
     {
-        public int Affinty { get; set; }
+        public float Affinty { get; set; }
         public string Text { get; set; }
     }
 }

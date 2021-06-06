@@ -17,7 +17,7 @@ namespace AJobBoard.Services
     public class NLTKService : INLTKService
     {
         private readonly string _nltkSecretKey;
-        private readonly string _urlflask;
+        private readonly string _base_url;
         private readonly string _GetNLTKKeyPhrases;
         private readonly string _GetNLTKSummary;
         private readonly string _GetNLTKSentiment;
@@ -30,7 +30,7 @@ namespace AJobBoard.Services
         public NLTKService(IConfiguration configuration, IHttpClientFactory clientFactory, ILogger<NLTKService> logger)
         {
             _nltkSecretKey = Secrets.GetAppSettingsValue(configuration, "Auth-FlaskNLTK");
-            _urlflask = Secrets.GetAppSettingsValue(configuration, "FlaskNLTK-Prod");
+            _base_url = Secrets.GetAppSettingsValue(configuration, "FlaskNLTK-Prod");
             _GetNLTKKeyPhrases = Secrets.GetAppSettingsValue(configuration, "_GetNLTKKeyPhrases");
             _GetNLTKSummary = Secrets.GetAppSettingsValue(configuration, "_GetNLTKSummary");
             _GetNLTKSentiment = Secrets.GetAppSettingsValue(configuration, "_GetNLTKSentiment");
@@ -51,7 +51,7 @@ namespace AJobBoard.Services
         {
             _Logger.LogInformation($"Sending the following Description {Description} to NLTK Service GetNLTKKeyPhrases");
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get,
-               _urlflask + _GetNLTKKeyPhrases);
+               _base_url + _GetNLTKKeyPhrases);
 
             HttpClient client = _clientFactory.CreateClient("NLTK");
             client.Timeout = TimeSpan.FromMinutes(20);
@@ -68,7 +68,7 @@ namespace AJobBoard.Services
                 HttpResponseMessage response = null;
                 try
                 {
-                    response = await client.PostAsync(_urlflask + _GetNLTKKeyPhrases, data);
+                    response = await client.PostAsync(_base_url + _GetNLTKKeyPhrases, data);
                     string result = response.Content.ReadAsStringAsync().Result;
                     return JsonConvert.DeserializeObject<KeyPhrasesWrapperDTO>(result);
                 }
@@ -104,7 +104,7 @@ namespace AJobBoard.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await client.PostAsync(_urlflask + _GetNLTKSentiment, data);
+                response = await client.PostAsync(_base_url + _GetNLTKSentiment, data);
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<SentimentDTO>(result);
             }
@@ -137,7 +137,7 @@ namespace AJobBoard.Services
 
             try
             {
-                response = await client.PostAsync(_urlflask + _GetNLTKSummary, data);
+                response = await client.PostAsync(_base_url + _GetNLTKSummary, data);
                 string result = response.Content.ReadAsStringAsync().Result;
                 return JsonConvert.DeserializeObject<SummaryDTO>(result);
             }
