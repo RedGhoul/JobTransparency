@@ -108,7 +108,6 @@ namespace Jobtransparency
 
         public static void UseMVC(this IServiceCollection services, IConfiguration Configuration)
         {
-            services.AddResponseCaching();
             services.AddMvc();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddResponseCompression();
@@ -127,6 +126,8 @@ namespace Jobtransparency
 
             services.AddHangfire(config =>
                 config.UsePostgreSqlStorage(AppDBConnectionString));
+
+
 
         }
 
