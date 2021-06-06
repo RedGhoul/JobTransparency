@@ -23,6 +23,7 @@ namespace AJobBoard.Data
         public DbSet<Sentiment> Sentiment { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<JobPostingTag> JobPostingTags { get; set; }
+        public DbSet<HangfireConfig> HangfireConfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

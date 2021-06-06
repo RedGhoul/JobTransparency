@@ -50,6 +50,9 @@ namespace AJobBoard.Utils.HangFire
 
         public async Task RunAtTimeOf(DateTime now)
         {
+            if (_ctx.HangfireConfigs.Count() == 0) return;
+            var config = _ctx.HangfireConfigs.FirstOrDefault();
+
             _logger.LogInformation("SentimentGeneratorJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
@@ -59,7 +62,7 @@ namespace AJobBoard.Utils.HangFire
                 NpgsqlCommand command = new NpgsqlCommand(@"
                   SELECT ""Id"",""Description"" FROM ""public"".""JobPostings"" 
                   WHERE ""Id"" NOT IN(SELECT ""JobPostingId"" FROM ""public"".""Sentiment"")", connection);
-
+                command.CommandTimeout = config.SQLCommandTimeOut;
                 // Open the connection in a try/catch block.
                 // Create and execute the DataReader, writing the result
                 // set to the console window.

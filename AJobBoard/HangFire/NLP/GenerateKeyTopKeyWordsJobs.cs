@@ -12,8 +12,7 @@ namespace Jobtransparency.HangFire
 {
     public class GenerateKeyTopKeyWordsJobs : ICustomJob
     {
-        private const int AffinityThreshold = 5;
-        private const int MinKeyPhraseLengthThreshold = 16;
+     
         private readonly ApplicationDbContext _ctx;
 
         public GenerateKeyTopKeyWordsJobs(ApplicationDbContext ctx)
@@ -29,6 +28,9 @@ namespace Jobtransparency.HangFire
 
         public async Task RunAtTimeOf(DateTime now)
         {
+            if (_ctx.HangfireConfigs.Count() == 0) return;
+            var config = _ctx.HangfireConfigs.FirstOrDefault();
+
             var allJobs = await _ctx.JobPostings
                 .Include(x => x.Tags).Include(x => x.KeyPhrases)
                 .Where(x => x.KeyPhrases.Count > 0 && x.Tags.Count == 0)
@@ -39,7 +41,7 @@ namespace Jobtransparency.HangFire
                 {
                     var keyPhraseText = keyPhrase.Text.Trim();
 
-                    if (keyPhrase.Affinty > AffinityThreshold && keyPhraseText.Length <= MinKeyPhraseLengthThreshold)
+                    if (keyPhrase.Affinty > config.AffinityThreshold && keyPhraseText.Length <= config.MinKeyPhraseLengthThreshold)
                     {
                         if (_ctx.Tags.Any(x => x.Text.Trim() == keyPhraseText))
                         {

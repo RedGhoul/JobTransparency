@@ -9,25 +9,25 @@ using AJobBoard.Data;
 using Jobtransparency.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Jobtransparency.Controllers.Views
+namespace Jobtransparency.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class JobGettingConfigsController : Controller
+    public class HangfireConfigsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public JobGettingConfigsController(ApplicationDbContext context)
+        public HangfireConfigsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: JobGettingConfigs
+        // GET: HangfireConfigs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.JobGettingConfig.ToListAsync());
+            return View(await _context.HangfireConfigs.ToListAsync());
         }
 
-        // GET: JobGettingConfigs/Details/5
+        // GET: HangfireConfigs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +35,39 @@ namespace Jobtransparency.Controllers.Views
                 return NotFound();
             }
 
-            var jobGettingConfig = await _context.JobGettingConfig
+            var hangfireConfig = await _context.HangfireConfigs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobGettingConfig == null)
+            if (hangfireConfig == null)
             {
                 return NotFound();
             }
 
-            return View(jobGettingConfig);
+            return View(hangfireConfig);
         }
 
-        // GET: JobGettingConfigs/Create
+        // GET: HangfireConfigs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: JobGettingConfigs/Create
+        // POST: HangfireConfigs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Create([Bind("Id,SQLCommandTimeOut,AffinityThreshold,MinKeyPhraseLengthThreshold")] HangfireConfig hangfireConfig)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(jobGettingConfig);
+                _context.Add(hangfireConfig);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(jobGettingConfig);
+            return View(hangfireConfig);
         }
 
-        // GET: JobGettingConfigs/Edit/5
+        // GET: HangfireConfigs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +75,22 @@ namespace Jobtransparency.Controllers.Views
                 return NotFound();
             }
 
-            var jobGettingConfig = await _context.JobGettingConfig.FindAsync(id);
-            if (jobGettingConfig == null)
+            var hangfireConfig = await _context.HangfireConfigs.FindAsync(id);
+            if (hangfireConfig == null)
             {
                 return NotFound();
             }
-            return View(jobGettingConfig);
+            return View(hangfireConfig);
         }
 
-        // POST: JobGettingConfigs/Edit/5
+        // POST: HangfireConfigs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, JobGettingConfig jobGettingConfig)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,SQLCommandTimeOut,AffinityThreshold,MinKeyPhraseLengthThreshold")] HangfireConfig hangfireConfig)
         {
-            if (id != jobGettingConfig.Id)
+            if (id != hangfireConfig.Id)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace Jobtransparency.Controllers.Views
             {
                 try
                 {
-                    _context.Update(jobGettingConfig);
+                    _context.Update(hangfireConfig);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!JobGettingConfigExists(jobGettingConfig.Id))
+                    if (!HangfireConfigExists(hangfireConfig.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +115,10 @@ namespace Jobtransparency.Controllers.Views
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(jobGettingConfig);
+            return View(hangfireConfig);
         }
 
-        // GET: JobGettingConfigs/Delete/5
+        // GET: HangfireConfigs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,30 +126,30 @@ namespace Jobtransparency.Controllers.Views
                 return NotFound();
             }
 
-            var jobGettingConfig = await _context.JobGettingConfig
+            var hangfireConfig = await _context.HangfireConfigs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (jobGettingConfig == null)
+            if (hangfireConfig == null)
             {
                 return NotFound();
             }
 
-            return View(jobGettingConfig);
+            return View(hangfireConfig);
         }
 
-        // POST: JobGettingConfigs/Delete/5
+        // POST: HangfireConfigs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var jobGettingConfig = await _context.JobGettingConfig.FindAsync(id);
-            _context.JobGettingConfig.Remove(jobGettingConfig);
+            var hangfireConfig = await _context.HangfireConfigs.FindAsync(id);
+            _context.HangfireConfigs.Remove(hangfireConfig);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool JobGettingConfigExists(int id)
+        private bool HangfireConfigExists(int id)
         {
-            return _context.JobGettingConfig.Any(e => e.Id == id);
+            return _context.HangfireConfigs.Any(e => e.Id == id);
         }
     }
 }

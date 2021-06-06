@@ -19,7 +19,7 @@ namespace Jobtransparency
 {
     public static class ConfigureServicesExtentions
     {
-        private const int CommandTimeout = 3000;
+        private const int MAX_EXCUTION_TIME = 7200;
 
         public static void UseAutoMapper(this IServiceCollection services)
         {
@@ -119,8 +119,11 @@ namespace Jobtransparency
         {
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-              options.UseNpgsql(AppDBConnectionString));
+            services.AddDbContext<ApplicationDbContext>(options => {
+                options.UseNpgsql(AppDBConnectionString, npgOptions => {
+                    npgOptions.CommandTimeout(MAX_EXCUTION_TIME);
+                });
+            });
 
             services.AddHangfire(config =>
                 config.UsePostgreSqlStorage(AppDBConnectionString));
