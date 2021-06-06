@@ -6,6 +6,7 @@ using AJobBoard.Utils.Config;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -48,14 +49,11 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("SummaryGeneratorJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(@"
-                      SELECT [Id]
-                          ,[Description]
-                      FROM [JobTransparency].[dbo].[JobPostings] 
-                      WHERE [Description] = ''
+                NpgsqlCommand command = new NpgsqlCommand(@"
+                      SELECT ""Id"", ""Description"" FROM ""public"".""JobPostings"" WHERE ""Description"" = ''
                 ", connection);
 
 
@@ -65,7 +63,7 @@ namespace AJobBoard.Utils.HangFire
                 try
                 {
                     connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
                     while (reader.Read())
                     {
                         var Id = (int)reader[0];

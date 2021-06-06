@@ -6,6 +6,7 @@ using AJobBoard.Utils.Config;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -43,7 +44,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await RunAtTimeOf(DateTime.Now);
+            await RunAtTimeOf(DateTime.UtcNow);
         }
 
         public async Task RunAtTimeOf(DateTime now)
@@ -52,16 +53,12 @@ namespace AJobBoard.Utils.HangFire
 
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(@"
-                    SELECT [Id]
-                          ,[Description]
-                      FROM [JobTransparency].[dbo].[JobPostings] 
-                      WHERE [Id] NOT IN (SELECT [JobPostingId] FROM [dbo].[KeyPhrase])
-
-                ", connection);
+                NpgsqlCommand command = new NpgsqlCommand(@"
+                  SELECT ""Id"",""Description"" FROM ""public"".""JobPostings"" 
+                  WHERE ""Id"" NOT IN(SELECT ""JobPostingId"" FROM ""public"".""KeyPhrase"")", connection);
 
                 // Open the connection in a try/catch block.
                 // Create and execute the DataReader, writing the result
@@ -69,7 +66,7 @@ namespace AJobBoard.Utils.HangFire
                 try
                 {
                     connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
                     while (reader.Read())
                     {
                         var Description = (string)reader[1];
