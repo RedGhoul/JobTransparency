@@ -7,6 +7,7 @@ using Hangfire;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Npgsql;
 using RandomUserAgent;
 using RestSharp.Serialization;
 using System;
@@ -44,7 +45,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await RunAtTimeOf(DateTime.Now);
+            await RunAtTimeOf(DateTime.UtcNow);
         }
 
         public async Task RunAtTimeOf(DateTime now)
@@ -52,20 +53,17 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("IsJobExpiredJobPostingsJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                SqlCommand command = new SqlCommand(@"
-                      SELECT [Id]
-                          ,[URL]
-                      FROM [JobTransparency].[dbo].[JobPostings] 
-                      WHERE Expried = 0
-                ", connection);
+                NpgsqlCommand command = new NpgsqlCommand(@"
+                      select ""Id"", ""URL""
+                        from public.""JobPostings"" WHERE ""Expried"" = FALSE", connection);
 
                 try
                 {
                     connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    var reader = await command.ExecuteReaderAsync();
                     while (reader.Read())
                     {
                         var Id = (int)reader[0];

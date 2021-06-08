@@ -33,7 +33,7 @@ namespace Jobtransparency.HangFire
         public async Task Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await RunAtTimeOfAsync(DateTime.Now);
+            await RunAtTimeOfAsync(DateTime.UtcNow);
         }
 
         public async Task RunAtTimeOfAsync(DateTime now)

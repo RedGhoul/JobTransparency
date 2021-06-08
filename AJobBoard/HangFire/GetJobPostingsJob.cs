@@ -36,7 +36,7 @@ namespace AJobBoard.Utils.HangFire
         public void Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            RunAtTimeOf(DateTime.Now);
+            RunAtTimeOf(DateTime.UtcNow);
         }
 
         public void RunAtTimeOf(DateTime now)

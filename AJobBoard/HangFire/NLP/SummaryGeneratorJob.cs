@@ -42,7 +42,7 @@ namespace AJobBoard.Utils.HangFire
         public async Task Run(IJobCancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            await RunAtTimeOf(DateTime.Now);
+            await RunAtTimeOf(DateTime.UtcNow);
         }
 
         public async Task RunAtTimeOf(DateTime now)
