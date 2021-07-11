@@ -99,68 +99,68 @@ namespace AJobBoard.Controllers.API
             }
             JobPosting newPosting = await _JobPostingRepository.Create(jobPosting);
             var Description = new string(jobPosting.Description.Where(c => !char.IsPunctuation(c)).ToArray());
-            try
-            {
+            //try
+            //{
                 
-                KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
-                if (wrapper?.rank_list != null)
-                {
-                    List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
+            //    KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
+            //    if (wrapper?.rank_list != null)
+            //    {
+            //        List<KeyPhrase> listKeyPhrase = new List<KeyPhrase>();
 
-                    foreach (KeyPhraseDTO item in wrapper.rank_list)
-                    {
-                        if(item.Affinty > MinAffintyScore)
-                        {
-                            listKeyPhrase.Add(new KeyPhrase
-                            {
-                                Affinty = item.Affinty,
-                                Text = item.Text,
-                                JobPosting = newPosting
-                            });
-                        }
+            //        foreach (KeyPhraseDTO item in wrapper.rank_list)
+            //        {
+            //            if(item.Affinty > MinAffintyScore)
+            //            {
+            //                listKeyPhrase.Add(new KeyPhrase
+            //                {
+            //                    Affinty = item.Affinty,
+            //                    Text = item.Text,
+            //                    JobPosting = newPosting
+            //                });
+            //            }
 
-                    }
-                    _keyPharseRepository.CreateKeyPhrases(listKeyPhrase);
-                    newPosting.KeyPhrases = listKeyPhrase;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //        }
+            //        _keyPharseRepository.CreateKeyPhrases(listKeyPhrase);
+            //        newPosting.KeyPhrases = listKeyPhrase;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
 
-            try
-            {
-                SummaryDTO NLTKSummary = await _nltkService.ExtractSummary(Description);
-                if (NLTKSummary != null)
-                {
-                    newPosting.Summary = NLTKSummary.SummaryText;
-                }
-                else
-                {
-                    newPosting.Summary = "none";
-                }
-                await _JobPostingRepository.Put(newPosting.Id, newPosting);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //try
+            //{
+            //    SummaryDTO NLTKSummary = await _nltkService.ExtractSummary(Description);
+            //    if (NLTKSummary != null)
+            //    {
+            //        newPosting.Summary = NLTKSummary.SummaryText;
+            //    }
+            //    else
+            //    {
+            //        newPosting.Summary = "none";
+            //    }
+            //    await _JobPostingRepository.Put(newPosting.Id, newPosting);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
 
-            try
-            {
-                Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(Description));
-                if (sentiment != null)
-                {
-                    sentiment.JobPostingId = newPosting.Id;
-                    _ctx.Sentiment.Add(sentiment);
-                    await _ctx.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //try
+            //{
+            //    Sentiment sentiment = _mapper.Map<Sentiment>(await _nltkService.ExtractSentiment(Description));
+            //    if (sentiment != null)
+            //    {
+            //        sentiment.JobPostingId = newPosting.Id;
+            //        _ctx.Sentiment.Add(sentiment);
+            //        await _ctx.SaveChangesAsync();
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
 
             return Ok();
         }
