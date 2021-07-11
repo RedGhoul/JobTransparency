@@ -80,26 +80,26 @@ namespace Jobtransparency.HangFire
                                 await _ctx.AddAsync(newJobPosting);
                                 await _ctx.SaveChangesAsync();
 
-                                List<KeyPhrase> ListKeyPhrase = new();
-                                _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
-                                foreach (KeyPhraseDTO KeyPhrase in wrapper.rank_list)
-                                {
-                                    if (KeyPhrase.Affinty > MinAffintyScore)
-                                    {
-                                        _ctx.KeyPhrase.Add(new KeyPhrase
-                                        {
-                                            Affinty = KeyPhrase.Affinty,
-                                            Text = KeyPhrase.Text,
-                                            JobPostingId = newJobPosting.Id
-                                        });
-                                    }
+                                //List<KeyPhrase> ListKeyPhrase = new();
+                                //_logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
+                                //foreach (KeyPhraseDTO KeyPhrase in wrapper.rank_list)
+                                //{
+                                //    if (KeyPhrase.Affinty > MinAffintyScore)
+                                //    {
+                                //        _ctx.KeyPhrase.Add(new KeyPhrase
+                                //        {
+                                //            Affinty = KeyPhrase.Affinty,
+                                //            Text = KeyPhrase.Text,
+                                //            JobPostingId = newJobPosting.Id
+                                //        });
+                                //    }
 
 
-                                    _logger.LogInformation($"item.Affinty {KeyPhrase.Affinty}");
-                                    _logger.LogInformation($"item.Text {KeyPhrase.Text}");
+                                //    _logger.LogInformation($"item.Affinty {KeyPhrase.Affinty}");
+                                //    _logger.LogInformation($"item.Text {KeyPhrase.Text}");
 
-                                }
-                                await _ctx.SaveChangesAsync();
+                                //}
+                                //await _ctx.SaveChangesAsync();
 
                                 foreach (var item in okRemoteJob.Tags)
                                 {

@@ -55,8 +55,8 @@ namespace Jobtransparency.HangFire
                         if(!_ctx.JobPostings.Any(x => x.Title == okRemoteJob.Title && x.Description == okRemoteJob.Description))
                         {
                             var Description = new string(okRemoteJob.Description.Where(c => !char.IsPunctuation(c)).ToArray());
-                            SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
-                            KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
+                            //SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
+                            //KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
 
                             var newJobPosting = new JobPosting()
                             {
@@ -69,32 +69,32 @@ namespace Jobtransparency.HangFire
                                 Salary = okRemoteJob.Salary,
                                 JobSource = "RemotiveIo",
                                 CompanyLogoUrl = okRemoteJob.CompanyLogoUrl == null ? "" : okRemoteJob.CompanyLogoUrl.OriginalString,
-                                Summary = nltkSummary.SummaryText
+                                Summary = "" //nltkSummary.SummaryText
                             };
 
                             await _ctx.AddAsync(newJobPosting);
                             await _ctx.SaveChangesAsync();
 
-                            List<KeyPhrase> ListKeyPhrase = new();
-                            _logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
-                            foreach (KeyPhraseDTO KeyPhrase in wrapper.rank_list)
-                            {
-                                if (KeyPhrase.Affinty > MinAffintyScore)
-                                {
-                                    _ctx.KeyPhrase.Add(new KeyPhrase
-                                    {
-                                        Affinty = KeyPhrase.Affinty,
-                                        Text = KeyPhrase.Text,
-                                        JobPostingId = newJobPosting.Id
-                                    });
-                                }
+                            //List<KeyPhrase> ListKeyPhrase = new();
+                            //_logger.LogInformation("List<KeyPhrase> ListKeyPhrase");
+                            //foreach (KeyPhraseDTO KeyPhrase in wrapper.rank_list)
+                            //{
+                            //    if (KeyPhrase.Affinty > MinAffintyScore)
+                            //    {
+                            //        _ctx.KeyPhrase.Add(new KeyPhrase
+                            //        {
+                            //            Affinty = KeyPhrase.Affinty,
+                            //            Text = KeyPhrase.Text,
+                            //            JobPostingId = newJobPosting.Id
+                            //        });
+                            //    }
 
 
-                                _logger.LogInformation($"item.Affinty {KeyPhrase.Affinty}");
-                                _logger.LogInformation($"item.Text {KeyPhrase.Text}");
+                            //    _logger.LogInformation($"item.Affinty {KeyPhrase.Affinty}");
+                            //    _logger.LogInformation($"item.Text {KeyPhrase.Text}");
 
-                            }
-                            await _ctx.SaveChangesAsync();
+                            //}
+                            //await _ctx.SaveChangesAsync();
 
                             if (_ctx.Tags.Any(x => x.Text.Trim() == okRemoteJob.Category))
                             {
