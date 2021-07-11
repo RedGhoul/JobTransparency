@@ -118,8 +118,10 @@ namespace Jobtransparency
         {
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
+
             services.AddDbContext<ApplicationDbContext>(options => {
-                options.UseSqlServer(AppDBConnectionString);
+                options.UseSqlServer(AppDBConnectionString,
+                sqlServerOptions => sqlServerOptions.CommandTimeout(7200));
             });
 
             services.AddHangfire(config =>
