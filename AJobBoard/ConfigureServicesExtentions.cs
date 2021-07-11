@@ -119,15 +119,11 @@ namespace Jobtransparency
             string AppDBConnectionString = Secrets.GetDBConnectionString(Configuration);
 
             services.AddDbContext<ApplicationDbContext>(options => {
-                options.UseNpgsql(AppDBConnectionString, npgOptions => {
-                    npgOptions.CommandTimeout(MAX_EXCUTION_TIME);
-                });
+                options.UseSqlServer(AppDBConnectionString);
             });
 
             services.AddHangfire(config =>
-                config.UsePostgreSqlStorage(AppDBConnectionString));
-
-
+                config.UseSqlServerStorage(AppDBConnectionString));
 
         }
 

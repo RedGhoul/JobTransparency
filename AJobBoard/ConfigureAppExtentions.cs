@@ -59,8 +59,8 @@ namespace Jobtransparency
 
         public static async Task UseStartUpMethodsAsync(this IApplicationBuilder app)
         {
-            await Seeder.CreateUserRoles(app);
-            HangFireJobScheduler.ScheduleRecurringJobs();
+            //await Seeder.CreateUserRoles(app);
+            //HangFireJobScheduler.ScheduleRecurringJobs();
         }
     }
 }

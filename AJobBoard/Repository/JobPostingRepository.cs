@@ -213,7 +213,6 @@ namespace AJobBoard.Data
             List<JobPosting> resultSet;
 
             resultSet = await _ctx.JobPostings.Include(x => x.KeyPhrases).Include(x => x.Tags)
-                  .Where(x => x.SearchVector.Matches(homeIndexVm.FindModel.KeyWords))
                   .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
 
 
