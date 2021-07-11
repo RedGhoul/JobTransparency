@@ -212,8 +212,18 @@ namespace AJobBoard.Data
             }
             List<JobPosting> resultSet;
 
-            resultSet = await _ctx.JobPostings.Include(x => x.KeyPhrases).Include(x => x.Tags)
-                  .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            if (string.IsNullOrEmpty(homeIndexVm.FindModel.KeyWords))
+            {
+                resultSet = await _ctx.JobPostings
+                   .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            }
+            else
+            {
+                var sql = $@"SELECT * FROM [JobPostings] WHERE 
+                    FREETEXT ((Summary,Title,Company,Location), N'{homeIndexVm.FindModel.KeyWords}')";
+                resultSet = await _ctx.JobPostings.FromSqlRaw(sql)
+                    .OrderByDescending(x => x.DateAdded).Skip(fromNumber).Take(12).ToListAsync();
+            }
 
 
             return _mapper.Map<List<JobPostingDTO>>(resultSet);
