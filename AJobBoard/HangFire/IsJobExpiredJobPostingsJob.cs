@@ -53,12 +53,12 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("IsJobExpiredJobPostingsJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                NpgsqlCommand command = new NpgsqlCommand(@"
-                      select ""Id"", ""URL""
-                        from public.""JobPostings"" WHERE ""Expried"" = FALSE", connection);
+                SqlCommand command = new SqlCommand(@"
+                      SELECT Id, URL FROM JobPostings WHERE Expried = 0
+                ", connection);
 
                 try
                 {

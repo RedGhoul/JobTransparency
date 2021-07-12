@@ -52,11 +52,11 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("SummaryGeneratorJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                NpgsqlCommand command = new NpgsqlCommand(@"
-                      SELECT ""Id"", ""Description"" FROM ""public"".""JobPostings"" WHERE ""Description"" = ''
+                SqlCommand command = new SqlCommand(@"
+                      SELECT Id, Description FROM JobPostings WHERE Description = ''
                 ", connection);
 
                 command.CommandTimeout = config.SQLCommandTimeOut;

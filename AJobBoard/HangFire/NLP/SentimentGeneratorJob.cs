@@ -56,12 +56,12 @@ namespace AJobBoard.Utils.HangFire
             _logger.LogInformation("SentimentGeneratorJob Starts... ");
             string connectionString = Secrets.GetDBConnectionString(_configuration);
 
-            using (NpgsqlConnection connection = new NpgsqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 // Create the Command and Parameter objects.
-                NpgsqlCommand command = new NpgsqlCommand(@"
-                  SELECT ""Id"",""Description"" FROM ""public"".""JobPostings"" 
-                  WHERE ""Id"" NOT IN(SELECT ""JobPostingId"" FROM ""public"".""Sentiment"")", connection);
+                SqlCommand command = new SqlCommand(@"
+                  SELECT Id,Description FROM JobPostings
+                  WHERE Id NOT IN(SELECT JobPostingId FROM Sentiment)", connection);
                 command.CommandTimeout = config.SQLCommandTimeOut;
                 // Open the connection in a try/catch block.
                 // Create and execute the DataReader, writing the result
