@@ -55,8 +55,8 @@ namespace Jobtransparency.HangFire
                         if(!_ctx.JobPostings.Any(x => x.Title == okRemoteJob.Title && x.Description == okRemoteJob.Description))
                         {
                             var Description = new string(okRemoteJob.Description.Where(c => !char.IsPunctuation(c)).ToArray());
-                            //SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
-                            //KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
+                            SummaryDTO nltkSummary = await _nltkService.ExtractSummary(Description);
+                            KeyPhrasesWrapperDTO wrapper = await _nltkService.ExtractKeyPhrases(Description);
 
                             var newJobPosting = new JobPosting()
                             {
@@ -69,7 +69,7 @@ namespace Jobtransparency.HangFire
                                 Salary = okRemoteJob.Salary,
                                 JobSource = "RemotiveIo",
                                 CompanyLogoUrl = okRemoteJob.CompanyLogoUrl == null ? "" : okRemoteJob.CompanyLogoUrl.OriginalString,
-                                Summary = "" //nltkSummary.SummaryText
+                                Summary = nltkSummary.SummaryText
                             };
 
                             await _ctx.AddAsync(newJobPosting);
